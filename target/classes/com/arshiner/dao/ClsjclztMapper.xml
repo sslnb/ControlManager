@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.ClsjclztMapper">
+	<resultMap id="BaseResultMap" type="com.arshiner.model.Clsjclzt">
+		<result column="JGXTLB" property="jgxtlb" jdbcType="CHAR" />
+		<result column="BM" property="bm" jdbcType="VARCHAR" />
+		<result column="CJZT" property="cjzt" jdbcType="CHAR" />
+		<result column="CCQDSJ" property="ccqdsj" jdbcType="DATE" />
+		<result column="ZJQDSJ" property="zjqdsj" jdbcType="DATE" />
+		<result column="CJWCSJ" property="cjwcsj" jdbcType="DATE" />
+		<result column="SJZL" property="sjzl" jdbcType="DECIMAL" />
+		<result column="CJSJZL" property="cjsjzl" jdbcType="DECIMAL" />
+		<result column="ZHWJM" property="zhwjm" jdbcType="VARCHAR" />
+		<result column="RKZT" property="rkzt" jdbcType="CHAR" />
+		<result column="RKWCSJ" property="rkwcsj" jdbcType="DATE" />
+		<result column="RKSJZL" property="rksjzl" jdbcType="DECIMAL" />
+		<result column="RKWJS" property="rkwjs" jdbcType="DECIMAL" />
+		<result column="CWXXMS" property="cwxxms" jdbcType="VARCHAR" />
+		<result column="GXSJ" property="gxsj" jdbcType="DATE" />
+		<result column="CJWJS" property="cjwjs" jdbcType="DECIMAL" />
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="SBZT" property="sbzt" jdbcType="CHAR" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		JGXTLB, BM, CJZT, CCQDSJ, ZJQDSJ, CJWCSJ, SJZL, CJSJZL, ZHWJM, RKZT, RKWCSJ,
+		RKSJZL,
+		RKWJS, CWXXMS, GXSJ, CJWJS, ID, SBZT
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.arshiner.model.ClsjclztExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from ADTMGR.CLSJCLZT
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<delete id="deleteByExample" parameterType="com.arshiner.model.ClsjclztExample">
+		delete from ADTMGR.CLSJCLZT
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.arshiner.model.Clsjclzt">
+		insert into ADTMGR.CLSJCLZT (JGXTLB, BM, CJZT, CCQDSJ,
+		ZJQDSJ, CJWCSJ, SJZL, CJSJZL,
+		ZHWJM, RKZT, RKWCSJ, RKSJZL,
+		RKWJS, CWXXMS, GXSJ, CJWJS,
+		ID, SBZT)
+		values (#{jgxtlb,jdbcType=CHAR}, #{bm,jdbcType=VARCHAR},
+		#{cjzt,jdbcType=CHAR}, #{ccqdsj,jdbcType=DATE},
+		#{zjqdsj,jdbcType=DATE}, #{cjwcsj,jdbcType=DATE},
+		#{sjzl,jdbcType=DECIMAL}, #{cjsjzl,jdbcType=DECIMAL},
+		#{zhwjm,jdbcType=VARCHAR}, #{rkzt,jdbcType=CHAR},
+		#{rkwcsj,jdbcType=DATE}, #{rksjzl,jdbcType=DECIMAL},
+		#{rkwjs,jdbcType=DECIMAL}, #{cwxxms,jdbcType=VARCHAR},
+		#{gxsj,jdbcType=DATE}, #{cjwjs,jdbcType=DECIMAL},
+		#{id,jdbcType=DECIMAL}, #{sbzt,jdbcType=CHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.arshiner.model.Clsjclzt">
+		insert into ADTMGR.CLSJCLZT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="jgxtlb != null">
+				JGXTLB,
+			</if>
+			<if test="bm != null">
+				BM,
+			</if>
+			<if test="cjzt != null">
+				CJZT,
+			</if>
+			<if test="ccqdsj != null">
+				CCQDSJ,
+			</if>
+			<if test="zjqdsj != null">
+				ZJQDSJ,
+			</if>
+			<if test="cjwcsj != null">
+				CJWCSJ,
+			</if>
+			<if test="sjzl != null">
+				SJZL,
+			</if>
+			<if test="cjsjzl != null">
+				CJSJZL,
+			</if>
+			<if test="zhwjm != null">
+				ZHWJM,
+			</if>
+			<if test="rkzt != null">
+				RKZT,
+			</if>
+			<if test="rkwcsj != null">
+				RKWCSJ,
+			</if>
+			<if test="rksjzl != null">
+				RKSJZL,
+			</if>
+			<if test="rkwjs != null">
+				RKWJS,
+			</if>
+			<if test="cwxxms != null">
+				CWXXMS,
+			</if>
+			<if test="gxsj != null">
+				GXSJ,
+			</if>
+			<if test="cjwjs != null">
+				CJWJS,
+			</if>
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="sbzt != null">
+				SBZT,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="jgxtlb != null">
+				#{jgxtlb,jdbcType=CHAR},
+			</if>
+			<if test="bm != null">
+				#{bm,jdbcType=VARCHAR},
+			</if>
+			<if test="cjzt != null">
+				#{cjzt,jdbcType=CHAR},
+			</if>
+			<if test="ccqdsj != null">
+				#{ccqdsj,jdbcType=DATE},
+			</if>
+			<if test="zjqdsj != null">
+				#{zjqdsj,jdbcType=DATE},
+			</if>
+			<if test="cjwcsj != null">
+				#{cjwcsj,jdbcType=DATE},
+			</if>
+			<if test="sjzl != null">
+				#{sjzl,jdbcType=DECIMAL},
+			</if>
+			<if test="cjsjzl != null">
+				#{cjsjzl,jdbcType=DECIMAL},
+			</if>
+			<if test="zhwjm != null">
+				#{zhwjm,jdbcType=VARCHAR},
+			</if>
+			<if test="rkzt != null">
+				#{rkzt,jdbcType=CHAR},
+			</if>
+			<if test="rkwcsj != null">
+				#{rkwcsj,jdbcType=DATE},
+			</if>
+			<if test="rksjzl != null">
+				#{rksjzl,jdbcType=DECIMAL},
+			</if>
+			<if test="rkwjs != null">
+				#{rkwjs,jdbcType=DECIMAL},
+			</if>
+			<if test="cwxxms != null">
+				#{cwxxms,jdbcType=VARCHAR},
+			</if>
+			<if test="gxsj != null">
+				#{gxsj,jdbcType=DATE},
+			</if>
+			<if test="cjwjs != null">
+				#{cjwjs,jdbcType=DECIMAL},
+			</if>
+			<if test="id != null">
+				#{id,jdbcType=DECIMAL},
+			</if>
+			<if test="sbzt != null">
+				#{sbzt,jdbcType=CHAR},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.arshiner.model.ClsjclztExample"
+		resultType="java.lang.Integer">
+		select count(*) from ADTMGR.CLSJCLZT
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update ADTMGR.CLSJCLZT
+		<set>
+			<if test="record.jgxtlb != null">
+				JGXTLB = #{record.jgxtlb,jdbcType=CHAR},
+			</if>
+			<if test="record.bm != null">
+				BM = #{record.bm,jdbcType=VARCHAR},
+			</if>
+			<if test="record.cjzt != null">
+				CJZT = #{record.cjzt,jdbcType=CHAR},
+			</if>
+			<if test="record.ccqdsj != null">
+				CCQDSJ = #{record.ccqdsj,jdbcType=DATE},
+			</if>
+			<if test="record.zjqdsj != null">
+				ZJQDSJ = #{record.zjqdsj,jdbcType=DATE},
+			</if>
+			<if test="record.cjwcsj != null">
+				CJWCSJ = #{record.cjwcsj,jdbcType=DATE},
+			</if>
+			<if test="record.sjzl != null">
+				SJZL = #{record.sjzl,jdbcType=DECIMAL},
+			</if>
+			<if test="record.cjsjzl != null">
+				CJSJZL = #{record.cjsjzl,jdbcType=DECIMAL},
+			</if>
+			<if test="record.zhwjm != null">
+				ZHWJM = #{record.zhwjm,jdbcType=VARCHAR},
+			</if>
+			<if test="record.rkzt != null">
+				RKZT = #{record.rkzt,jdbcType=CHAR},
+			</if>
+			<if test="record.rkwcsj != null">
+				RKWCSJ = #{record.rkwcsj,jdbcType=DATE},
+			</if>
+			<if test="record.rksjzl != null">
+				RKSJZL = #{record.rksjzl,jdbcType=DECIMAL},
+			</if>
+			<if test="record.rkwjs != null">
+				RKWJS = #{record.rkwjs,jdbcType=DECIMAL},
+			</if>
+			<if test="record.cwxxms != null">
+				CWXXMS = #{record.cwxxms,jdbcType=VARCHAR},
+			</if>
+			<if test="record.gxsj != null">
+				GXSJ = #{record.gxsj,jdbcType=DATE},
+			</if>
+			<if test="record.cjwjs != null">
+				CJWJS = #{record.cjwjs,jdbcType=DECIMAL},
+			</if>
+			<if test="record.id != null">
+				ID = #{record.id,jdbcType=DECIMAL},
+			</if>
+			<if test="record.sbzt != null">
+				SBZT = #{record.sbzt,jdbcType=CHAR},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update ADTMGR.CLSJCLZT
+		set JGXTLB = #{record.jgxtlb,jdbcType=CHAR},
+		BM = #{record.bm,jdbcType=VARCHAR},
+		CJZT = #{record.cjzt,jdbcType=CHAR},
+		CCQDSJ = #{record.ccqdsj,jdbcType=DATE},
+		ZJQDSJ = #{record.zjqdsj,jdbcType=DATE},
+		CJWCSJ = #{record.cjwcsj,jdbcType=DATE},
+		SJZL = #{record.sjzl,jdbcType=DECIMAL},
+		CJSJZL = #{record.cjsjzl,jdbcType=DECIMAL},
+		ZHWJM = #{record.zhwjm,jdbcType=VARCHAR},
+		RKZT = #{record.rkzt,jdbcType=CHAR},
+		RKWCSJ = #{record.rkwcsj,jdbcType=DATE},
+		RKSJZL = #{record.rksjzl,jdbcType=DECIMAL},
+		RKWJS = #{record.rkwjs,jdbcType=DECIMAL},
+		CWXXMS = #{record.cwxxms,jdbcType=VARCHAR},
+		GXSJ = #{record.gxsj,jdbcType=DATE},
+		CJWJS = #{record.cjwjs,jdbcType=DECIMAL},
+		ID = #{record.id,jdbcType=DECIMAL},
+		SBZT = #{record.sbzt,jdbcType=CHAR}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+
+	<!--自定义() -->
+	<select id="selAllClsjclzt" resultType="com.arshiner.model.Clsjclzt">
+		SELECT * FROM (SELECT ROWNUM nums,u.* FROM CLSJCLZT u) WHERE nums &gt;=
+		#{before} AND nums &lt;= #{after}
+	</select>
+
+	<select id="countClsjclzt" resultType="Integer">
+		select count(*) from CLSJCLZT
+	</select>
+
+	<select id="selClsjclztByParam" resultType="com.arshiner.model.Clsjclzt">
+		SELECT * FROM (SELECT ROWNUM nums,u.* FROM CLSJCLZT u) WHERE nums
+		&gt;= #{before} AND nums &lt;= #{after}
+		<if test="param1!=null and param1!=''">
+			AND jgxtlb like '%'||#{param1}||'%'
+		</if>
+		<if test="param2!=null and param2!=''">
+			AND bm like '%'||#{param2}||'%'
+		</if>
+	</select>
+
+	<select id="countClsjclztByParam" resultType="Integer">
+		select count(*) from CLSJCLZT WHERE 1=1
+		<if test="param1!=null and param1!=''">
+			AND jgxtlb like '%'||#{param1}||'%'
+		</if>
+		<if test="param2!=null and param2!=''">
+			AND bm like '%'||#{param2}||'%'
+		</if>
+	</select>
+	<select id="countCJL" resultType="java.lang.Integer" parameterType="java.lang.String">
+	select sum(CJSJZL) from  CLSJCLZT  where JGXTLB =#{jgxtlb}
+	</select>
+	<select id="countSJZL" resultType="java.lang.Integer"  parameterType="java.lang.String">
+	select sum(SJZL) from  CLSJCLZT  where JGXTLB =#{jgxtlb}
+	</select>
+	<select id="countWJZL" resultType="java.lang.Integer"  parameterType="java.lang.String">
+	select sum(CJWJS) from  CLSJCLZT  where JGXTLB =#{jgxtlb}
+	</select>
+</mapper>

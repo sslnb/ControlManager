@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.ScheduleJobMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.ScheduleJob" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="JOB_ID" property="jobId" jdbcType="VARCHAR" />
+    <result column="JOB_NAME" property="jobName" jdbcType="VARCHAR" />
+    <result column="JOB_STATUS" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="JOB_GROUP" property="jobGroup" jdbcType="VARCHAR" />
+    <result column="CRON_EXPRESSION" property="cronExpression" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="BEAN_NAME" property="beanName" jdbcType="VARCHAR" />
+    <result column="METHOD_NAME" property="methodName" jdbcType="VARCHAR" />
+    <result column="ADZM" property="adzm" jdbcType="VARCHAR" />
+    <result column="JGXTLB" property="jgxtlb" jdbcType="VARCHAR" />
+    <result column="BM" property="bm" jdbcType="VARCHAR" />
+    <result column="QSSJ" property="qssj" jdbcType="DATE" />
+    <result column="JSSJ" property="jssj" jdbcType="DATE" />
+    <result column="PID" property="pid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, JOB_ID, JOB_NAME, JOB_STATUS, JOB_GROUP, CRON_EXPRESSION, DESCRIPTION, BEAN_NAME, 
+    METHOD_NAME, ADZM, JGXTLB, BM, QSSJ, JSSJ, PID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.ScheduleJobExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.SCHEDULE_JOB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from ADTMGR.SCHEDULE_JOB
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from ADTMGR.SCHEDULE_JOB
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.ScheduleJobExample" >
+    delete from ADTMGR.SCHEDULE_JOB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.ScheduleJob" >
+    insert into ADTMGR.SCHEDULE_JOB (ID, JOB_ID, JOB_NAME, 
+      JOB_STATUS, JOB_GROUP, CRON_EXPRESSION, 
+      DESCRIPTION, BEAN_NAME, METHOD_NAME, 
+      ADZM, JGXTLB, BM, QSSJ, 
+      JSSJ, PID)
+    values (#{id,jdbcType=DECIMAL}, #{jobId,jdbcType=VARCHAR}, #{jobName,jdbcType=VARCHAR}, 
+      #{jobStatus,jdbcType=VARCHAR}, #{jobGroup,jdbcType=VARCHAR}, #{cronExpression,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{beanName,jdbcType=VARCHAR}, #{methodName,jdbcType=VARCHAR}, 
+      #{adzm,jdbcType=VARCHAR}, #{jgxtlb,jdbcType=VARCHAR}, #{bm,jdbcType=VARCHAR}, #{qssj,jdbcType=DATE}, 
+      #{jssj,jdbcType=DATE}, #{pid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.ScheduleJob" >
+    insert into ADTMGR.SCHEDULE_JOB
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="jobId != null" >
+        JOB_ID,
+      </if>
+      <if test="jobName != null" >
+        JOB_NAME,
+      </if>
+      <if test="jobStatus != null" >
+        JOB_STATUS,
+      </if>
+      <if test="jobGroup != null" >
+        JOB_GROUP,
+      </if>
+      <if test="cronExpression != null" >
+        CRON_EXPRESSION,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="beanName != null" >
+        BEAN_NAME,
+      </if>
+      <if test="methodName != null" >
+        METHOD_NAME,
+      </if>
+      <if test="adzm != null" >
+        ADZM,
+      </if>
+      <if test="jgxtlb != null" >
+        JGXTLB,
+      </if>
+      <if test="bm != null" >
+        BM,
+      </if>
+      <if test="qssj != null" >
+        QSSJ,
+      </if>
+      <if test="jssj != null" >
+        JSSJ,
+      </if>
+      <if test="pid != null" >
+        PID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="jobId != null" >
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobName != null" >
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null" >
+        #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="jobGroup != null" >
+        #{jobGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null" >
+        #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="beanName != null" >
+        #{beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="methodName != null" >
+        #{methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="adzm != null" >
+        #{adzm,jdbcType=VARCHAR},
+      </if>
+      <if test="jgxtlb != null" >
+        #{jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="bm != null" >
+        #{bm,jdbcType=VARCHAR},
+      </if>
+      <if test="qssj != null" >
+        #{qssj,jdbcType=DATE},
+      </if>
+      <if test="jssj != null" >
+        #{jssj,jdbcType=DATE},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.ScheduleJobExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.SCHEDULE_JOB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.SCHEDULE_JOB
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.jobId != null" >
+        JOB_ID = #{record.jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jobName != null" >
+        JOB_NAME = #{record.jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jobStatus != null" >
+        JOB_STATUS = #{record.jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jobGroup != null" >
+        JOB_GROUP = #{record.jobGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cronExpression != null" >
+        CRON_EXPRESSION = #{record.cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null" >
+        DESCRIPTION = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beanName != null" >
+        BEAN_NAME = #{record.beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.methodName != null" >
+        METHOD_NAME = #{record.methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adzm != null" >
+        ADZM = #{record.adzm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jgxtlb != null" >
+        JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bm != null" >
+        BM = #{record.bm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qssj != null" >
+        QSSJ = #{record.qssj,jdbcType=DATE},
+      </if>
+      <if test="record.jssj != null" >
+        JSSJ = #{record.jssj,jdbcType=DATE},
+      </if>
+      <if test="record.pid != null" >
+        PID = #{record.pid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.SCHEDULE_JOB
+    set  JOB_NAME = #{record.jobName,jdbcType=VARCHAR},
+      JOB_STATUS = #{record.jobStatus,jdbcType=VARCHAR},
+      JOB_GROUP = #{record.jobGroup,jdbcType=VARCHAR},
+      CRON_EXPRESSION = #{record.cronExpression,jdbcType=VARCHAR},
+      BEAN_NAME = #{record.beanName,jdbcType=VARCHAR},
+      ADZM = #{record.adzm,jdbcType=VARCHAR},
+      JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      BM = #{record.bm,jdbcType=VARCHAR},
+      PID = #{record.pid,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.arshiner.model.ScheduleJob" >
+    update ADTMGR.SCHEDULE_JOB
+    <set >
+      <if test="jobId != null" >
+        JOB_ID = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobName != null" >
+        JOB_NAME = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null" >
+        JOB_STATUS = #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="jobGroup != null" >
+        JOB_GROUP = #{jobGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null" >
+        CRON_EXPRESSION = #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="beanName != null" >
+        BEAN_NAME = #{beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="methodName != null" >
+        METHOD_NAME = #{methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="adzm != null" >
+        ADZM = #{adzm,jdbcType=VARCHAR},
+      </if>
+      <if test="jgxtlb != null" >
+        JGXTLB = #{jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="bm != null" >
+        BM = #{bm,jdbcType=VARCHAR},
+      </if>
+      <if test="qssj != null" >
+        QSSJ = #{qssj,jdbcType=DATE},
+      </if>
+      <if test="jssj != null" >
+        JSSJ = #{jssj,jdbcType=DATE},
+      </if>
+      <if test="pid != null" >
+        PID = #{pid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.arshiner.model.ScheduleJob" >
+    update ADTMGR.SCHEDULE_JOB
+    set JOB_ID = #{jobId,jdbcType=VARCHAR},
+      JOB_NAME = #{jobName,jdbcType=VARCHAR},
+      JOB_STATUS = #{jobStatus,jdbcType=VARCHAR},
+      JOB_GROUP = #{jobGroup,jdbcType=VARCHAR},
+      CRON_EXPRESSION = #{cronExpression,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      BEAN_NAME = #{beanName,jdbcType=VARCHAR},
+      METHOD_NAME = #{methodName,jdbcType=VARCHAR},
+      ADZM = #{adzm,jdbcType=VARCHAR},
+      JGXTLB = #{jgxtlb,jdbcType=VARCHAR},
+      BM = #{bm,jdbcType=VARCHAR},
+      QSSJ = #{qssj,jdbcType=DATE},
+      JSSJ = #{jssj,jdbcType=DATE},
+      PID = #{pid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <!--ALL-->
+  <select id="selAllJobInfo" resultType="com.arshiner.model.ScheduleJob">
+      SELECT * FROM  SCHEDULE_JOB
+  </select>
+  <select id="countJobInfo" resultType="Integer">
+      select count(*) from SCHEDULE_JOB
+  </select>
+  <!--运行任务-->
+  <select id="selRunJobInfo" resultType="com.arshiner.model.ScheduleJob">
+      SELECT * FROM (SELECT ROWNUM nums,u.* FROM SCHEDULE_JOB u) WHERE nums &gt;= #{before} AND nums &lt;= #{after}
+      and JOB_STATUS = 'START'
+  </select>
+  <select id="countRunJobInfo" resultType="Integer">
+      select count(*) from SCHEDULE_JOB where JOB_STATUS = 'START'
+  </select>
+
+</mapper>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>软件心跳监控</title>
+</head>
+<link rel="stylesheet" href="../../../static/layui/css/layui.css" media="all" />
+<style>
+  /*  .layui-progress{
+        background-color: #9F9F9F;
+    }*/
+    .layui-progress-bar{
+        background-color: #01AAED;
+    }
+</style>
+<body class="childrenBody">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+        <legend>软件心跳监控</legend>
+    </fieldset>
+    <table class="layui-table">
+    <colgroup>
+        <col width="20%">
+        <col width="50%">
+        <col>
+    </colgroup>
+    <thead>
+    <tr>
+        <th>参数说明</th>
+        <th colspan="2">参数值</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr style="height: 30px">
+        <td colspan="3"></td>
+    </tr>
+
+    <tr>
+
+        <td>CPU使用率</td>
+        <td colspan="2">
+            <div class="layui-progress layui-progress-big" lay-showPercent="true" style="height: 30px">
+                <div class="layui-progress-bar layui-bg-cyan" lay-percent="20%" style="height: 30px"></div>
+            </div>
+        </td>
+    </tr>
+
+    <tr style="height: 30px">
+        <td colspan="3"></td>
+    </tr>
+
+    <tr>
+
+        <td>内存使用率</td>
+        <td colspan="2">
+            <div class="layui-progress layui-progress-big" lay-showPercent="true" style="height: 30px">
+                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="height: 30px"></div>
+            </div>
+        </td>
+    </tr>
+    <tr style="height: 30px">
+        <td colspan="3"></td>
+    </tr>
+
+    <tr>
+
+        <td>磁盘使用率</td>
+        <td colspan="2">
+            <div class="layui-progress layui-progress-big" lay-showPercent="true" style="height: 30px">
+                <div class="layui-progress-bar layui-bg-cyan" lay-percent="40%" style="height: 30px"></div>
+            </div>
+        </td>
+    </tr>
+
+    <tr style="height: 30px">
+        <td colspan="3"></td>
+    </tr>
+
+    <tr>
+        <td>测试参数***</td>
+        <td colspan="2">
+            <div class="layui-progress layui-progress-big" lay-showPercent="true" style="height: 30px">
+                <div class="layui-progress-bar layui-bg-cyan" lay-percent="50%" style="height: 30px"></div>
+            </div>
+        </td>
+    </tr>
+    <tr style="height: 30px">
+        <td colspan="3"></td>
+    </tr>
+
+    <tr>
+
+        <td>测试参数***</td>
+        <td colspan="2">
+            <div class="layui-progress layui-progress-big" lay-showPercent="true" style="height: 30px">
+                <div class="layui-progress-bar layui-bg-cyan" lay-percent="60%" style="height: 30px"></div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+    <script type="text/javascript" src="../../../static/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static/layui/layui.all.js"></script>
+</body>
+</html>

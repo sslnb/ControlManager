@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.DbconproMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.Dbconpro" >
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="PORT" property="port" jdbcType="VARCHAR" />
+    <result column="SID" property="sid" jdbcType="VARCHAR" />
+    <result column="SERVICENAME" property="servicename" jdbcType="VARCHAR" />
+    <result column="SCHEMA" property="schema" jdbcType="VARCHAR" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="JGXTLB" property="jgxtlb" jdbcType="VARCHAR" />
+    <result column="AZDM" property="azdm" jdbcType="VARCHAR" />
+    <result column="AGENTYPE" property="agentype" jdbcType="DECIMAL" />
+    <result column="SYLJAS" property="syljas" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="ZLNUM" property="zlnum" jdbcType="DECIMAL" />
+    <result column="CLNUM" property="clnum" jdbcType="DECIMAL" />
+    <result column="STARTEPOCH" property="startepoch" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    IP, PORT, SID, SERVICENAME, SCHEMA, USERNAME, PASSWORD, JGXTLB, AZDM, AGENTYPE, SYLJAS, 
+    ID, ZLNUM, CLNUM, STARTEPOCH
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.DbconproExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.DBCONPRO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.DbconproExample" >
+    delete from ADTMGR.DBCONPRO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.Dbconpro" >
+    insert into ADTMGR.DBCONPRO (IP, PORT, SID, 
+      SERVICENAME, SCHEMA, USERNAME, 
+      PASSWORD, JGXTLB, AZDM, 
+      AGENTYPE, SYLJAS, ID, 
+      ZLNUM, CLNUM, STARTEPOCH
+      )
+    values (#{ip,jdbcType=VARCHAR}, #{port,jdbcType=VARCHAR}, #{sid,jdbcType=VARCHAR}, 
+      #{servicename,jdbcType=VARCHAR}, #{schema,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{jgxtlb,jdbcType=VARCHAR}, #{azdm,jdbcType=VARCHAR}, 
+      #{agentype,jdbcType=DECIMAL}, #{syljas,jdbcType=VARCHAR}, #{id,jdbcType=DECIMAL}, 
+      #{zlnum,jdbcType=DECIMAL}, #{clnum,jdbcType=DECIMAL}, #{startepoch,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.Dbconpro" >
+    insert into ADTMGR.DBCONPRO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ip != null" >
+        IP,
+      </if>
+      <if test="port != null" >
+        PORT,
+      </if>
+      <if test="sid != null" >
+        SID,
+      </if>
+      <if test="servicename != null" >
+        SERVICENAME,
+      </if>
+      <if test="schema != null" >
+        SCHEMA,
+      </if>
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="jgxtlb != null" >
+        JGXTLB,
+      </if>
+      <if test="azdm != null" >
+        AZDM,
+      </if>
+      <if test="agentype != null" >
+        AGENTYPE,
+      </if>
+      <if test="syljas != null" >
+        SYLJAS,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="zlnum != null" >
+        ZLNUM,
+      </if>
+      <if test="clnum != null" >
+        CLNUM,
+      </if>
+      <if test="startepoch != null" >
+        STARTEPOCH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="sid != null" >
+        #{sid,jdbcType=VARCHAR},
+      </if>
+      <if test="servicename != null" >
+        #{servicename,jdbcType=VARCHAR},
+      </if>
+      <if test="schema != null" >
+        #{schema,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="jgxtlb != null" >
+        #{jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="azdm != null" >
+        #{azdm,jdbcType=VARCHAR},
+      </if>
+      <if test="agentype != null" >
+        #{agentype,jdbcType=DECIMAL},
+      </if>
+      <if test="syljas != null" >
+        #{syljas,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="zlnum != null" >
+        #{zlnum,jdbcType=DECIMAL},
+      </if>
+      <if test="clnum != null" >
+        #{clnum,jdbcType=DECIMAL},
+      </if>
+      <if test="startepoch != null" >
+        #{startepoch,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.DbconproExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.DBCONPRO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.DBCONPRO
+    <set >
+      <if test="record.ip != null" >
+        IP = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.port != null" >
+        PORT = #{record.port,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sid != null" >
+        SID = #{record.sid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.servicename != null" >
+        SERVICENAME = #{record.servicename,jdbcType=VARCHAR},
+      </if>
+      <if test="record.schema != null" >
+        SCHEMA = #{record.schema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.username != null" >
+        USERNAME = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null" >
+        PASSWORD = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jgxtlb != null" >
+        JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.azdm != null" >
+        AZDM = #{record.azdm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.agentype != null" >
+        AGENTYPE = #{record.agentype,jdbcType=DECIMAL},
+      </if>
+      <if test="record.syljas != null" >
+        SYLJAS = #{record.syljas,jdbcType=VARCHAR},
+      </if>
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zlnum != null" >
+        ZLNUM = #{record.zlnum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.clnum != null" >
+        CLNUM = #{record.clnum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.startepoch != null" >
+        STARTEPOCH = #{record.startepoch,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.DBCONPRO
+    set IP = #{record.ip,jdbcType=VARCHAR},
+      PORT = #{record.port,jdbcType=VARCHAR},
+      SID = #{record.sid,jdbcType=VARCHAR},
+      SERVICENAME = #{record.servicename,jdbcType=VARCHAR},
+      SCHEMA = #{record.schema,jdbcType=VARCHAR},
+      USERNAME = #{record.username,jdbcType=VARCHAR},
+      PASSWORD = #{record.password,jdbcType=VARCHAR},
+      JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      AZDM = #{record.azdm,jdbcType=VARCHAR},
+      AGENTYPE = #{record.agentype,jdbcType=DECIMAL},
+      SYLJAS = #{record.syljas,jdbcType=VARCHAR},
+      ID = #{record.id,jdbcType=DECIMAL},
+      ZLNUM = #{record.zlnum,jdbcType=DECIMAL},
+      CLNUM = #{record.clnum,jdbcType=DECIMAL},
+      STARTEPOCH = #{record.startepoch,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <select id="selAimsData" resultType="com.arshiner.model.Dbconpro">
+    SELECT * FROM (SELECT ROWNUM nums,u.* FROM ADTMGR.DBCONPRO u) WHERE nums &gt;= #{before} AND nums &lt;= #{after}
+  </select>
+
+  <select id="countAimsData" resultType="Integer">
+    select count(*) FROM ADTMGR.DBCONPRO
+  </select>
+
+  <!--查询 (模糊)2个参数-->
+  <select id="selAimsDataByParam" resultType="com.arshiner.model.Dbconpro">
+    SELECT * FROM (SELECT ROWNUM nums,u.* FROM ADTMGR.DBCONPRO u) WHERE nums &gt;= #{before} AND nums &lt;= #{after}
+      <if test="param1!=null and param1!=''">
+         AND jgxtlb like '%'||#{param1}||'%'
+      </if>
+      <if test="param2!=null and param2!=''">
+         AND ip like '%'||#{param2}||'%'
+      </if>
+  </select>
+
+  <!--查询 (模糊)2个参数    count数-->
+  <select id="countByParam" resultType="Integer">
+    select count(*) FROM ADTMGR.DBCONPRO where 1=1
+      <if test="param1!=null and param1!=''">
+         AND jgxtlb like '%'||#{param1}||'%'
+      </if>
+      <if test="param2!=null and param2!=''">
+         AND ip like '%'||#{param2}||'%'
+      </if>
+  </select>
+
+  <!--添加信息-->
+  <insert id="insAimsData">
+      insert into dbconpro
+      (ip, port, sid, servicename, schema, username, password, jgxtlb, azdm, agentype, syljas, zlnum, clnum,startepoch)
+      values
+      (#{ip}, #{port}, #{sid}, #{servicename}, #{schema}, #{username}, #{password}, #{jgxtlb}, #{azdm}, #{agentype}, #{syljas}, #{zlnum}, #{clnum}
+       ,#{startepoch})
+  </insert>
+
+  <update id="updAimsData">
+  update dbconpro
+   set ip = #{ip},
+       port = #{port},
+       sid = #{sid},
+       servicename = #{servicename},
+       schema = #{schema},
+       username = #{username},
+       password = #{password},
+       jgxtlb = #{jgxtlb},
+       azdm = #{azdm},
+       agentype = #{agentype},
+       syljas = #{syljas},
+       zlnum = #{zlnum},
+       clnum = #{clnum},
+       startepoch = #{startepoch}
+ where id = #{id}
+  </update>
+</mapper>

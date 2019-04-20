@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.SjcjqktjbMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.Sjcjqktjb" >
+    <result column="BABH" property="babh" jdbcType="VARCHAR" />
+    <result column="JGXTLB" property="jgxtlb" jdbcType="CHAR" />
+    <result column="TJRQ" property="tjrq" jdbcType="TIMESTAMP" />
+    <result column="CLCJL" property="clcjl" jdbcType="DECIMAL" />
+    <result column="CLDCJL" property="cldcjl" jdbcType="DECIMAL" />
+    <result column="CLWJS" property="clwjs" jdbcType="DECIMAL" />
+    <result column="CLWJSCS" property="clwjscs" jdbcType="DECIMAL" />
+    <result column="CLWJDCS" property="clwjdcs" jdbcType="DECIMAL" />
+    <result column="ZLCJL" property="zlcjl" jdbcType="DECIMAL" />
+    <result column="INSERTL" property="insertl" jdbcType="DECIMAL" />
+    <result column="UPDATEL" property="updatel" jdbcType="DECIMAL" />
+    <result column="DELETEL" property="deletel" jdbcType="DECIMAL" />
+    <result column="ZLWJS" property="zlwjs" jdbcType="DECIMAL" />
+    <result column="ZLWJSCS" property="zlwjscs" jdbcType="DECIMAL" />
+    <result column="ZLWJDCS" property="zlwjdcs" jdbcType="DECIMAL" />
+    <result column="SEQC" property="seqc" jdbcType="DECIMAL" />
+    <result column="DDLL" property="ddll" jdbcType="DECIMAL" />
+    <result column="GXSJ" property="gxsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    BABH, JGXTLB, TJRQ, CLCJL, CLDCJL, CLWJS, CLWJSCS, CLWJDCS, ZLCJL, INSERTL, UPDATEL, 
+    DELETEL, ZLWJS, ZLWJSCS, ZLWJDCS, SEQC, DDLL, GXSJ
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.SjcjqktjbExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.SJCJQKTJB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.SjcjqktjbExample" >
+    delete from ADTMGR.SJCJQKTJB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.Sjcjqktjb" >
+    insert into ADTMGR.SJCJQKTJB (BABH, JGXTLB, TJRQ, 
+      CLCJL, CLDCJL, CLWJS, 
+      CLWJSCS, CLWJDCS, ZLCJL, 
+      INSERTL, UPDATEL, DELETEL, 
+      ZLWJS, ZLWJSCS, ZLWJDCS, 
+      SEQC, DDLL, GXSJ)
+    values (#{babh,jdbcType=VARCHAR}, #{jgxtlb,jdbcType=CHAR}, #{tjrq,jdbcType=TIMESTAMP}, 
+      #{clcjl,jdbcType=DECIMAL}, #{cldcjl,jdbcType=DECIMAL}, #{clwjs,jdbcType=DECIMAL}, 
+      #{clwjscs,jdbcType=DECIMAL}, #{clwjdcs,jdbcType=DECIMAL}, #{zlcjl,jdbcType=DECIMAL}, 
+      #{insertl,jdbcType=DECIMAL}, #{updatel,jdbcType=DECIMAL}, #{deletel,jdbcType=DECIMAL}, 
+      #{zlwjs,jdbcType=DECIMAL}, #{zlwjscs,jdbcType=DECIMAL}, #{zlwjdcs,jdbcType=DECIMAL}, 
+      #{seqc,jdbcType=DECIMAL}, #{ddll,jdbcType=DECIMAL}, #{gxsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.Sjcjqktjb" >
+    insert into ADTMGR.SJCJQKTJB
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        BABH,
+      </if>
+      <if test="jgxtlb != null" >
+        JGXTLB,
+      </if>
+      <if test="tjrq != null" >
+        TJRQ,
+      </if>
+      <if test="clcjl != null" >
+        CLCJL,
+      </if>
+      <if test="cldcjl != null" >
+        CLDCJL,
+      </if>
+      <if test="clwjs != null" >
+        CLWJS,
+      </if>
+      <if test="clwjscs != null" >
+        CLWJSCS,
+      </if>
+      <if test="clwjdcs != null" >
+        CLWJDCS,
+      </if>
+      <if test="zlcjl != null" >
+        ZLCJL,
+      </if>
+      <if test="insertl != null" >
+        INSERTL,
+      </if>
+      <if test="updatel != null" >
+        UPDATEL,
+      </if>
+      <if test="deletel != null" >
+        DELETEL,
+      </if>
+      <if test="zlwjs != null" >
+        ZLWJS,
+      </if>
+      <if test="zlwjscs != null" >
+        ZLWJSCS,
+      </if>
+      <if test="zlwjdcs != null" >
+        ZLWJDCS,
+      </if>
+      <if test="seqc != null" >
+        SEQC,
+      </if>
+      <if test="ddll != null" >
+        DDLL,
+      </if>
+      <if test="gxsj != null" >
+        GXSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        #{babh,jdbcType=VARCHAR},
+      </if>
+      <if test="jgxtlb != null" >
+        #{jgxtlb,jdbcType=CHAR},
+      </if>
+      <if test="tjrq != null" >
+        #{tjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="clcjl != null" >
+        #{clcjl,jdbcType=DECIMAL},
+      </if>
+      <if test="cldcjl != null" >
+        #{cldcjl,jdbcType=DECIMAL},
+      </if>
+      <if test="clwjs != null" >
+        #{clwjs,jdbcType=DECIMAL},
+      </if>
+      <if test="clwjscs != null" >
+        #{clwjscs,jdbcType=DECIMAL},
+      </if>
+      <if test="clwjdcs != null" >
+        #{clwjdcs,jdbcType=DECIMAL},
+      </if>
+      <if test="zlcjl != null" >
+        #{zlcjl,jdbcType=DECIMAL},
+      </if>
+      <if test="insertl != null" >
+        #{insertl,jdbcType=DECIMAL},
+      </if>
+      <if test="updatel != null" >
+        #{updatel,jdbcType=DECIMAL},
+      </if>
+      <if test="deletel != null" >
+        #{deletel,jdbcType=DECIMAL},
+      </if>
+      <if test="zlwjs != null" >
+        #{zlwjs,jdbcType=DECIMAL},
+      </if>
+      <if test="zlwjscs != null" >
+        #{zlwjscs,jdbcType=DECIMAL},
+      </if>
+      <if test="zlwjdcs != null" >
+        #{zlwjdcs,jdbcType=DECIMAL},
+      </if>
+      <if test="seqc != null" >
+        #{seqc,jdbcType=DECIMAL},
+      </if>
+      <if test="ddll != null" >
+        #{ddll,jdbcType=DECIMAL},
+      </if>
+      <if test="gxsj != null" >
+        #{gxsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.SjcjqktjbExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.SJCJQKTJB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.SJCJQKTJB
+    <set >
+      <if test="record.babh != null" >
+        BABH = #{record.babh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jgxtlb != null" >
+        JGXTLB = #{record.jgxtlb,jdbcType=CHAR},
+      </if>
+      <if test="record.tjrq != null" >
+        TJRQ = #{record.tjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.clcjl != null" >
+        CLCJL = #{record.clcjl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cldcjl != null" >
+        CLDCJL = #{record.cldcjl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.clwjs != null" >
+        CLWJS = #{record.clwjs,jdbcType=DECIMAL},
+      </if>
+      <if test="record.clwjscs != null" >
+        CLWJSCS = #{record.clwjscs,jdbcType=DECIMAL},
+      </if>
+      <if test="record.clwjdcs != null" >
+        CLWJDCS = #{record.clwjdcs,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zlcjl != null" >
+        ZLCJL = #{record.zlcjl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.insertl != null" >
+        INSERTL = #{record.insertl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.updatel != null" >
+        UPDATEL = #{record.updatel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.deletel != null" >
+        DELETEL = #{record.deletel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zlwjs != null" >
+        ZLWJS = #{record.zlwjs,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zlwjscs != null" >
+        ZLWJSCS = #{record.zlwjscs,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zlwjdcs != null" >
+        ZLWJDCS = #{record.zlwjdcs,jdbcType=DECIMAL},
+      </if>
+      <if test="record.seqc != null" >
+        SEQC = #{record.seqc,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ddll != null" >
+        DDLL = #{record.ddll,jdbcType=DECIMAL},
+      </if>
+      <if test="record.gxsj != null" >
+        GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.SJCJQKTJB
+    set BABH = #{record.babh,jdbcType=VARCHAR},
+      JGXTLB = #{record.jgxtlb,jdbcType=CHAR},
+      TJRQ = #{record.tjrq,jdbcType=TIMESTAMP},
+      CLCJL = #{record.clcjl,jdbcType=DECIMAL},
+      CLDCJL = #{record.cldcjl,jdbcType=DECIMAL},
+      CLWJS = #{record.clwjs,jdbcType=DECIMAL},
+      CLWJSCS = #{record.clwjscs,jdbcType=DECIMAL},
+      CLWJDCS = #{record.clwjdcs,jdbcType=DECIMAL},
+      ZLCJL = #{record.zlcjl,jdbcType=DECIMAL},
+      INSERTL = #{record.insertl,jdbcType=DECIMAL},
+      UPDATEL = #{record.updatel,jdbcType=DECIMAL},
+      DELETEL = #{record.deletel,jdbcType=DECIMAL},
+      ZLWJS = #{record.zlwjs,jdbcType=DECIMAL},
+      ZLWJSCS = #{record.zlwjscs,jdbcType=DECIMAL},
+      ZLWJDCS = #{record.zlwjdcs,jdbcType=DECIMAL},
+      SEQC = #{record.seqc,jdbcType=DECIMAL},
+      DDLL = #{record.ddll,jdbcType=DECIMAL},
+      GXSJ = #{record.gxsj,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

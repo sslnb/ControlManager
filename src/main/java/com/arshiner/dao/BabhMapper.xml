@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.BabhMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.Babh" >
+    <result column="BABH" property="babh" jdbcType="VARCHAR" />
+    <result column="JKXLH" property="jkxlh" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="PORT" property="port" jdbcType="VARCHAR" />
+    <result column="MAC" property="mac" jdbcType="VARCHAR" />
+    <result column="TIME" property="time" jdbcType="TIMESTAMP" />
+    <result column="SBZQ" property="sbzq" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    BABH, JKXLH, IP, PORT, MAC, TIME, SBZQ
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.BabhExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.BABH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.BabhExample" >
+    delete from ADTMGR.BABH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.Babh" >
+    insert into ADTMGR.BABH (BABH, JKXLH, IP, 
+      PORT, MAC, TIME, SBZQ
+      )
+    values (#{babh,jdbcType=VARCHAR}, #{jkxlh,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{port,jdbcType=VARCHAR}, #{mac,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, #{sbzq,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.Babh" >
+    insert into ADTMGR.BABH
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        BABH,
+      </if>
+      <if test="jkxlh != null" >
+        JKXLH,
+      </if>
+      <if test="ip != null" >
+        IP,
+      </if>
+      <if test="port != null" >
+        PORT,
+      </if>
+      <if test="mac != null" >
+        MAC,
+      </if>
+      <if test="time != null" >
+        TIME,
+      </if>
+      <if test="sbzq != null" >
+        SBZQ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        #{babh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxlh != null" >
+        #{jkxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="mac != null" >
+        #{mac,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sbzq != null" >
+        #{sbzq,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.BabhExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.BABH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.BABH
+    <set >
+      <if test="record.babh != null" >
+        BABH = #{record.babh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jkxlh != null" >
+        JKXLH = #{record.jkxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ip != null" >
+        IP = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.port != null" >
+        PORT = #{record.port,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mac != null" >
+        MAC = #{record.mac,jdbcType=VARCHAR},
+      </if>
+      <if test="record.time != null" >
+        TIME = #{record.time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.sbzq != null" >
+        SBZQ = #{record.sbzq,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.BABH
+    set BABH = #{record.babh,jdbcType=VARCHAR},
+      JKXLH = #{record.jkxlh,jdbcType=VARCHAR},
+      IP = #{record.ip,jdbcType=VARCHAR},
+      PORT = #{record.port,jdbcType=VARCHAR},
+      MAC = #{record.mac,jdbcType=VARCHAR},
+      TIME = #{record.time,jdbcType=TIMESTAMP},
+      SBZQ = #{record.sbzq,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+  <select id="selAllBaBh" resultType="com.arshiner.model.Babh">
+    SELECT * FROM (SELECT ROWNUM nums,u.* FROM babh u) WHERE nums &gt;= #{before} AND nums &lt;= #{after}
+  </select>
+
+  <select id="countBaBh" resultType="Integer">
+    select count(*) from babh
+  </select>
+</mapper>

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.CjrjyxztMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.Cjrjyxzt" >
+    <result column="BABH" property="babh" jdbcType="VARCHAR" />
+    <result column="JGXTLB" property="jgxtlb" jdbcType="VARCHAR" />
+    <result column="FWQLJZT" property="fwqljzt" jdbcType="VARCHAR" />
+    <result column="FWQCWMS" property="fwqcwms" jdbcType="VARCHAR" />
+    <result column="SJKLJZT" property="sjkljzt" jdbcType="CHAR" />
+    <result column="SJKCWMS" property="sjkcwms" jdbcType="VARCHAR" />
+    <result column="ZLHQFS" property="zlhqfs" jdbcType="CHAR" />
+    <result column="KHDZT" property="khdzt" jdbcType="CHAR" />
+    <result column="KHDCWMS" property="khdcwms" jdbcType="VARCHAR" />
+    <result column="ZXRZMLZT" property="zxrzmlzt" jdbcType="CHAR" />
+    <result column="ZXRZCWMS" property="zxrzcwms" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="GXSJ" property="gxsj" jdbcType="TIMESTAMP" />
+    <result column="GDRZMLZT" property="gdrzmlzt" jdbcType="CHAR" />
+    <result column="GDRZCWMS" property="gdrzcwms" jdbcType="VARCHAR" />
+    <result column="CLYXZT" property="clyxzt" jdbcType="CHAR" />
+    <result column="ZLYXZT" property="zlyxzt" jdbcType="CHAR" />
+    <result column="SBZT" property="sbzt" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    BABH, JGXTLB, FWQLJZT, FWQCWMS, SJKLJZT, SJKCWMS, ZLHQFS, KHDZT, KHDCWMS, ZXRZMLZT, 
+    ZXRZCWMS, ID, GXSJ, GDRZMLZT, GDRZCWMS, CLYXZT, ZLYXZT, SBZT
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.CjrjyxztExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.CJRJYXZT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.CjrjyxztExample" >
+    delete from ADTMGR.CJRJYXZT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.Cjrjyxzt" >
+    insert into ADTMGR.CJRJYXZT (BABH, JGXTLB, FWQLJZT, 
+      FWQCWMS, SJKLJZT, SJKCWMS, 
+      ZLHQFS, KHDZT, KHDCWMS, ZXRZMLZT, 
+      ZXRZCWMS, ID, GXSJ, GDRZMLZT, 
+      GDRZCWMS, CLYXZT, ZLYXZT, 
+      SBZT)
+    values (#{babh,jdbcType=VARCHAR}, #{jgxtlb,jdbcType=VARCHAR}, #{fwqljzt,jdbcType=VARCHAR}, 
+      #{fwqcwms,jdbcType=VARCHAR}, #{sjkljzt,jdbcType=CHAR}, #{sjkcwms,jdbcType=VARCHAR}, 
+      #{zlhqfs,jdbcType=CHAR}, #{khdzt,jdbcType=CHAR}, #{khdcwms,jdbcType=VARCHAR}, #{zxrzmlzt,jdbcType=CHAR}, 
+      #{zxrzcwms,jdbcType=VARCHAR}, #{id,jdbcType=DECIMAL}, #{gxsj,jdbcType=TIMESTAMP}, #{gdrzmlzt,jdbcType=CHAR}, 
+      #{gdrzcwms,jdbcType=VARCHAR}, #{clyxzt,jdbcType=CHAR}, #{zlyxzt,jdbcType=CHAR}, 
+      #{sbzt,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.Cjrjyxzt" >
+    insert into ADTMGR.CJRJYXZT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        BABH,
+      </if>
+      <if test="jgxtlb != null" >
+        JGXTLB,
+      </if>
+      <if test="fwqljzt != null" >
+        FWQLJZT,
+      </if>
+      <if test="fwqcwms != null" >
+        FWQCWMS,
+      </if>
+      <if test="sjkljzt != null" >
+        SJKLJZT,
+      </if>
+      <if test="sjkcwms != null" >
+        SJKCWMS,
+      </if>
+      <if test="zlhqfs != null" >
+        ZLHQFS,
+      </if>
+      <if test="khdzt != null" >
+        KHDZT,
+      </if>
+      <if test="khdcwms != null" >
+        KHDCWMS,
+      </if>
+      <if test="zxrzmlzt != null" >
+        ZXRZMLZT,
+      </if>
+      <if test="zxrzcwms != null" >
+        ZXRZCWMS,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="gxsj != null" >
+        GXSJ,
+      </if>
+      <if test="gdrzmlzt != null" >
+        GDRZMLZT,
+      </if>
+      <if test="gdrzcwms != null" >
+        GDRZCWMS,
+      </if>
+      <if test="clyxzt != null" >
+        CLYXZT,
+      </if>
+      <if test="zlyxzt != null" >
+        ZLYXZT,
+      </if>
+      <if test="sbzt != null" >
+        SBZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        #{babh,jdbcType=VARCHAR},
+      </if>
+      <if test="jgxtlb != null" >
+        #{jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="fwqljzt != null" >
+        #{fwqljzt,jdbcType=VARCHAR},
+      </if>
+      <if test="fwqcwms != null" >
+        #{fwqcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="sjkljzt != null" >
+        #{sjkljzt,jdbcType=CHAR},
+      </if>
+      <if test="sjkcwms != null" >
+        #{sjkcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="zlhqfs != null" >
+        #{zlhqfs,jdbcType=CHAR},
+      </if>
+      <if test="khdzt != null" >
+        #{khdzt,jdbcType=CHAR},
+      </if>
+      <if test="khdcwms != null" >
+        #{khdcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="zxrzmlzt != null" >
+        #{zxrzmlzt,jdbcType=CHAR},
+      </if>
+      <if test="zxrzcwms != null" >
+        #{zxrzcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="gxsj != null" >
+        #{gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gdrzmlzt != null" >
+        #{gdrzmlzt,jdbcType=CHAR},
+      </if>
+      <if test="gdrzcwms != null" >
+        #{gdrzcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="clyxzt != null" >
+        #{clyxzt,jdbcType=CHAR},
+      </if>
+      <if test="zlyxzt != null" >
+        #{zlyxzt,jdbcType=CHAR},
+      </if>
+      <if test="sbzt != null" >
+        #{sbzt,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.CjrjyxztExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.CJRJYXZT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.CJRJYXZT
+    <set >
+      <if test="record.babh != null" >
+        BABH = #{record.babh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jgxtlb != null" >
+        JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fwqljzt != null" >
+        FWQLJZT = #{record.fwqljzt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fwqcwms != null" >
+        FWQCWMS = #{record.fwqcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sjkljzt != null" >
+        SJKLJZT = #{record.sjkljzt,jdbcType=CHAR},
+      </if>
+      <if test="record.sjkcwms != null" >
+        SJKCWMS = #{record.sjkcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.zlhqfs != null" >
+        ZLHQFS = #{record.zlhqfs,jdbcType=CHAR},
+      </if>
+      <if test="record.khdzt != null" >
+        KHDZT = #{record.khdzt,jdbcType=CHAR},
+      </if>
+      <if test="record.khdcwms != null" >
+        KHDCWMS = #{record.khdcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.zxrzmlzt != null" >
+        ZXRZMLZT = #{record.zxrzmlzt,jdbcType=CHAR},
+      </if>
+      <if test="record.zxrzcwms != null" >
+        ZXRZCWMS = #{record.zxrzcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.gxsj != null" >
+        GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.gdrzmlzt != null" >
+        GDRZMLZT = #{record.gdrzmlzt,jdbcType=CHAR},
+      </if>
+      <if test="record.gdrzcwms != null" >
+        GDRZCWMS = #{record.gdrzcwms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.clyxzt != null" >
+        CLYXZT = #{record.clyxzt,jdbcType=CHAR},
+      </if>
+      <if test="record.zlyxzt != null" >
+        ZLYXZT = #{record.zlyxzt,jdbcType=CHAR},
+      </if>
+      <if test="record.sbzt != null" >
+        SBZT = #{record.sbzt,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.CJRJYXZT
+    set BABH = #{record.babh,jdbcType=VARCHAR},
+      JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      FWQLJZT = #{record.fwqljzt,jdbcType=VARCHAR},
+      FWQCWMS = #{record.fwqcwms,jdbcType=VARCHAR},
+      SJKLJZT = #{record.sjkljzt,jdbcType=CHAR},
+      SJKCWMS = #{record.sjkcwms,jdbcType=VARCHAR},
+      ZLHQFS = #{record.zlhqfs,jdbcType=CHAR},
+      KHDZT = #{record.khdzt,jdbcType=CHAR},
+      KHDCWMS = #{record.khdcwms,jdbcType=VARCHAR},
+      ZXRZMLZT = #{record.zxrzmlzt,jdbcType=CHAR},
+      ZXRZCWMS = #{record.zxrzcwms,jdbcType=VARCHAR},
+      ID = #{record.id,jdbcType=DECIMAL},
+      GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      GDRZMLZT = #{record.gdrzmlzt,jdbcType=CHAR},
+      GDRZCWMS = #{record.gdrzcwms,jdbcType=VARCHAR},
+      CLYXZT = #{record.clyxzt,jdbcType=CHAR},
+      ZLYXZT = #{record.zlyxzt,jdbcType=CHAR},
+      SBZT = #{record.sbzt,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

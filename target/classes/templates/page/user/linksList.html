@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>授权信息</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="../../../static/layui/css/layui.css" />
+</head>
+<body class="childrenBody">
+<div class="layui-main">
+	<form class="layui-form" id="FilingForm" method="post" style="margin-top: 30px;margin-left: 20px;margin-right: 50px">
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width: 110px">备案编号：</label>
+			<div class="layui-input-block">
+				<input type="text" id="filingNumber" name="filingNumber" lay-verify="title" autocomplete="off" placeholder="请输入备案编号..." class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width: 110px">接口序列号：</label>
+			<div class="layui-input-block">
+				<input type="text" id="interfaceSerialNum" name="interfaceSerialNum" lay-verify="title" autocomplete="off" placeholder="请输入序列号..." class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width: 110px">安管系统IP：</label>
+			<div class="layui-input-block">
+				<input type="text" id="activeStandbyIp" name="activeStandbyIp" lay-verify="title" autocomplete="off" placeholder="请输入主备IP..." class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width: 110px">mac地址：</label>
+			<div class="layui-input-block">
+				<input type="text" id="macAddress" name="macAddress" lay-verify="title" autocomplete="off" placeholder="请输入mac地址..." class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width: 110px">接口端口：</label>
+			<div class="layui-input-block">
+				<input type="text" id="port" name="port" lay-verify="title" autocomplete="off" placeholder="请输入端口..." class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				<button type="button" class="layui-btn" id="alter" onclick="update()">确认修改</button>
+				<button type="button" class="layui-btn" id="qj" onclick="qjcs()">获取全局参数</button>
+				<button type="button" class="layui-btn" id="db" onclick="dbcs()">获取单表参数</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!--<div class="layui-form links_list">
+	<table id="linkTable" lay-filter="linkEvent"></table>
+</div>-->
+<!--<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>-->
+<script type="text/javascript" src="../../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../../static/layui/layui.all.js"></script>
+<script type="text/javascript">
+    layui.use(['table','form'],function () {
+        var table = layui.table
+            , form = layui.form;
+        $(document).ready(function () {
+            //页面加载访问后端请求数据;
+            $.ajax({
+                type: "POST",		//POST_GET
+                url: "/ControlManager/baBhController/selAllBaBh",	//访问路径(后端返回对象,现在有个查询全部的方法   可以改一下)
+                dataType: "json",
+                success: function (data) {
+                	$("#filingNumber").val(data.ba.babh);
+                	$("#interfaceSerialNum").val(data.ba.jkxlh);
+                	$("#activeStandbyIp").val(data.ba.ip);
+                	$("#macAddress").val(data.ba.mac);
+                	$("#port").val(data.ba.port);
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        });
+
+    });
+        function update() {
+            //获取参数
+            var filingNumber = $("#filingNumber").val();
+            var interfaceSerialNum = $("#interfaceSerialNum").val();
+            var activeStandbyIp = $("#activeStandbyIp").val();
+            var macAddress = $("#macAddress").val();
+            var port = $("#port").val();
+            if (filingNumber == "" || interfaceSerialNum == "" || activeStandbyIp == "" || port == "" || macAddress == "") {
+                //提示层
+                layer.msg("请补全需要填写的参数...");
+                $("#filingNumber").focus();
+            } else {
+                $.ajax({
+                    type: "POST",		//POST_GET
+                    url: "/ControlManager/baBhController/insBaBh",	//访问路径(修改的Controller路径直接接收对象就行,日期在后端修改,添加备案那个方法里有获取日期的)
+                    data: {
+                        "filingNumber": filingNumber
+                        , "interfaceSerialNum": interfaceSerialNum
+                        , "activeStandbyIp": activeStandbyIp
+                        , "port": port
+                        , "macAddress": macAddress
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        //依据code值判定 0_失败 1.成功;
+                        if (data.code == "0") {
+                            layer.msg("执行失败...");
+                        } else if (data.code == "1") {
+                            layer.closeAll("执行成功...");
+                        } else {
+                            layer.msg("发生某种异常,执行失败...");
+                        }
+                    }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                    }
+                });
+            }
+        }
+    //全局
+    function qjcs(){
+    	$.ajax({
+            type: "GET",		//POST_GET
+            url: "/ControlManager/baBhController/queryQJparams",	//访问路径(修改的Controller路径直接接收对象就行,日期在后端修改,添加备案那个方法里有获取日期的)
+            dataType: "json",
+            success: function (data) {
+                console.log(data.code);
+                alert(data.code);
+                //依据code值判定 0_失败 1.成功;
+                if (data.code == 1) {
+                    layer.msg("执行失败...")
+                } else if (data.code == 0) {
+                    layer.msg("执行成功...")
+                } else {
+                    layer.msg("发生某种异常,执行失败...")
+                }
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                //alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+            }
+        });
+    }
+    //单表querySingleParams
+    function dbcs(){
+    	$.ajax({
+            type: "GET",		//POST_GET
+            url: "/ControlManager/baBhController/querySingleParams",	//访问路径(修改的Controller路径直接接收对象就行,日期在后端修改,添加备案那个方法里有获取日期的)
+            dataType: "json",
+            success: function (data) {
+                //依据code值判定 0_失败 1.成功;
+                if (data.code == 1) {
+                    layer.msg("执行失败...")
+                } else if (data.code == 0) {
+                    layer.msg("执行成功...")
+                } else {
+                    layer.msg("发生某种异常,执行失败...")
+                }
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                //alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+            }
+        });
+    }
+</script>
+</body>
+</html>

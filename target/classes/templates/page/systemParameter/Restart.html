@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>服务重启</title>
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" media="all" />
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="site-content">
+    <blockquote class="layui-elem-quote">
+        服务重启项
+    </blockquote>
+    <div class="layui-btn layui-btn-fluid" id="restartService" onclick="restartService()">重启服务</div>
+</div>
+
+
+<script type="text/javascript" src="../../../static/layui/layui.all.js"></script>
+<script type="text/javascript" src="../../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+    /*重启服务*/
+    function restartService() {
+        layer.confirm('您确定要重启么？', {
+            btn: ['确定','取消'] //按钮(给出提示信息，给用户友好的操作)
+        }, function(){
+            //预期跳转controller层进行操作
+            layer.msg('待完善后端代码后可用功能...', {icon: 7});
+            $.ajax({
+                type: "POST",        //POST_GET
+                url: "",    //访问路径
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data.code);    //接收后端的code编码
+                    console.log(data.msg);    //接收后端的msg
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        }, function(){
+            layer.msg('取消重启操作', {icon: 6});
+        });
+    };
+</script>
+</body>
+</html>

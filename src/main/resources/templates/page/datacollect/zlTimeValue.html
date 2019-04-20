@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>增量默认采集时间</title>
+
+    <!--<link rel="stylesheet" href="layui/css/layui.css">-->
+
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css"/>
+
+</head>
+<body>
+<blockquote class="site-text layui-elem-quote" style="margin-top: 10px">
+    用于修改增量采集的周期
+</blockquote>
+<form class="layui-form" action="" style="margin-top: 50px;border: 1px solid #eee;">
+    <div class="layui-form-item" style="margin-top: 20px">
+        <label class="layui-form-label">选择时间:</label>
+        <div class="layui-inline">
+            <select id="city" name="city" lay-verify="required">
+                <option value="0">请选择时间</option>
+                <option value="10">10分钟</option>
+                <option value="20">20分钟</option>
+                <option value="30">30分钟</option>
+                <option value="40">40分钟</option>
+                <option value="50">50分钟</option>
+                <option value="60">60分钟</option>
+            </select>
+        </div>
+    </div>
+    <div id="dataSubmit"  class="layui-btn" style="margin-left: 300px;margin-top: 30px;margin-bottom: 20px">提交</div>
+</form>
+
+<script type="text/javascript" src="../../../static/layui/layui.all.js"></script>
+<script type="text/javascript" src="../../../static/js/jquery-3.1.1.min.js"></script>
+<!--<script type="text/javascript" src="layui/layui.all.js"></script>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>-->
+<script type="text/javascript">
+    layui.use(['form','table','layer'],function () {
+            var form = layui.form
+                , table = layui.table
+                , layer = layui.layer;
+
+            $("#dataSubmit").click(function () {
+                var timeValues = $("#city").val();
+                layer.msg(timeValues);
+                if (timeValues==0){
+                    layer.msg("请在下拉框中选择时间...")
+                } else{
+                    layer.msg("√");
+                    $.ajax({
+                        type: "POST",		//POST_GET
+                        url: "/ControlManager/logParameterController/alterZLMRCJZQ",	//访问路径
+                        data: {"timeValues": timeValues},
+                        dataType: "json",
+                        success: function (data) {
+                            alert("修改成功");
+                        },error: function(XMLHttpRequest, textStatus, errorThrown){
+                            alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                            location.href = "templates/page/500";
+                        }
+                    });
+                }
+
+            });
+    });
+</script>
+
+</body>
+</html>

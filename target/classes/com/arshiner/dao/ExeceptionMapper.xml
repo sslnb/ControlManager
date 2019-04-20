@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.ExeceptionMapper">
+	<resultMap id="BaseResultMap" type="com.arshiner.model.Exeception">
+		<id column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="JGXTLB" property="jgxtlb" jdbcType="VARCHAR" />
+		<result column="JOBNAME" property="jobname" jdbcType="VARCHAR" />
+		<result column="DESCIPTION" property="desciption" jdbcType="VARCHAR" />
+		<result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		ID, JGXTLB, JOBNAME, DESCIPTION, CREATETIME
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.arshiner.model.ExeceptionExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from ADTMGR.EXECEPTION
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.math.BigDecimal">
+		select
+		<include refid="Base_Column_List" />
+		from ADTMGR.EXECEPTION
+		where ID = #{id,jdbcType=DECIMAL}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal">
+		delete from ADTMGR.EXECEPTION
+		where ID = #{id,jdbcType=DECIMAL}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.arshiner.model.ExeceptionExample">
+		delete from ADTMGR.EXECEPTION
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.arshiner.model.Exeception">
+		insert into ADTMGR.EXECEPTION (ID, JGXTLB, JOBNAME,
+		DESCIPTION, CREATETIME)
+		values (#{id,jdbcType=DECIMAL}, #{jgxtlb,jdbcType=VARCHAR},
+		#{jobname,jdbcType=VARCHAR},
+		#{desciption,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.arshiner.model.Exeception">
+		insert into ADTMGR.EXECEPTION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="jgxtlb != null">
+				JGXTLB,
+			</if>
+			<if test="jobname != null">
+				JOBNAME,
+			</if>
+			<if test="desciption != null">
+				DESCIPTION,
+			</if>
+			<if test="createtime != null">
+				CREATETIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=DECIMAL},
+			</if>
+			<if test="jgxtlb != null">
+				#{jgxtlb,jdbcType=VARCHAR},
+			</if>
+			<if test="jobname != null">
+				#{jobname,jdbcType=VARCHAR},
+			</if>
+			<if test="desciption != null">
+				#{desciption,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.arshiner.model.ExeceptionExample"
+		resultType="java.lang.Integer">
+		select count(*) from ADTMGR.EXECEPTION
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update ADTMGR.EXECEPTION
+		<set>
+			<if test="record.id != null">
+				ID = #{record.id,jdbcType=DECIMAL},
+			</if>
+			<if test="record.jgxtlb != null">
+				JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+			</if>
+			<if test="record.jobname != null">
+				JOBNAME = #{record.jobname,jdbcType=VARCHAR},
+			</if>
+			<if test="record.desciption != null">
+				DESCIPTION = #{record.desciption,jdbcType=VARCHAR},
+			</if>
+			<if test="record.createtime != null">
+				CREATETIME = #{record.createtime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update ADTMGR.EXECEPTION
+		set ID = #{record.id,jdbcType=DECIMAL},
+		JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+		JOBNAME = #{record.jobname,jdbcType=VARCHAR},
+		DESCIPTION = #{record.desciption,jdbcType=VARCHAR},
+		CREATETIME = #{record.createtime,jdbcType=TIMESTAMP}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.arshiner.model.Exeception">
+		update ADTMGR.EXECEPTION
+		<set>
+			<if test="jgxtlb != null">
+				JGXTLB = #{jgxtlb,jdbcType=VARCHAR},
+			</if>
+			<if test="jobname != null">
+				JOBNAME = #{jobname,jdbcType=VARCHAR},
+			</if>
+			<if test="desciption != null">
+				DESCIPTION = #{desciption,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=DECIMAL}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.arshiner.model.Exeception">
+		update ADTMGR.EXECEPTION
+		set JGXTLB = #{jgxtlb,jdbcType=VARCHAR},
+		JOBNAME = #{jobname,jdbcType=VARCHAR},
+		DESCIPTION = #{desciption,jdbcType=VARCHAR},
+		CREATETIME = #{createtime,jdbcType=TIMESTAMP}
+		where ID = #{id,jdbcType=DECIMAL}
+	</update>
+	<select id="selAllExeception" resultType="com.arshiner.model.Exeception">
+		SELECT * FROM (SELECT ROWNUM nums,u.* FROM EXECEPTION u) WHERE nums &gt;=
+		#{before} AND nums &lt;= #{after}
+	</select>
+
+	<select id="countExeception" resultType="Integer">
+		select count(*) from EXECEPTION
+	</select>
+
+	<select id="haveSelExeception" resultType="com.arshiner.model.Exeception">
+		SELECT * FROM (SELECT ROWNUM nums,u.* FROM EXECEPTION u WHERE JGXTLB = #{sel_1}) WHERE nums &gt;=
+		#{before} AND nums &lt;= #{after}  
+	</select>
+
+	<select id="haveCountExeception" resultType="Integer">
+		select count(*) from EXECEPTION where JGXTLB = #{sel_1}
+	</select>
+</mapper>

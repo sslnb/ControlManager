@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.CjrjxtMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.Cjrjxt" >
+    <result column="BABH" property="babh" jdbcType="VARCHAR" />
+    <result column="SBZQ" property="sbzq" jdbcType="VARCHAR" />
+    <result column="CPUSYL" property="cpusyl" jdbcType="DECIMAL" />
+    <result column="NCSYL" property="ncsyl" jdbcType="DECIMAL" />
+    <result column="CPSYL" property="cpsyl" jdbcType="DECIMAL" />
+    <result column="XTFZ" property="xtfz" jdbcType="DECIMAL" />
+    <result column="GXSJ" property="gxsj" jdbcType="TIMESTAMP" />
+    <result column="SBZT" property="sbzt" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    BABH, SBZQ, CPUSYL, NCSYL, CPSYL, XTFZ, GXSJ, SBZT
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.CjrjxtExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.CJRJXT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.CjrjxtExample" >
+    delete from ADTMGR.CJRJXT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.Cjrjxt" >
+    insert into ADTMGR.CJRJXT (BABH, SBZQ, CPUSYL, 
+      NCSYL, CPSYL, XTFZ, 
+      GXSJ, SBZT)
+    values (#{babh,jdbcType=VARCHAR}, #{sbzq,jdbcType=VARCHAR}, #{cpusyl,jdbcType=DECIMAL}, 
+      #{ncsyl,jdbcType=DECIMAL}, #{cpsyl,jdbcType=DECIMAL}, #{xtfz,jdbcType=DECIMAL}, 
+      #{gxsj,jdbcType=TIMESTAMP}, #{sbzt,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.Cjrjxt" >
+    insert into ADTMGR.CJRJXT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        BABH,
+      </if>
+      <if test="sbzq != null" >
+        SBZQ,
+      </if>
+      <if test="cpusyl != null" >
+        CPUSYL,
+      </if>
+      <if test="ncsyl != null" >
+        NCSYL,
+      </if>
+      <if test="cpsyl != null" >
+        CPSYL,
+      </if>
+      <if test="xtfz != null" >
+        XTFZ,
+      </if>
+      <if test="gxsj != null" >
+        GXSJ,
+      </if>
+      <if test="sbzt != null" >
+        SBZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="babh != null" >
+        #{babh,jdbcType=VARCHAR},
+      </if>
+      <if test="sbzq != null" >
+        #{sbzq,jdbcType=VARCHAR},
+      </if>
+      <if test="cpusyl != null" >
+        #{cpusyl,jdbcType=DECIMAL},
+      </if>
+      <if test="ncsyl != null" >
+        #{ncsyl,jdbcType=DECIMAL},
+      </if>
+      <if test="cpsyl != null" >
+        #{cpsyl,jdbcType=DECIMAL},
+      </if>
+      <if test="xtfz != null" >
+        #{xtfz,jdbcType=DECIMAL},
+      </if>
+      <if test="gxsj != null" >
+        #{gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sbzt != null" >
+        #{sbzt,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.CjrjxtExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.CJRJXT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.CJRJXT
+    <set >
+      <if test="record.babh != null" >
+        BABH = #{record.babh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sbzq != null" >
+        SBZQ = #{record.sbzq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cpusyl != null" >
+        CPUSYL = #{record.cpusyl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ncsyl != null" >
+        NCSYL = #{record.ncsyl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cpsyl != null" >
+        CPSYL = #{record.cpsyl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.xtfz != null" >
+        XTFZ = #{record.xtfz,jdbcType=DECIMAL},
+      </if>
+      <if test="record.gxsj != null" >
+        GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.sbzt != null" >
+        SBZT = #{record.sbzt,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.CJRJXT
+    set BABH = #{record.babh,jdbcType=VARCHAR},
+      SBZQ = #{record.sbzq,jdbcType=VARCHAR},
+      CPUSYL = #{record.cpusyl,jdbcType=DECIMAL},
+      NCSYL = #{record.ncsyl,jdbcType=DECIMAL},
+      CPSYL = #{record.cpsyl,jdbcType=DECIMAL},
+      XTFZ = #{record.xtfz,jdbcType=DECIMAL},
+      GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      SBZT = #{record.sbzt,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

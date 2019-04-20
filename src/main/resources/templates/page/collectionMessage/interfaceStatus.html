@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>接口状态</title>
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css">
+</head>
+<body>
+
+<div class="layui-form">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>接口连接状态</legend>
+    </fieldset>
+    <table id="interfaceTable" class="layui-table"></table>
+</div>
+<script type="text/javascript" src="../../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../../static/layui/layui.all.js"></script>
+<script type="text/javascript">
+    layui.use('table',function () {
+        var table = layui.table;
+
+        /*渲染接口,在Controller层获取展示数据*/
+        var interfaceTableInit = table.render({
+            elem:'#interfaceTable'
+            ,url:'/ControlManager/dbconProController/selRDSInfo'
+            ,cols: [[
+                {type:'numbers',title:'ID',width:'12%',aling:'center'}
+                ,{field: 'jkid', title: '接口标识', width:'22%',align:'center'}
+                ,{field: 'jkmc', title: '接口名称', width:'22%',align:'center'}
+                ,{field: 'str', title: '返回值', width:'22%',align:'center',templet:function (d) {
+                        if (d.str==""||d.str==null){
+                            return "空";
+                        }else{
+                            return d.str;
+                        }
+                    }}
+                ,{field: 'jkstatus', title: '接口状态', width:'22%',align:'center'}
+            ]],  done: function(res, curr, count){
+                //layer.msg("数据加载完成...")
+            }
+        });
+    });
+</script>
+</body>
+</html>

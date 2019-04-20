@@ -1,0 +1,141 @@
+[
+	{
+		"title": "后台首页",
+		"icon": "&#xe68e;",
+		"href": "templates/page/main.html",
+		"spread": false
+	},
+	{
+		"title": "查看授权",
+		"icon": "&#xe672;",
+		"href": "templates/page/user/linksList.html",
+		"spread": false
+	},
+	{
+		"title": "用户列表",
+		"icon": "&#xe612;",
+		"href": "templates/page/user/userList.html",
+		"spread": false
+	},
+	{
+		"title": "任务管理",
+		"icon": "&#xe631;",
+		"href": "",
+		"spread": false,
+		"children": [
+			{
+				"title": "任务信息",
+				"icon": "&#xe60a;",
+				"href": "templates/page/collectionMessage/taskManager.html",
+				"spread": false
+			},
+			{
+				"title": "日志采集全局参数",
+				"icon": "&#xe60b;",
+				"href": "templates/page/collectionMessage/logParameter.html",
+				"spread": false
+			},
+			{
+				"title": "单表日志采集参数",
+				"icon": "&#xe60b;",
+				"href": "templates/page/collectionMessage/SingleTable.html",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "配置管理",
+		"icon": "&#xe716;",
+		"href": "",
+		"spread": false,
+		"children": [
+			{
+				"title": "目标数据库连接配置",
+				"icon": "&#xe620;",
+				"href": "templates/page/datacollect/aimsData.html",
+				"spread": false
+			},
+			{
+				"title":"主备热备配置",
+				"icon":"&#xe620",
+				"href":"templates/page/datacollect/activeAndStandby.html",
+				"spread":false
+			}
+		]
+	},
+	{
+		"title": "数据采集监控",
+		"icon": "&#xe60e;",
+		"href": "",
+		"spread": false,
+		"children": [
+			{
+				"title": "存量文件",
+				"icon": "&#xe655;",
+				"href": "templates/page/collectionMessage/clFileInfo.html",
+				"spread": false
+			},
+			{
+				"title": "增量文件",
+				"icon": "&#xe655;",
+				"href": "templates/page/collectionMessage/zlFileInfo.html",
+				"spread": false
+			},
+			{
+				"title": "数据审计",
+				"icon": "&#xe6b2;",
+				"href": "templates/page/datacollect/data-audit.html",
+				"spread": false
+			},
+			{
+				"title": "存量数据采集状态",
+				"icon": "&#xe62c;",
+				"href": "templates/page/collectionMessage/StockdataCollStatus.html",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "系统监控",
+		"icon": "&#xe628;",
+		"href": "templates/page/404.html",
+		"spread": false,
+		"children": [
+			{
+				"title": "系统信息",
+				"icon": "&#xe631;",
+				"href": "templates/page/systemParameter/systemParameter.html",
+				"spread": false
+			},
+			{
+				"title":"接口状态",
+				"icon":"&#xe674",
+				"href":"templates/page/collectionMessage/interfaceStatus.html"
+			},
+			{
+				"title": "连接信息",
+				"icon": "&#xe64c;",
+				"href": "templates/page/systemParameter/connStatus.html",
+				"spread": false
+			},
+			{
+				"title": "软件心跳",
+				"icon": "&#xe62c;",
+				"href": "templates/page/systemParameter/soft_heartbeat.html",
+				"spread": false
+			},
+			{
+				"title": "异常信息",
+				"icon": "&#xe60e;",
+				"href": "templates/page/systemParameter/exceptionInfo.html",
+				"spread": false
+			},
+			{
+				"title": "服务重启",
+				"icon": "&#xe669;",
+				"href": "templates/page/systemParameter/Restart.html",
+				"spread": false
+			}
+		]
+	}
+]

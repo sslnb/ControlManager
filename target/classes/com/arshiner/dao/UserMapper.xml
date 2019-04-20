@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--suppress ALL -->
+<mapper namespace="com.arshiner.dao.UserMapper" >
+
+  <!--登陆sql-->
+  <select id="loginUser" resultType="com.arshiner.model.UserDomain">
+        select * from userinfo where userCode = #{userCode}
+    </select>
+
+  <!--判定身份-->
+  <select id="judgeAdmin" resultType="com.arshiner.model.UserDomain">
+        select * from userinfo where userCode = #{userCode}
+    </select>
+
+  <!--添加用户-->
+  <insert id="addUser" parameterType="com.arshiner.model.UserDomain">
+        insert into userinfo (userCode,userPass,userRole) values (#{userCode},#{userPass},#{userRole})
+    </insert>
+
+  <!--用于判定是否存在相同用户-->
+  <select id="selUserCode" resultType="Integer" >
+        select count (*) from userinfo where userCode = #{userCode}
+    </select>
+
+  <!--删除用户-->
+  <delete id="delUser">
+        delete from userinfo where userId = #{userId}
+    </delete>
+
+  <!--查询全部用户()-->
+  <select id="selAllUserInfo" resultType="com.arshiner.model.UserDomain">
+      SELECT * FROM (SELECT ROWNUM nums,u.* FROM userinfo u) WHERE nums &gt;= #{before} AND nums &lt;= #{after}
+  </select>
+
+    <!--查询全部用户(带模糊查询)-->
+    <select id="selAllUserInfoByName" resultType="com.arshiner.model.UserDomain">
+      SELECT * FROM (SELECT ROWNUM nums,u.* FROM userinfo u) WHERE nums &gt;= #{before} AND nums &lt;= #{after} and userCode like '%'||#{userCode}||'%'
+    </select>
+
+    <!--查询用户数量(带模糊查询)-->
+    <select id="countUserByName" resultType="Integer">
+      select count(*) from userinfo WHERE userCode like '%'||#{userCode}||'%'
+    </select>
+
+  <!--查询全部用户数量-->
+  <select id="countUser" resultType="Integer">
+        select count(*) from userinfo
+    </select>
+
+  <!--修改密码（可无）-->
+  <update id="updUserPass">
+        update user set userPass = #{newUserPass} where userId = #{userId}
+    </update>
+</mapper>
