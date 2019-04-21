@@ -23,10 +23,11 @@ function tables() {
                 { type:'checkbox',width:'5%'}
                 ,{field:'id',width:'10%',title:'ID'}
                 ,{field:'jobName', title: '任务名', width:'15%',align:'center'}
-                    ,{field:'jobGroup', title: '任务类别', width:'15%',align:'center'}
+                ,{field:'jobGroup', title: '任务类别', width:'10%',align:'center'}
                 ,{field:'jgxtlb', title: '交管系统类别', width:'10%',align:'center'}
                 ,{field:'adzm', title: '安管系统代码', width:'10%',align:'center'}
-                ,{field:'jobStatus', title: '状态', width:'15%',align:'center',templet:function (d) {
+                ,{field:'DESCRIPTION', title: '增量SCN/存量数据量', width:'15%',align:'center'}
+                ,{field:'jobStatus', title: '状态', width:'10%',align:'center',templet:function (d) {
                         if (d.jobStatus=="COMPLETE"){
                             return "已完成";
                         } else if (d.jobStatus=="START") {
@@ -37,7 +38,7 @@ function tables() {
                             return "已停止"
                         }
                     }}
-                ,{field: 'operate', title: '操作',width:'20%',toolbar:'#barDemo',align:'center',templet:'#barDemo'}
+                ,{field: 'operate', title: '操作',width:'15%',toolbar:'#barDemo',align:'center',templet:'#barDemo'}
             ]],  done: function(res, curr, count){
                 //layer.msg("数据加载完成...",{icon:1,time:1500})
             }
@@ -115,6 +116,10 @@ layui.use('table', function() {
                     '    <tr>\n' +
                     '        <td>交管系统类别</td>\n' +
                     '        <td>'+undefinedZH(data.jgxtlb)+'</td>\n' +
+                    '    </tr>\n' +
+                    '    <tr>\n' +
+                    '        <td>pdtypename(data.jobGroup)</td>\n' +
+                    '        <td>'+data.description+'</td>\n' +
                     '    </tr>\n' +
                     '    <tr>\n' +
                     '        <td>beanName</td>\n' +
@@ -366,7 +371,16 @@ layui.use('table', function() {
 
 })
 
-
+function pdtypename(str) {
+    if (str=="ZLTASK"){
+        return "增量当前SCN"
+    }
+    else if (str=="CLTASK"){
+        return "存量当前数据量"
+    } else{
+        return "其他类型";
+    }
+}
 
 function ReloadTask() {
     tables();

@@ -485,4 +485,24 @@ public class SystemInfo {
 		System.out.println("用户的当前工作目录：    " + props.getProperty("user.dir"));
 	}
 
+	/*
+	* 用于判定系统异常信息
+	* */
+	public static HashMap<String, Object> writExceptionInfo(){
+		HashMap<String, Object> writMap = new HashMap<>();
+		try {
+			Mem mem = sigar.getMem();
+			File  file = new File(FilePathName.ROOT);
+			CpuPerc cpuperc = sigar.getCpuPerc();
+			writMap.put("mem",Math.ceil(((mem.getUsed() * 100) / mem.getTotal())));
+			writMap.put("dev",Math.ceil((file.getTotalSpace()-file.getFreeSpace())*100/file.getTotalSpace()));
+			writMap.put("cpu", Math.ceil(cpuperc.getCombined()));
+		} catch (SigarException e) {
+			e.printStackTrace();
+		}
+		return writMap;
+	}
+
+
+
 }

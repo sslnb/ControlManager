@@ -110,5 +110,28 @@
 <script type="text/javascript" src="../../static/js/index.js"></script>
 <script type="text/javascript" src="../../static/js/echarts/echarts.min.js"></script>
 <script type="text/javascript" src="../../static/js/main.js"></script>
+<script type="text/javascript">
+
+    setInterval(function (){ 
+        //需要重复执行的函数
+        writExcepTion();
+    },30000);
+    function writExcepTion() {
+        $.ajax({
+            type: "POST",        //POST_GET
+            url: "/ControlManager/sysController/writeExcelTimonInfo",    //访问路径
+            data: {},
+            dataType: "json",
+            success: function(data){
+                console.log(data.code);    //接收后端的code编码
+                console.log(data.msg);    //接收后端的msg
+                if (data.code==1){
+                    //弹出提示
+                    layer.alert(data.msg+"请通知相关人员处理...", {icon: 6});
+                }
+            }
+        })
+    }
+</script>
 </body>
 </html>

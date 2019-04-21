@@ -374,4 +374,9 @@
 	<select id="countWJZL" resultType="java.lang.Integer"  parameterType="java.lang.String">
 	select sum(CJWJS) from  CLSJCLZT  where JGXTLB =#{jgxtlb}
 	</select>
+	<!--后添加 -->
+	<select id="selSjlByBm" resultType="java.lang.Integer">
+		select CJSJZL from CLSJCLZT
+		where bm =#{bm} and JGXTLB = #{jgxtlb};
+	</select>
 </mapper>

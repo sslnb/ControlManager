@@ -2,14 +2,18 @@ package com.arshiner.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.arshiner.common.SystemInfo;
+import com.arshiner.model.Exeception;
 import com.arshiner.model.ScheduleJob;
 import com.arshiner.quartz.service.SchedulerJobService;
+import com.arshiner.service.ExeceptionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,9 +27,12 @@ import java.util.List;
 public class SysController {
 
     @Autowired
+    ExeceptionService   execeptionService;
+    @Autowired
     private SchedulerJobService schedulerJobService;
 
-
+    
+    
     //查询信息
     @ResponseBody
     @RequestMapping("/selSysInfo")
@@ -80,6 +87,56 @@ public class SysController {
         HashMap<String,Object> sysMap = SystemInfo.getSysMap();
         return JSONArray.toJSONString(sysMap);
     }
+    /*
+     * 后添加用于插入系统异常信息
+     * 有异常时反馈前端弹出界面,
+     * 再向异常信息中添加一条记录
+     * */
+     @ResponseBody
+     @RequestMapping("/writeExcelTimonInfo")
+     public Object writeExcelTimonInfo(){
+         HashMap<String,Object> writMan = new HashMap<>();
+         HashMap<String,Object> heartMap = SystemInfo.writExceptionInfo();
+         double mem = Double.parseDouble(heartMap.get("mem").toString());
+         double dev = Double.parseDouble(heartMap.get("dev").toString());
+         double cpu = Double.parseDouble(heartMap.get("cpu").toString());
+        /* SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+         System.out.println(df.format(new Date()));// new Date()为获取当前系统时间*/
+         if(mem>90){
+             String memInfo = "内存使用率超过90%";
+             Exeception exception = new Exeception();
+             exception.setDesciption(memInfo);
+             exception.setJobname("error");
+             //当前系统时间,Timestamp类型
+             exception.setCreatetime(new Timestamp(System.currentTimeMillis()));
+             execeptionService.insertSelective(exception);
+             writMan.put("code",1);
+             writMan.put("msg",memInfo);
+         }
+         if (dev>90){
+             String devInfo = "磁盘使用率超过90%";
+             Exeception exception = new Exeception();
+             exception.setDesciption(devInfo);
+             exception.setJobname("error");
+             //当前系统时间,Timestamp类型
+             exception.setCreatetime(new Timestamp(System.currentTimeMillis()));
+             execeptionService.insertSelective(exception);
+             writMan.put("code",1);
+             writMan.put("msg",devInfo);
+         }
+         if (cpu>90){
+             String couInfo = "cpu使用率超过90%";
+             Exeception exception = new Exeception();
+             exception.setDesciption(couInfo);
+             exception.setJobname("error");
+             //当前系统时间,Timestamp类型
+             exception.setCreatetime(new Timestamp(System.currentTimeMillis()));
+             execeptionService.insertSelective(exception);
+             writMan.put("code",1);
+             writMan.put("msg",couInfo);
+         }
+         return JSONArray.toJSONString(writMan);
+     }
 
 /*    @ResponseBody
     @RequestMapping("/dynamicLoadLine")

@@ -184,4 +184,9 @@ public class ClsjclztServiceImpl implements ClsjclztService {
 		example.createCriteria().andJgxtlbEqualTo(clzt.getJgxtlb());
 		return clsjclztMapper.selectByExample(example);
 	}
+	@Override
+	public int selSjlByBm(String bm, String jbxtlb) {
+		return clsjclztMapper.selSjlByBm(bm,jbxtlb);
+	}
+
 }

@@ -13,6 +13,7 @@ import com.arshiner.quartz.service.ScheduleJobInService;
 import com.arshiner.quartz.service.SchedulerJobService;
 import com.arshiner.quartz.util.Message;
 import com.arshiner.service.AgentService;
+import com.arshiner.service.ClsjclztService;
 import com.arshiner.service.ScntotimeService;
 import com.arshiner.service.ZlsjddbService;
 
@@ -55,7 +56,9 @@ public class JobController {
 	AgentService agentService;
 	@Autowired
 	ZlsjddbService zlsjddbService;
-
+	@Autowired
+	ClsjclztService clsjclztService;
+	
 	/*
 	 * 查询所有任务(分页)
 	 */
@@ -67,6 +70,29 @@ public class JobController {
 		int before = limit * (page - 1) + 1;
 		int after = page * limit;
 		List<ScheduleJob> jobList = schedulerJobService.selAllScheduleJob(before, after);
+		/*需要增加存量 任务任务当前采集到的数据量,增量解析到的当前scn号显示*/
+		if (jobList.size()==0){
+			//证明为空,不进行操作
+			System.out.println("无可用信息...");
+		}else{
+			for (int i = 0; i<jobList.size();i++){
+				if (jobList.get(i).getJobGroup()=="ZLTASK"){
+					//增量任务时,根据交管系统类别,查询当前增量的scn号
+					String jgxtlb_zl = jobList.get(i).getJgxtlb();
+					String addInfo = zlsjddbService.selScnByJgxt(jgxtlb_zl);	//得到scn号,放入List集合中,标识zlScn
+					/*数据库中需要添加字段,暂定(可以选用没有用处的空列)*/
+					jobList.get(i).setDescription(addInfo);
+				}else if (jobList.get(i).getJobGroup()=="CLTASK"){
+					//存量任务,查询当前采集到的数据量(根据)
+					String jgxtlb_cl = jobList.get(i).getJgxtlb();
+					String bm = jobList.get(i).getBm();
+					int zlSjl = clsjclztService.selSjlByBm(bm,jgxtlb_cl);
+					jobList.get(i).setDescription(String.valueOf(zlSjl));
+				}else{
+					jobList.get(i).setDescription("无此类信息");
+				}
+			}
+		}
 		/*
 		 * for (int i = 0; i<jobList.size();i++){
 		 * System.out.println(jobList.get(i).getId());
@@ -84,7 +110,7 @@ public class JobController {
 		jobInfoMap.put("data", arry);
 		return JSONArray.toJSONString(jobInfoMap);
 	}
-
+	
 	/**
 	 * 获取所有的任务
 	 * 

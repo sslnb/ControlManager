@@ -49,4 +49,7 @@ public interface ClsjclztService {
 	List<Clsjclzt> selectByCJZTStatus(Clsjclzt record);
 	List<Clsjclzt> selectBysbzt(Clsjclzt clsjclzt);
 	List<Clsjclzt> selectByJgxtlb(Clsjclzt clzt);
+	/*后添加*/
+	/*添加方法,用于查询当前数据量*/
+	int selSjlByBm(String bm,String jbxtlb);
 }

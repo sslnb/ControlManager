@@ -91,5 +91,9 @@ public class ZlsjddbServiceImpl implements ZlsjddbService {
 	public BigDecimal selectNewSeq(String jgxtlb) {
 		return zlsjddbMapper.selectNewseq(jgxtlb);
 	}
+	@Override
+	public String selScnByJgxt(String jgxtlb) {
+		return zlsjddbMapper.selScnByJgxt(jgxtlb);
+	}
 
 }

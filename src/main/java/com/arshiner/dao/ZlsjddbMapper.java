@@ -24,4 +24,6 @@ public interface ZlsjddbMapper {
     
    //
    BigDecimal selectNewseq(@Param("jgxtlb") String jgxtlb);
+   /*查询当前Scn*/
+	 String selScnByJgxt(String jgxtlb);
 }

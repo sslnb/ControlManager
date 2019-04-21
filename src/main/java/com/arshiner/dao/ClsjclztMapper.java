@@ -34,4 +34,7 @@ public interface ClsjclztMapper {
     List<Clsjclzt> selClsjclztByParam(@Param("before") int before, @Param("after") int after,@Param("param1")String param1,@Param("param2")String param2);
 
     int countClsjclztByParam(@Param("param1")String param1,@Param("param2")String param2);
+    /*后添加*/
+    /*添加方法,用于查询当前数据量*/
+    int selSjlByBm(String bm,String jbxtlb);
 }

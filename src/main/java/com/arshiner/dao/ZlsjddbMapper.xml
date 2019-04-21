@@ -187,6 +187,9 @@
   <select id="selectNewseq" resultType="java.math.BigDecimal">
       select max(seq)-min(seq) as num  from zlsjddb where jgxtlb=#{jgxtlb}
   </select>
-  
+  <!--新添加,查询当前SCN-->
+  <select id="selScnByJgxt" resultType="java.lang.String">
+      select scn from zlsjddb where jgxtlb=#{jgxtlb}
+  </select>
   
   </mapper>
