@@ -18,6 +18,8 @@ public class Jdbc {
 	public String user;
 	public String pwd;
 	public String url;
+	public String sid;
+	public String port;
     Connection conn = null;
     Statement stmt;
     ResultSet rs = null;
@@ -26,10 +28,12 @@ public class Jdbc {
     	user = config.properties.getProperty("user");
     	pwd = config.properties.getProperty("pwd");
     	url = config.properties.getProperty("url");
+    	sid = config.properties.getProperty("sid");
+    	port = config.properties.getProperty("port");
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
             DriverManager.setLoginTimeout(15);
-            conn = DriverManager.getConnection("jdbc:oracle:thin:@" + url + ":" + "1521" + ":" + "orcl", user, pwd);
+            conn = DriverManager.getConnection("jdbc:oracle:thin:@" + url + ":" + port + ":" + sid, user, pwd);
             stmt = conn.createStatement();
         } catch (Exception e) {
             e.printStackTrace();

@@ -63,7 +63,7 @@ public class JobController {
 	 * 查询所有任务(分页)
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/selAllScheduleJob")
+	@RequestMapping(value = "/selAllScheduleJob",produces = "text/plain;charset=utf-8")
 	public Object selAllScheduleJob(@RequestParam("page") String page1, @RequestParam("limit") String limit1) {
 		int page = Integer.valueOf(page1);
 		int limit = Integer.valueOf(limit1);
@@ -76,17 +76,23 @@ public class JobController {
 			System.out.println("无可用信息...");
 		}else{
 			for (int i = 0; i<jobList.size();i++){
-				if (jobList.get(i).getJobGroup()=="ZLTASK"){
+				if (jobList.get(i).getJobGroup().equals("ZLTASK")){
 					//增量任务时,根据交管系统类别,查询当前增量的scn号
 					String jgxtlb_zl = jobList.get(i).getJgxtlb();
 					String addInfo = zlsjddbService.selScnByJgxt(jgxtlb_zl);	//得到scn号,放入List集合中,标识zlScn
+					if (null==addInfo||"".equals(addInfo)) {
+						addInfo="";
+					}
 					/*数据库中需要添加字段,暂定(可以选用没有用处的空列)*/
 					jobList.get(i).setDescription(addInfo);
-				}else if (jobList.get(i).getJobGroup()=="CLTASK"){
+				}else if (jobList.get(i).getJobGroup().equals("CLTASK")){
 					//存量任务,查询当前采集到的数据量(根据)
 					String jgxtlb_cl = jobList.get(i).getJgxtlb();
 					String bm = jobList.get(i).getBm();
-					int zlSjl = clsjclztService.selSjlByBm(bm,jgxtlb_cl);
+					Integer zlSjl = clsjclztService.selSjlByBm(bm,jgxtlb_cl);
+					if (null==zlSjl) {
+						zlSjl=0;
+					}
 					jobList.get(i).setDescription(String.valueOf(zlSjl));
 				}else{
 					jobList.get(i).setDescription("无此类信息");

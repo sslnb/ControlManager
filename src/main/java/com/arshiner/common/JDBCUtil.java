@@ -818,7 +818,7 @@ public class JDBCUtil {
 		// 注册驱动
 		boolean flag =true;
 		registeredDriver();
-		String URL = "jdbc:oracle:thin:@" + ip + ":" + port + ":" + SID;
+		String URL = "jdbc:oracle:thin:@" + ip + ":" + port + "/" + SID;
 		try {
 			DriverManager.setLoginTimeout(1);
 			con = DriverManager.getConnection(URL, USERNAME, PASSWORD);

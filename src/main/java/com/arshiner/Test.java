@@ -3,6 +3,7 @@ package com.arshiner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -88,9 +89,10 @@ public class Test {
 	 * @param n
 	 * @return
 	 */
-	public static String TenToHex(Long n) {
+	public static String TenToHex(BigDecimal n) {
 		String a;
-		a = Long.toHexString(n);
+		a = Long.toHexString(n.longValue());
+		System.out.println(n.longValue());
 		StringBuilder sb = new StringBuilder(padLeft(a, 12));
 		a = sb.insert(4, '.').insert(0, "0x").toString();
 		return a;
@@ -115,6 +117,12 @@ public class Test {
 	static SimpleDateFormat startEpoch = new SimpleDateFormat("MM/dd/YYYY::hh:mm:ss");
 
 	public static void main(String[] args) throws Exception {
+		
+//		JDBCUtil jdbc = new JDBCUtil("admin_test", "admin_test", "10.2.42.114", "1521", "orcl");
+//		
+//		jdbc.getConnection(true);
+//		jdbc.closeDB();
+//		
 //		File  file = new File(FilePathName.ROOT);
 //		System.out.println(Math.ceil((file.getTotalSpace()-file.getFreeSpace())*100/file.getTotalSpace()));
 //		JDBCUtil jdbc = new JDBCUtil("admin_test", "admin_test", "10.2.42.114", "1521", "orcl");
@@ -138,7 +146,7 @@ public class Test {
 //		// sax.createXMLHead("D:\\0000011000220190327000007", false);
 //		// sax.createXMLEnd(false);
 //		// String scn = "60851739";
-////		 System.out.println(TenToHex((long) 166937419));
+//		 System.out.println(TenToHex(new BigDecimal("15900837936490")));
 //		// System.out.println(startEpoch.format(new Date()));
 //		// AbcUtil.unZipDesFromBase64File("D:\\0000011000220190327000031",
 //		// "D:\\0000011000220190327000031");
@@ -150,8 +158,8 @@ public class Test {
 //				 "D:\\test\\0000011000220190418000051");
 //		 AbcUtil.unZipDesFromBase64File("D:\\test\\0000011000220190418000052",
 //				 "D:\\test\\0000011000220190418000052");
-		 AbcUtil.unZipDesFromBase64File("D:\\test\\0000011000220190419000070",
-				 "D:\\test\\0000011000220190419000070");
+//		 AbcUtil.unZipDesFromBase64File("D:\\test\\6500016000220190425000001",
+//				 "D:\\test\\6500016000220190425000001");
 //		 get();
 //		 TestRestSafeOutAccess rds = TestRestSafeOutAccess.getInstance();
 //		 TestRestSafeOutAccess.rdsStatus();

@@ -23,7 +23,6 @@ public class MyCommandLineRunner implements CommandLineRunner {
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				try {
 					FlashCelueTask.executeF();
 				} catch (JobExecutionException e) {
@@ -33,16 +32,8 @@ public class MyCommandLineRunner implements CommandLineRunner {
 			}
 			
 		};
-//		TimerTask timerTask1 = new TimerTask() {
-//			@Override
-//			public void run() {
-//				FlashCelueTask.removeFile();
-//			}
-//		};
-//		Timer timer1 = new Timer();
-//		timer1.schedule(timerTask1, 10, 120000);
 		Timer timer = new Timer();
-		timer.schedule(timerTask, 10, 5000);
+		timer.schedule(timerTask, 10, 100000);
 		
 	}
 }

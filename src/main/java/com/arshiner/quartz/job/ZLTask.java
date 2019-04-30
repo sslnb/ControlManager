@@ -245,19 +245,30 @@ public class ZLTask implements Job{
 		// 设置系统名称
 		SysResource.setGs_os(SystemInfo.getOS_Name());
 		for (Agent agent2 : agent) {
+			logger.info("Agent1111111111111111111111111========="+agent2.getKip());
 			String jd = buffer.toString() + agent2.getKip() + FilePathName.FileSepeartor;
-			if (pidmap.size() == 0) {
+			if (!pidmap.containsKey(agent2.getKip())) {
 				String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
 						jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
+				logger.info("文件名"+jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
 				pidmap.put(agent2.getKip(), capturePid);
-				logger.info("更新成功");
-			} else if (!SysResource.checkProcess(pidmap.get(agent2.getKip()).toString())) {
-				// 2. 需要启动capture解析日志文件,并获取进程号放入job中
-				String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
-						jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
-				pidmap.put(agent2.getKip(), capturePid);
-			} else {
-				continue;
+			} else{
+				pid= String.valueOf(pidmap.get(agent2.getKip()));
+				if (null!=pid&&!pid.equals("")) {
+					if (!SysResource.checkProcess(pidmap.get(agent2.getKip()).toString())) {
+						// 2. 需要启动capture解析日志文件,并获取进程号放入job中
+						String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
+								jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
+						pidmap.put(agent2.getKip(), capturePid);
+					} else {
+						continue;
+					}
+				}else{
+					String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
+							jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
+					logger.info("文件名"+jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
+					pidmap.put(agent2.getKip(), capturePid);
+				}
 			}
 		}
 		job.setPid(JsonToObject.MapconsvertToJson(pidmap).toJSONString());

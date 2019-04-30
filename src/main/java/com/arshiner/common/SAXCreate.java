@@ -53,6 +53,7 @@ import com.arshiner.service.DbconProService;
 import com.arshiner.service.DbrzcjcsService;
 import com.arshiner.service.ZlsjddbService;
 import com.arshiner.service.ZlsjwjbService;
+import com.tmri.bigdata.util.abc.AbcUtil;
 
 import srv.Decode;
 import srv.LogToOraRecord;
@@ -383,7 +384,6 @@ public class SAXCreate {
 					if (dmlhc.containsKey(dbrzcs.getBm())) {
 						dmlhc.get(dbrzcs.getBm()).add(oraDMLInfo);
 						iterator.remove();
-						logger.info("RedisHic   --------========添加缓存" + dmlhc.get(dbrzcs.getBm()).size());
 					} else {
 						List<OraDMLObject> list = new ArrayList<>();
 						list.add(oraDMLInfo);
@@ -392,7 +392,6 @@ public class SAXCreate {
 						dmlhc.putAll(dmlhcmap);
 						list = null;
 						dmlhcmap = null;
-						logger.info("RedisHic   --========添加缓存" + dmlhc.get(dbrzcs.getBm()).size());
 					}
 					continue;
 				}
@@ -407,12 +406,9 @@ public class SAXCreate {
 						LinkedHashMap<OraTransObject, List<OraDMLObject>> tranhc = new LinkedHashMap<>();
 						tranhc.put(oraTransInfo, entry.getValue());
 						RedisHct.bmhc.put(entry.getKey(), tranhc);
-						System.out.println("此事务中缓存的"+entry.getValue().size());
-						System.out.println("RedisHct.bmhc------11111---1111111------1");
 					}
 				}
 			}
-			System.out.println("RedisHct.bmhc-------一共有几张表缓存---22222222222222-------"+RedisHct.bmhc.size());
 			if (dmllist.isEmpty()
 					||dmlnum>=dmllist.size()
 					) {
@@ -574,12 +570,16 @@ public class SAXCreate {
 	public void createZLXMLEnd(OraRecord oraLogObject) throws IOException {
 		// 关闭
 		// 增量文件关闭
+		if (!documentStatus) {
+			return ;
+		}
 		createXMLEnd(false);
 		try {
 			Zlsjwjb zlsjwjb = new Zlsjwjb();
 			Zlsjddb zlsjddb = new Zlsjddb();
 			zlsjwjb.setJgxtlb(dbConpro.getJgxtlb());
 			zlsjwjb.setWjm(f.getName());
+			AbcUtil.ZipEncToBase64File(f.getAbsolutePath(), f.getAbsolutePath());
 			FileInputStream fis = new FileInputStream(sjk);
 			zlsjwjb.setMd5(DigestUtils.md5Hex(fis));
 			fis.close();
@@ -613,6 +613,7 @@ public class SAXCreate {
 			zlsjwjb.setGxsj(getTime());
 			zlsjwjb.setCwzt("0");
 			zlsjwjb.setSbzt("0");
+			zlsjwjb.setXywjm(getNextZLXMLName(XMLFileName.zlcountMap.get(dbConpro.getJgxtlb())+1));
 			zlsjwjb.setBm("0");
 			zlsjwjbService.saveOrupdate(zlsjwjb);
 			zlsjddb.setJgxtlb(dbConpro.getJgxtlb());
@@ -780,15 +781,21 @@ public class SAXCreate {
 	public void createYCZLXMLEnd(String bm, OraRecord oraLogObject) throws IOException {
 		// 关闭
 		// 增量文件关闭
+		if (!documentStatus) {
+			return ;
+		}
 		createXMLEnd(false);
 		try {
 			Zlsjwjb zlsjwjb = new Zlsjwjb();
 			Zlsjddb zlsjddb = new Zlsjddb();
 			zlsjwjb.setJgxtlb(dbConpro.getJgxtlb());
 			zlsjwjb.setWjm(f.getName());
+			AbcUtil.ZipEncToBase64File(f.getAbsolutePath(), f.getAbsolutePath());
 			FileInputStream fis = new FileInputStream(sjk);
 			zlsjwjb.setMd5(DigestUtils.md5Hex(fis));
 			fis.close();
+			fis=null;
+			zlsjwjb.setXywjm(getNextZLXMLName(XMLFileName.zlcountMap.get(dbConpro.getJgxtlb())+1));
 			zlsjwjb.setWjdx(new BigDecimal(f.length() / 1024));
 			zlsjwjb.setSjlinsert(new BigDecimal(insertCount));
 			zlsjwjb.setSjlupdate(new BigDecimal(updateCount));
@@ -925,6 +932,10 @@ public class SAXCreate {
 				clsjwj.setCwzt("0");
 				clsjwj.setGxsj(getTime());
 				clsjwj.setSbzt("0");
+				AbcUtil.ZipEncToBase64File(f.getAbsolutePath(), f.getAbsolutePath());
+				FileInputStream fip = new FileInputStream(f);
+				clsjwj.setMd5(DigestUtils.md5Hex(fip));
+				fip.close();
 				clsjkdd.setSjkstart(new BigDecimal(rownum));
 				clsjwj.setWjdx(new BigDecimal(f.length() / 1024));
 				clsjwjbService.saveOrupdate(clsjwj);
@@ -972,7 +983,7 @@ public class SAXCreate {
 		return a;
 	}
 
-	public void saxClend(String timeFiedType, String timeFied) throws ParseException {
+	public void saxClend(String timeFiedType, String timeFied) throws Exception {
 		if (documentStatus) {
 			createXMLEnd(true);
 			clsjwj.setWjm(f.getName());
@@ -992,6 +1003,10 @@ public class SAXCreate {
 			clsjwj.setCwzt("0");
 			clsjwj.setGxsj(getTime());
 			clsjwj.setSbzt("0");
+			AbcUtil.ZipEncToBase64File(f.getAbsolutePath(), f.getAbsolutePath());
+			FileInputStream fip = new FileInputStream(f);
+			clsjwj.setMd5(DigestUtils.md5Hex(fip));
+			fip.close();
 			clsjwj.setWjdx(new BigDecimal(f.length() / 1024));
 			clsjwjbService.saveOrupdate(clsjwj);
 			clsjkdd.setSbzt("0");

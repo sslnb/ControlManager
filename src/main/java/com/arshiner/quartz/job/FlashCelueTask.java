@@ -1,7 +1,6 @@
 package com.arshiner.quartz.job;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.SocketException;
@@ -17,7 +16,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
@@ -68,7 +66,6 @@ import com.arshiner.service.SjcjqktjbService;
 import com.arshiner.service.TotalsysinfoService;
 import com.arshiner.service.ZlsjddbService;
 import com.arshiner.service.ZlsjwjbService;
-import com.tmri.bigdata.util.abc.AbcUtil;
 
 /**
  * 刷新,并根据数据字段值 添加增量任务，和存量任务
@@ -166,7 +163,8 @@ public class FlashCelueTask {
 	 * 任务是否正在执行标记 ：false--未执行； true--正在执行； 默认未执行
 	 */
 	static AtomicBoolean isRun = new AtomicBoolean(false);
-	public  void executeF() throws JobExecutionException {
+
+	public void executeF() throws JobExecutionException {
 		logger.info("策略更新任务----------------------------:{}" + sdf.format(getTime()));
 		synchronized (isRun) {
 			if (isRun.get()) {
@@ -176,8 +174,8 @@ public class FlashCelueTask {
 		}
 		get();
 		// 上报心跳
-		if (null == TestRestSafeOutAccess.agxtip||TestRestSafeOutAccess.agxtip.equals("")) {
-			return ;
+		if (null == TestRestSafeOutAccess.agxtip || TestRestSafeOutAccess.agxtip.equals("")) {
+			return;
 		}
 		Cjrjxt xt = new Cjrjxt();
 		Totalsysinfo sysinfo = new Totalsysinfo();
@@ -289,7 +287,7 @@ public class FlashCelueTask {
 					}
 				}
 			}
-			//单表同步
+			// 单表同步
 			querySingleParams(dbconpro2);
 			Rzcjqjcs record = new Rzcjqjcs();
 			// 增量任务
@@ -309,7 +307,7 @@ public class FlashCelueTask {
 				job1.setJgxtlb(dbconpro2.getJgxtlb());
 				record.setGjz("ZLCJZQ");
 				rzcjqjcs = rzcjqjcsService.selectByGjz(record).get(0);
-				job1.setCronExpression("*/10 * * * * ? ");
+				job1.setCronExpression("* */" + rzcjqjcs.getMrz() + " * * * ? ");
 				schedulerJobService.saveOrUpdate(job1);
 			} catch (Exception e) {
 				logger.error("策略刷新时添加增量任务出错" + "======ZLTASK FlashCelueTask" + e);
@@ -380,71 +378,6 @@ public class FlashCelueTask {
 		}
 	}
 
-	
-//	/**
-//	 * 删除
-//	 */
-//	public void removeFile(){
-//		//如果磁盘使用率高于80%
-//		File  file = new File(FilePathName.ROOT);
-//		if (Math.ceil((file.getTotalSpace()-file.getFreeSpace())*100/file.getTotalSpace())>70.0) {
-//			dbConpro = dbconProService.selectByExample();
-//			// 遍历
-//			if (dbConpro.isEmpty()) {
-//				logger.info("没有连接参数-----size"+dbConpro.size());
-//				return;
-//			}
-//			for (Dbconpro dbconpro2 : dbConpro) {
-//				StringBuffer buffer = new StringBuffer(FilePathName.ROOT);// 项目上级目录
-//				buffer.append(dbconpro2.getJgxtlb());// 节点目录 /jgxtlb
-//				buffer.append(FilePathName.FileSepeartor);
-//				/**
-//				 * 已入库删除
-//				 */
-//				String cldid = buffer.toString() + FilePathName.CLDIDPath+ FilePathName.FileSepeartor;
-//				remove(cldid);
-//				String zldid = buffer.toString() + FilePathName.ZLDIDPath+ FilePathName.FileSepeartor;
-//				remove(zldid);
-//				Agent asd = new Agent();
-//				asd.setJgxtlb(dbconpro2.getJgxtlb());
-//				agent = agentService.selectByExample(asd);
-//				if (agent.isEmpty()) {
-//					logger.info("没有agent连接-----size"+agent.size());
-//					continue;
-//				}
-//				/**
-//				 * 归档删除
-//				 */
-//				for (Iterator<Agent> iterator = agent.iterator(); iterator.hasNext();) {
-//					Agent agent2 = (Agent) iterator.next();
-//					String jd = buffer.toString() + agent2.getKip() + FilePathName.FileSepeartor;
-//					String GD= jd + "log" + FilePathName.FileSepeartor;
-//					remove(GD);
-//				}
-//			}
-//		}else{
-//			logger.info("硬盘空间充足状态良好！！！！！---------:{}" + sdf.format(getTime()));
-//		};
-//	}
-//	public void remove(String filepath){
-//		List<File> files = Arrays.asList(new File(filepath).listFiles());
-//		Collections.sort(files, new Comparator<File>() {
-//			@Override
-//			public int compare(File o1, File o2) {
-//				long diff = o1.lastModified()- o2.lastModified();
-//				if (diff>0) {
-//					return 1;
-//				}else if (diff==0) {
-//					return 0;
-//				}else{
-//					return -1;
-//				}
-//			}
-//		});
-//		for (int i = 0; i < files.size()-10; i++) {
-//			FilePathName.deleteFile(files.get(i).getAbsolutePath());
-//		}
-//	}
 	/**
 	 * 修改Alivedbconf文件,需要以完整的jgxtlb/ip作为节点，则需要将日志采集全局参数引入作为参数
 	 * 
@@ -504,8 +437,10 @@ public class FlashCelueTask {
 				type = "rac";
 			}
 			int local = 1;
+
 			for (int j = 0; j < agent.size(); j++) {
 				Agent agent1 = agent.get(j);
+				System.out.println("agent--------------------------" + "--" + agent.size() + "--" + agent1.getKip());
 				String jd = buffer.toString() + agent1.getKip() + FilePathName.FileSepeartor;
 				// 4,拷贝alivedb.conf,capture.out和capture到节点目录中
 				// 5,创建目录
@@ -747,7 +682,7 @@ public class FlashCelueTask {
 	public FtpUtils getFtp(Dbconpro record) {
 		FtpUtils ftp = new FtpUtils();
 		Rzcjqjcs record1 = new Rzcjqjcs();
-		record1.setGjz("WJXTIP");
+		record1.setGjz("FSIP");
 		Rzcjqjcs rzcjqjcs = rzcjqjcsService.selectByGjz(record1).get(0);
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
@@ -761,7 +696,7 @@ public class FlashCelueTask {
 			ftp.setHostname(rzcjqjcs.getMrz());
 		}
 		rzcjqjcs = null;
-		record1.setGjz("WJXTYHM");
+		record1.setGjz("FSUSER");
 		rzcjqjcs = rzcjqjcsService.selectByGjz(record1).get(0);
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
@@ -776,7 +711,7 @@ public class FlashCelueTask {
 			logger.info(rzcjqjcs.getMrz());
 		}
 		rzcjqjcs = null;
-		record1.setGjz("WJXTMM");
+		record1.setGjz("FSUSERPASS");
 		rzcjqjcs = rzcjqjcsService.selectByGjz(record1).get(0);
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
@@ -791,7 +726,7 @@ public class FlashCelueTask {
 			logger.info(rzcjqjcs.getMrz());
 		}
 		rzcjqjcs = null;
-		record1.setGjz("WJXTDK");
+		record1.setGjz("FSPORT");
 		rzcjqjcs = rzcjqjcsService.selectByGjz(record1).get(0);
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
@@ -835,21 +770,17 @@ public class FlashCelueTask {
 			try {
 				for (Iterator<Zlsjwjb> iterator = zlwjlist.iterator(); iterator.hasNext();) {
 					Zlsjwjb zlsjwjb = (Zlsjwjb) iterator.next();
-					AbcUtil.ZipEncToBase64File(absolutpath + zlsjwjb.getWjm(), absolutpath + zlsjwjb.getWjm());
 					ftp.initFtpClient();
 					ftp.uploadFile(ftp.getFtpDir(), zlsjwjb.getWjm(), absolutpath + zlsjwjb.getWjm());
 					zlsjwjb.setScfwqsj(getTime());
 					zlsjwjb.setGxsj(getTime());
 					zlsjwjb.setWjzt("2");
-					Integer num = XMLFileName.zlcountMap.get(record.getJgxtlb());
-					String sywjm = zlsjwjbService.selectSYwjm0(record.getJgxtlb(),
-							record.getAzdm() + record.getJgxtlb() + "2",zlsjwjb.getWjm());
+					String sywjm = zlsjwjbService.selectSYwjm(record.getJgxtlb(), zlsjwjb.getWjm());
 					if (null != sywjm && !sywjm.equals("")) {
 						zlsjwjb.setSywjm(sywjm);
 					} else {
 						zlsjwjb.setSywjm("begin");
 					}
-					zlsjwjb.setXywjm(getNextZLXMLName(record,num + 1));
 					zlsjwjbService.updateByExample(zlsjwjb);
 				}
 			} catch (Exception e) {
@@ -886,23 +817,16 @@ public class FlashCelueTask {
 						File fil1 = new File(getZLXMLName(record));
 						file.renameTo(fil1);
 						zlsjwjb.setWjm(fil1.getName());
-						AbcUtil.ZipEncToBase64File(absolutpath1 + zlsjwjb.getWjm(), absolutpath1 + zlsjwjb.getWjm());
 						file = null;
 						fil1 = null;
 						ftp.uploadFile(ftp.getFtpDir(), zlsjwjb.getWjm(), absolutpath1 + zlsjwjb.getWjm());
 						zlsjwjb.setScfwqsj(getTime());
-						Integer num = XMLFileName.zlcountMap.get(record.getJgxtlb());
 						String sywjm = zlsjwjbService.selectSYwjm(record.getJgxtlb(), zlsjwjb.getWjm());
-						if (num - 1 == 0) {
-							if (null != sywjm && !sywjm.equals("")) {
-								zlsjwjb.setSywjm(sywjm);
-							} else {
-								zlsjwjb.setSywjm("begin");
-							}
-						} else {
+						if (null != sywjm && !sywjm.equals("")) {
 							zlsjwjb.setSywjm(sywjm);
+						} else {
+							zlsjwjb.setSywjm("begin");
 						}
-						zlsjwjb.setXywjm(getNextZLXMLName(record, (num + 1)));
 						zlsjwjb.setGxsj(getTime());
 						zlsjwjb.setWjzt("2");
 						zlsjwjbService.reNameWjm(oldZl, zlsjwjb);
@@ -932,15 +856,14 @@ public class FlashCelueTask {
 	 * @throws IOException
 	 * @throws SocketException
 	 */
-	public void sb(String jgxtlb, String bm, Dbconpro dbconpro2)
-			throws SocketException, IOException {
+	public void sb(String jgxtlb, String bm, Dbconpro dbconpro2) throws SocketException, IOException {
 		Clsjclzt record = new Clsjclzt();
 		record.setJgxtlb(jgxtlb);
 		record.setBm(bm);
 		String absolutpath = FilePathName.ROOT + record.getJgxtlb() + FilePathName.FileSepeartor
 				+ FilePathName.ZLDIDPath + FilePathName.FileSepeartor;
-		String oldpath = FilePathName.ROOT + record.getJgxtlb() + FilePathName.FileSepeartor
-				+ FilePathName.ZLStanbyPath + FilePathName.FileSepeartor;
+		String oldpath = FilePathName.ROOT + record.getJgxtlb() + FilePathName.FileSepeartor + FilePathName.ZLStanbyPath
+				+ FilePathName.FileSepeartor;
 		List<Clsjclzt> cllist = clsjclztService.selectByCJZT(record);
 		if (cllist == null || cllist.isEmpty()) {
 			return;
@@ -976,7 +899,7 @@ public class FlashCelueTask {
 			rsoa.setZlsjwjbService(zlsjwjbService);
 			try {
 				// 存量文件反馈接口
-				rsoa.queryOldDataFileStatus(JsonToObject.ListconsvertToJSON(clwjl),oldpath,absolutpath);
+				rsoa.queryOldDataFileStatus(JsonToObject.ListconsvertToJSON(clwjl), oldpath, absolutpath);
 				if (clwjlist == null || clwjlist.isEmpty()) {
 				} else {
 					rsoa.buildOldFilenameJson(JsonToObject.ListconsvertToJSON(clwjlist));
@@ -1120,11 +1043,9 @@ public class FlashCelueTask {
 				ftp = null;
 				// 13.数据采集情况统计信息写入接口
 				logger.info("数据采集情况统计信息写入接口");
-				logger.info(JsonToObject.ListconsvertToJSON(sjcjqklist));
 				rsoa.buildGatherStatisticsJson(JsonToObject.ListconsvertToJSON(sjcjqklist));
 				// 6.采集软件运行状态写入接口
 				logger.info("采集软件运行状态写入接口");
-				logger.info(JsonToObject.ListconsvertToJSON(yxlist));
 				rsoa.buildTaskStatusJson(JsonToObject.ListconsvertToJSON(yxlist));
 
 			} catch (Exception e1) {
@@ -1168,17 +1089,11 @@ public class FlashCelueTask {
 				}
 				for (int i = 0; i < cswj.size(); i++) {
 					Clsjwjb clsjwjb = cswj.get(i);
-					File file = new File(absolutpath + clsjwjb.getWjm());
-					FileInputStream fis = new FileInputStream(file);
-					clsjwjb.setMd5(DigestUtils.md5Hex(fis));
-					fis = null;
-					AbcUtil.ZipEncToBase64File(absolutpath + clsjwjb.getWjm(), absolutpath + clsjwjb.getWjm());
 					ftp.initFtpClient();
 					ftp.uploadFile(ftp.getFtpDir(), clsjwjb.getWjm(), absolutpath + clsjwjb.getWjm());
 					clsjwjb.setScfwqsj(getTime());
 					clsjwjb.setWjzt("2");
 					clsjwjbService.updateByExample(clsjwjb);
-					file = null;
 				}
 			}
 		} catch (IOException e) {
@@ -1215,7 +1130,7 @@ public class FlashCelueTask {
 					+ FilePathName.ZLDIDPath + FilePathName.FileSepeartor;
 			String oldpath = FilePathName.ROOT + record.getJgxtlb() + FilePathName.FileSepeartor
 					+ FilePathName.ZLStanbyPath + FilePathName.FileSepeartor;
-			rsoa.queryNewDataFileStatus(JsonToObject.ListconsvertToJSON(zlwjlist1),oldpath,absolutpath);
+			rsoa.queryNewDataFileStatus(JsonToObject.ListconsvertToJSON(zlwjlist1), oldpath, absolutpath);
 			// 上传FTP
 			zlchuanshu(clzt, ftp, record);
 			// sbzt 0 bm
@@ -1316,10 +1231,8 @@ public class FlashCelueTask {
 			dbrzcjcsService.deleteNotIn(dbrzcjcslist, dbconpro.getJgxtlb().substring(0, 2));
 			logger.info("单表参数刷新成功");
 		} else if (map.get("code").toString().equals("0")) {
-			logger.info(map.get("message"));
 			logger.info("单表获取参数失败");
 		} else if (map.get("code").toString().equals("2")) {
-			logger.info(map.get("message"));
 			logger.info("单表获取参数失败");
 		}
 	}

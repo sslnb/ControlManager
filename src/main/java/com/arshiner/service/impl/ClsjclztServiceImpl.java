@@ -185,8 +185,8 @@ public class ClsjclztServiceImpl implements ClsjclztService {
 		return clsjclztMapper.selectByExample(example);
 	}
 	@Override
-	public int selSjlByBm(String bm, String jbxtlb) {
-		return clsjclztMapper.selSjlByBm(bm,jbxtlb);
+	public Integer selSjlByBm(String bm, String jgxtlb) {
+		return clsjclztMapper.selSjlByBm(bm,jgxtlb);
 	}
 
 }

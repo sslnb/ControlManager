@@ -180,7 +180,6 @@ public class TestRestSafeOutAccess {
 				retStr = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
 			}
 			TestRestSafeOutAccess.statusCode = statusCode;
-			logger.info("OK...");
 		} catch (IOException e) {
 		}
 		return retStr;

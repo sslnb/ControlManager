@@ -54,7 +54,7 @@ public class AgentServiceImpl implements AgentService {
 	public int updateByExampleSelective(Agent record) {
 		// TODO Auto-generated method stub
 		AgentExample example = new AgentExample();
-		example.createCriteria().andJgxtlbEqualTo(record.getJgxtlb());
+		example.createCriteria().andJgxtlbEqualTo(record.getJgxtlb()).andKipEqualTo(record.getKip());
 		return agentMapper.updateByExampleSelective(record, example);
 	}
 

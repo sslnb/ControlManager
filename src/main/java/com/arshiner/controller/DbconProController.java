@@ -83,24 +83,11 @@ public class DbconProController {
 				dbconpro.getPort(), dbconpro.getSid());
 		// 连接成功
 		boolean flag = jdbc.getConnection();
-		int pd = 0;
 		if (flag) {
 			jdbc.closeDB();
-			pd = dbconProService.insAimsData(dbconpro);
-//			Agent  agent = new Agent();
-//			agent.setJgxtlb(dbconpro.getJgxtlb());
-//			List<Agent> agentlist = agentService.selectByExample(agent);
-//			String jd = FilePathName.ROOT+dbconpro.getJgxtlb()+FilePathName.FileSepeartor;
-//			 for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-//				Agent agent1 = (Agent) iterator.next();
-//				jd = jd + agent1.getKip() + FilePathName.FileSepeartor;
-//				File alivedb = new File(jd + "Alivedb.conf");
-//				
-//			}
-		}
-		if (pd != 0) {
+			dbconProService.insAimsData(dbconpro);
 			dbConMap.put("judge", "true");
-		} else {
+		}else{
 			dbConMap.put("judge", "false");
 		}
 		return JSONArray.toJSONString(dbConMap);

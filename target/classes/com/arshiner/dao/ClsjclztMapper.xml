@@ -375,8 +375,7 @@
 	select sum(CJWJS) from  CLSJCLZT  where JGXTLB =#{jgxtlb}
 	</select>
 	<!--后添加 -->
-	<select id="selSjlByBm" resultType="java.lang.Integer">
-		select CJSJZL from CLSJCLZT
-		where bm =#{bm} and JGXTLB = #{jgxtlb};
+	<select id="selSjlByBm" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select CJSJZL from CLSJCLZT where BM =#{bm} and JGXTLB = #{jgxtlb}
 	</select>
 </mapper>

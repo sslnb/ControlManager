@@ -22,12 +22,11 @@ function tables() {
             ,cols: [[
                 { type:'checkbox',width:'5%'}
                 ,{field:'id',width:'10%',title:'ID'}
-                ,{field:'jobName', title: '任务名', width:'15%',align:'center'}
-                ,{field:'jobGroup', title: '任务类别', width:'10%',align:'center'}
+                ,{field:'jobName', title: '任务名', width:'20%',align:'center'}
+                ,{field:'jobGroup', title: '任务类别', width:'15%',align:'center'}
                 ,{field:'jgxtlb', title: '交管系统类别', width:'10%',align:'center'}
                 ,{field:'adzm', title: '安管系统代码', width:'10%',align:'center'}
-                ,{field:'DESCRIPTION', title: '增量SCN/存量数据量', width:'15%',align:'center'}
-                ,{field:'jobStatus', title: '状态', width:'10%',align:'center',templet:function (d) {
+                ,{field:'jobStatus', title: '状态', width:'15%',align:'center',templet:function (d) {
                         if (d.jobStatus=="COMPLETE"){
                             return "已完成";
                         } else if (d.jobStatus=="START") {
@@ -38,7 +37,7 @@ function tables() {
                             return "已停止"
                         }
                     }}
-                ,{field: 'operate', title: '操作',width:'15%',toolbar:'#barDemo',align:'center',templet:'#barDemo'}
+                ,{field: 'operate', title: '操作',width:'20%',toolbar:'#barDemo',align:'center',templet:'#barDemo'}
             ]],  done: function(res, curr, count){
                 //layer.msg("数据加载完成...",{icon:1,time:1500})
             }
@@ -81,7 +80,7 @@ layui.use('table', function() {
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr; //获得当前行 tr 的DOM对象
         if(layEvent === 'get'){ //查看
-            console.log(data);
+            console.log(data.description);
             layer.open({
                 type: 1 //Page层类型
                 ,closeBtn :1   //关闭按钮
@@ -118,7 +117,7 @@ layui.use('table', function() {
                     '        <td>'+undefinedZH(data.jgxtlb)+'</td>\n' +
                     '    </tr>\n' +
                     '    <tr>\n' +
-                    '        <td>pdtypename(data.jobGroup)</td>\n' +
+                    '        <td>'+pdtypename(data.jobGroup)+'</td>\n' +
                     '        <td>'+data.description+'</td>\n' +
                     '    </tr>\n' +
                     '    <tr>\n' +

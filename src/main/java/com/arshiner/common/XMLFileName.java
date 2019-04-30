@@ -32,6 +32,8 @@ public class XMLFileName {
 	public static String user = "";
 	public static String pwd = "";
 	public static String url = "";
+	public static String sid = "";
+	public static String port = "";
 	public static ConfigManager config;
 	static SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 	// 从这里获取服务端数据库IP
@@ -53,7 +55,9 @@ public class XMLFileName {
 		user = config.properties.getProperty("user");
 		pwd = config.properties.getProperty("pwd");
 		url = config.properties.getProperty("url");
-		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, "1521", "orcl");
+		sid = config.properties.getProperty("sid");
+		port = config.properties.getProperty("port");
+		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, port, sid);
 		jdbc.getConnection();
 		try {
 			String zlsql = "select jgxtlb,zlnum from dbconpro";
@@ -68,13 +72,15 @@ public class XMLFileName {
 		user = config.properties.getProperty("user");
 		pwd = config.properties.getProperty("pwd");
 		url = config.properties.getProperty("url");
+		sid = config.properties.getProperty("sid");
+		port = config.properties.getProperty("port");
 	}
 
 	public static void reZlfile(String jgxtlb) {
 		/**
 		 * 使用jdbc进行获取，相同jgxtlb和ip的 select ip,zlindex from dbconpro;
 		 */
-		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, "1521", "orcl");
+		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, port, sid);
 		try {
 			jdbc.getConnection();
 			// 今天的增量文件是否有生成如果没有 设置zl计数为0
@@ -92,7 +98,7 @@ public class XMLFileName {
 		/**
 		 * 使用jdbc进行获取，相同jgxtlb和ip的 select ip,zlindex from dbconpro ;
 		 */
-		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, "1521", "orcl");
+		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, port, sid);
 		try {
 			jdbc.getConnection();
 			String clsql = "select wjm from "
