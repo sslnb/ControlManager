@@ -27,13 +27,13 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
 	private int byteRead;
 	private volatile long start = 0;
 	private static int count = 0;
-	private static  int size = 0;
+	private static int size = 0;
 	private volatile boolean status = false;
 	private String file_dir = FilePathName.ROOT;
 	public static RandomAccessFile randomAccessFile;
 	private final ServerDTO serDto = new ServerDTO();// 可能线程不安全
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH-ss");
-	
+
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
@@ -53,25 +53,14 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
 				if (ef.getFile_md5().equals("redo")) {
 					type = "redo";
 				}
-				if (ef.getFileClientName().equals("group_3.258.932415585")) {
-					if (count==0) {
-						size++;
-					}
-					path = file_dir + FilePathName.FileSepeartor + ef.getClientLogo() + FilePathName.FileSepeartor
-							+ ef.getIp() + FilePathName.FileSepeartor + type + FilePathName.FileSepeartor
-							+ ef.getFileClientName()+size;
-				}else{
-					size=0;
-					path = file_dir + FilePathName.FileSepeartor + ef.getClientLogo() + FilePathName.FileSepeartor
-							+ ef.getIp() + FilePathName.FileSepeartor + type + FilePathName.FileSepeartor
-							+ ef.getFileClientName();
-				}
+				path = file_dir + ef.getClientLogo() + FilePathName.FileSepeartor
+						+ ef.getIp() + FilePathName.FileSepeartor + type + FilePathName.FileSepeartor
+						+ ef.getFileClientName();
 				File file1 = new File(path);
 				// 如果此文件存再 删除
 				if (!type.equals("redo")) {
 					if (file1.exists() && count == 0) {
 						file1.delete();
-//						logger.info("文件删除" + file1.getName());
 					}
 				}
 				count++;
@@ -112,7 +101,7 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
 					status = true;
 					randomAccessFile.close();
 					count = 0;
-					//修改
+					// 修改
 					ctx.channel().close();
 					// 调用文件拷贝方法
 				}
