@@ -146,9 +146,6 @@ public class ZLTask implements Job{
 	@Autowired
 	SchedulerJobService schedulerJobService;
 	@Autowired
-	AgentService agentService;
-	List<Agent> agent;
-	@Autowired
 	AsessionService asessionService;
 
 	@Override
@@ -180,10 +177,6 @@ public class ZLTask implements Job{
 			flashCanshu();
 			//重置增量文件顺序
 			XMLFileName.reZlfile(job.getJgxtlb());
-			Agent agent1 = new Agent();
-			agent1.setJgxtlb(job.getJgxtlb());
-			agent = agentService.selectByExample(agent1);
-			agent1 = null;
 			// 统一StringBuffer路径
 			buffer.append(dbConpro.getJgxtlb());// ip
 			buffer.append(FilePathName.FileSepeartor);// ip/
@@ -244,22 +237,22 @@ public class ZLTask implements Job{
 		}
 		// 设置系统名称
 		SysResource.setGs_os(SystemInfo.getOS_Name());
-		for (Agent agent2 : agent) {
-			logger.info("Agent1111111111111111111111111========="+agent2.getKip());
-			String jd = buffer.toString() + agent2.getKip() + FilePathName.FileSepeartor;
-			if (!pidmap.containsKey(agent2.getKip())) {
+		for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+			logger.info("Agent1111111111111111111111111=========thread"+i);
+			String jd = buffer.toString() + "thread"+i + FilePathName.FileSepeartor;
+			if (!pidmap.containsKey("thread"+i)) {
 				String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
 						jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
 				logger.info("文件名"+jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
-				pidmap.put(agent2.getKip(), capturePid);
+				pidmap.put("thread"+i , capturePid);
 			} else{
-				pid= String.valueOf(pidmap.get(agent2.getKip()));
+				pid= String.valueOf(pidmap.get("thread"+i ));
 				if (null!=pid&&!pid.equals("")) {
-					if (!SysResource.checkProcess(pidmap.get(agent2.getKip()).toString())) {
+					if (!SysResource.checkProcess(pidmap.get("thread"+i ).toString())) {
 						// 2. 需要启动capture解析日志文件,并获取进程号放入job中
 						String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
 								jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
-						pidmap.put(agent2.getKip(), capturePid);
+						pidmap.put("thread"+i , capturePid);
 					} else {
 						continue;
 					}
@@ -267,7 +260,7 @@ public class ZLTask implements Job{
 					String capturePid = SysResource.startProcess(jd + "capture" + FilePathName.FileSepeartor,
 							jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
 					logger.info("文件名"+jd + "capture" + FilePathName.FileSepeartor + SysResource.captureName);
-					pidmap.put(agent2.getKip(), capturePid);
+					pidmap.put("thread"+i, capturePid);
 				}
 			}
 		}
@@ -365,7 +358,7 @@ public class ZLTask implements Job{
 		log2orarec.setDb(dbConpro);
 		RedisHct.bmhc = new LinkedHashMap<>();
 		log2orarec.setDdlsjsjbService(ddlsjsjbService);
-		log2orarec.LogToOraRecord(agent.size(), scn, filepath);// 初始化2站点
+		log2orarec.LogToOraRecord(dbConpro.getAgentype().intValue(), scn, filepath);// 初始化2站点
 		log2orarec.getOraRecord().setType("2"); // 增量为2
 		log2orarec.getOraRecord().setXtlb(job.getJgxtlb()); // 用参数替代
 		log2orarec.getOraRecord().setAzdm(job.getAdzm()); // 设置安装代码
@@ -536,20 +529,16 @@ public class ZLTask implements Job{
 				zlsjddbService.deleteByExample(zlsjddb);
 				String jd = "";
 				String pid = "";
-				Agent agent = new Agent();
-				agent.setJgxtlb(job.getJgxtlb());
-				List<Agent> agentlist = agentService.selectByExample(agent);
 				//2，停止所有capture
-				for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-					Agent agent1 = (Agent) iterator.next();
-					pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString(agent1.getKip());
+				for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+					pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString("thread"+i);
 					if (SysResource.checkProcess(pid)) {
 						SysResource.stopProcess(pid);
 					}
 				}
 				File recovery;
-				for (Agent agent1 : agentlist) {
-					jd = buffer.toString() + agent1.getKip() + FilePathName.FileSepeartor;
+				for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+					jd = buffer.toString() + "thread"+i + FilePathName.FileSepeartor;
 					//清空capture。out
 					ConfigManager out = new ConfigManager(jd + "capture.out");
 					out.configGetAndSet("Last_log_SCN", "", jd + "capture.out");
@@ -575,7 +564,6 @@ public class ZLTask implements Job{
 						jdbc.closeDB();
 					}
 					//设置Alivedb.conf
-					File alivedb = new File(jd + "Alivedb.conf");
 					ConfigFile.setIniValue(jd + "Alivedb.conf", "System", "StartEpoch", Alivedbscn);
 					// 删除recovery
 					recovery = new File(jd + "recovery.inf");
@@ -585,7 +573,7 @@ public class ZLTask implements Job{
 					File rzjxwj = new File(buffer.toString()+FilePathName.RZJXWJPath+FilePathName.FileSepeartor);
 					if (null!=rzjxwj.listFiles()) {
 						SysResource.deleteDir(rzjxwj);
-					}
+					}	
 				}
 			} catch (Exception e) {
 				//失败

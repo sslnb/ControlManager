@@ -7,6 +7,8 @@ import com.arshiner.common.FilePathName;
 import com.arshiner.common.JsonToObject;
 import com.arshiner.common.SysResource;
 import com.arshiner.model.Agent;
+import com.arshiner.model.Dbconpro;
+import com.arshiner.model.Dbrzcjcs;
 import com.arshiner.model.ScheduleJob;
 import com.arshiner.model.Zlsjddb;
 import com.arshiner.quartz.service.ScheduleJobInService;
@@ -14,6 +16,7 @@ import com.arshiner.quartz.service.SchedulerJobService;
 import com.arshiner.quartz.util.Message;
 import com.arshiner.service.AgentService;
 import com.arshiner.service.ClsjclztService;
+import com.arshiner.service.DbconProService;
 import com.arshiner.service.ScntotimeService;
 import com.arshiner.service.ZlsjddbService;
 
@@ -53,12 +56,11 @@ public class JobController {
 	@Autowired
 	ScntotimeService scntotimeService;
 	@Autowired
-	AgentService agentService;
-	@Autowired
 	ZlsjddbService zlsjddbService;
 	@Autowired
 	ClsjclztService clsjclztService;
-	
+	@Autowired
+	DbconProService dbconProService;
 	/*
 	 * 查询所有任务(分页)
 	 */
@@ -156,20 +158,22 @@ public class JobController {
 				zlsjddbService.deleteByExample(zlsjddb);
 				String jd = "";
 				String pid = "";
-				Agent agent = new Agent();
-				agent.setJgxtlb(job.getJgxtlb());
-				List<Agent> agentlist = agentService.selectByExample(agent);
+				/**
+				 * 连接参数获取
+				 */
+				Dbconpro dbConpro = new Dbconpro();
+				dbConpro.setJgxtlb(job.getJgxtlb());
+				dbConpro = dbconProService.selectByExample(dbConpro).get(0);
 				//2，停止所有capture
-				for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-					Agent agent1 = (Agent) iterator.next();
-					pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString(agent1.getKip());
+				for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+					pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString("thread"+i);
 					if (SysResource.checkProcess(pid)) {
 						SysResource.stopProcess(pid);
 					}
 				}
 				File recovery;
-				for (Agent agent1 : agentlist) {
-					jd = buffer.toString() + agent1.getKip() + FilePathName.FileSepeartor;
+				for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+					jd = buffer.toString() + "thread"+i + FilePathName.FileSepeartor;
 					//清空capture。out
 					ConfigManager out = new ConfigManager(jd + "capture.out");
 					out.configGetAndSet("Last_log_SCN", "", jd + "capture.out");
@@ -382,20 +386,15 @@ public class JobController {
 			if (jobGroup.equals("ZLTASK")) {
 				ScheduleJob job = scheduleJobInService.selectByJobNameAngJobGroup(jobName, jobGroup);
 				try {
-					Agent agent = new Agent();
-					agent.setJgxtlb(job.getJgxtlb());
-					String captureout = "";
-					String alivedb = "";
 					String pid = "";
-					List<Agent> agentlist = agentService.selectByExample(agent);
-					for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-						Agent agent1 = (Agent) iterator.next();
-						captureout = "";
-						pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString(agent1.getKip());
+					Dbconpro dbConpro = new Dbconpro();
+					dbConpro.setJgxtlb(job.getJgxtlb());
+					dbConpro = dbconProService.selectByExample(dbConpro).get(0);
+					for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+						pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString("thread"+i);
 						if (SysResource.checkProcess(pid)) {
 							SysResource.stopProcess(pid);
 						}
-
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -429,15 +428,15 @@ public class JobController {
 			if (jobGroup.equals("ZLTASK")) {
 				ScheduleJob job = scheduleJobInService.selectByJobNameAngJobGroup(jobName, jobGroup);
 				try {
-					Agent agent = new Agent();
-					agent.setJgxtlb(job.getJgxtlb());
-					List<Agent> agentlist = agentService.selectByExample(agent);
-					for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-						Agent agent1 = (Agent) iterator.next();
-						String pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString(agent1.getKip());
+					Dbconpro dbConpro = new Dbconpro();
+					dbConpro.setJgxtlb(job.getJgxtlb());
+					dbConpro = dbconProService.selectByExample(dbConpro).get(0);
+					for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+						String pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString("thread"+i);
 						if (SysResource.checkProcess(pid)) {
 							SysResource.stopProcess(pid);
 						}
+
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -468,15 +467,15 @@ public class JobController {
 			if (jobGroup.equals("ZLTASK")) {
 				ScheduleJob job = scheduleJobInService.selectByJobNameAngJobGroup(jobName, jobGroup);
 				try {
-					Agent agent = new Agent();
-					agent.setJgxtlb(job.getJgxtlb());
-					List<Agent> agentlist = agentService.selectByExample(agent);
-					for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-						Agent agent1 = (Agent) iterator.next();
-						String pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString(agent1.getKip());
+					Dbconpro dbConpro = new Dbconpro();
+					dbConpro.setJgxtlb(job.getJgxtlb());
+					dbConpro = dbconProService.selectByExample(dbConpro).get(0);
+					for (int i = 1; i <= dbConpro.getAgentype().intValue(); i++) {
+						String pid = JsonToObject.StringconsvertToJSONObject(job.getPid()).getString("thread"+i);
 						if (SysResource.checkProcess(pid)) {
 							SysResource.stopProcess(pid);
 						}
+
 					}
 				} catch (Exception e) {
 					// TODO: handle exception

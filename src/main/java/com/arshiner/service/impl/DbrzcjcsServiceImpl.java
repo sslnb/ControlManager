@@ -51,8 +51,6 @@ public class DbrzcjcsServiceImpl implements DbrzcjcsService {
 	@Autowired
 	RzcjqjcsService rzcjqjcsService;
 	@Autowired
-	AgentService agentService;
-	@Autowired
 	SchedulerJobService schedulerJobService;
 	@Autowired
 	ScheduleJobInService scheduleJobInService;
@@ -136,18 +134,6 @@ public class DbrzcjcsServiceImpl implements DbrzcjcsService {
 		boolean flag = false;
 		List<Dbrzcjcs> dblist = selectByBMANDJGXTLB(record);
 		if (dblist == null || dblist.isEmpty()) {
-//			// 插入一条单表参数，此时，Alivedb应及时添加到相应的Alivedb.conf
-//			List<Agent> agentlist = agentService.selectByDbJG(record.getJgxtlb());
-//			StringBuffer buffer = new StringBuffer(FilePathName.ROOT);// 项目上级目录
-//			for (Iterator<Agent> iterator = agentlist.iterator(); iterator.hasNext();) {
-//				Agent agent = (Agent) iterator.next();
-//				String jd = buffer.toString() + agent.getJgxtlb() + FilePathName.FileSepeartor+ agent.getKip() + FilePathName.FileSepeartor;
-//				File  alivedb = new File(jd+"Alivedb.conf");
-//				if (alivedb.exists()) {
-//					String bm = ConfigFile.getIniValue(jd + "Alivedb.conf", "User1", "Tables");
-//					ConfigFile.setIniValue(jd + "Alivedb.conf", "User1", "Tables",bm+","+record.getBm());
-//				}
-//			}
 			insertSelective(record);
 		} else {
 			Dbrzcjcs db = dblist.get(0);

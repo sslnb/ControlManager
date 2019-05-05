@@ -90,7 +90,6 @@ public class FlashCelueTask {
 	 * 单表日志采集参数
 	 */
 	private List<Dbrzcjcs> dbrzcjcs1;
-	private List<Agent> agent;
 	/**
 	 * 连接参数
 	 */
@@ -238,9 +237,6 @@ public class FlashCelueTask {
 			Dbrzcjcs dbrecord = new Dbrzcjcs();
 			// 交管系统类别
 			dbrecord.setJgxtlb(dbconpro2.getJgxtlb().substring(0, 2));
-			Agent asd = new Agent();
-			asd.setJgxtlb(dbconpro2.getJgxtlb());
-			agent = agentService.selectByExample(asd);
 			dbrzcjcs1 = dbrzcjcsService.selectByJgxtlb(dbrecord);
 			if (dbrzcjcs1.isEmpty()) {
 				logger.info("FlashCelueTask      ----  策略刷新    获取单表日志采集参数为空  交管系统类别错误： " + dbconpro2.getJgxtlb());
@@ -438,10 +434,8 @@ public class FlashCelueTask {
 			}
 			int local = 1;
 
-			for (int j = 0; j < agent.size(); j++) {
-				Agent agent1 = agent.get(j);
-				System.out.println("agent--------------------------" + "--" + agent.size() + "--" + agent1.getKip());
-				String jd = buffer.toString() + agent1.getKip() + FilePathName.FileSepeartor;
+			for (int j = 1; j <=num; j++) {
+				String jd = buffer.toString() + "thread"+j+ FilePathName.FileSepeartor;
 				// 4,拷贝alivedb.conf,capture.out和capture到节点目录中
 				// 5,创建目录
 				local = local + j;
@@ -522,10 +516,9 @@ public class FlashCelueTask {
 							ScheduleJob job = scheduleJobInService.selectByJobNameAngJobGroup(jobName, jobGroup);
 							if (dbrecord.size() == 0) {
 								// 2，停止所有capture
-								for (Iterator<Agent> iterator = agent.iterator(); iterator.hasNext();) {
-									Agent agent11 = (Agent) iterator.next();
+								for (int i = 1; i <= record.getAgentype().intValue(); i++) {
 									String pid = JsonToObject.StringconsvertToJSONObject(job.getPid())
-											.getString(agent11.getKip());
+											.getString("thread"+i);
 									if (SysResource.checkProcess(pid)) {
 										SysResource.stopProcess(pid);
 									}
@@ -537,10 +530,9 @@ public class FlashCelueTask {
 								// 2，停止所有capture
 								schedulerJobService.pauseJob(jobName, jobGroup);
 								logger.info("停止增量任务=======" + jobName);
-								for (Iterator<Agent> iterator = agent.iterator(); iterator.hasNext();) {
-									Agent agent11 = (Agent) iterator.next();
+								for (int i = 1; i <= record.getAgentype().intValue(); i++) {
 									String pid = JsonToObject.StringconsvertToJSONObject(job.getPid())
-											.getString(agent11.getKip());
+											.getString("thread"+i);
 									if (SysResource.checkProcess(pid)) {
 										SysResource.stopProcess(pid);
 									}
