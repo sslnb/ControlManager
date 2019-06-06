@@ -1,5 +1,6 @@
 package com.arshiner.service;
 
+import com.arshiner.model.Clsjwjb;
 import com.arshiner.model.Zlsjwjb;
 
 import java.math.BigDecimal;
@@ -21,13 +22,15 @@ public interface ZlsjwjbService {
 	String selectSYwjm(String jgxtlb,String oldZl);
 	//文件状态
 	List<Zlsjwjb> selectwjzt(Zlsjwjb record);
+	//文件状态
+	List<Zlsjwjb> selectwjzt1(Zlsjwjb record);
 	//文件重传
 	List<Zlsjwjb> selectChongchuan(Zlsjwjb record);
 
 	int updateByExampleSelective(Zlsjwjb record);
 
 	int updateByExample(Zlsjwjb record);
-
+	int updateByWjzt(Zlsjwjb record);
 	/* 自定义 */
 	List<Zlsjwjb> selAllZlsjwjb(int before, int after);
 
@@ -52,4 +55,5 @@ public interface ZlsjwjbService {
 	String selectSYwjm0(String jgxtlb,String like,String zlwjm);
 	//新增0415
 	int deleteBywjmBIG(String wjm , String jgxtlb);
+	List<Zlsjwjb> selectOrderByWjm(Zlsjwjb record);
 }

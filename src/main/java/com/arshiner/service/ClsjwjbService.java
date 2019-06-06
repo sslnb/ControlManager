@@ -22,6 +22,7 @@ public interface ClsjwjbService {
     int updateByExampleSelective(Clsjwjb record);
 
     int updateByExample(Clsjwjb record);
+    int updateByWjzt(Clsjwjb record);
 
     /*自定义*/
     List<Clsjwjb> selAllClsjwjb(int before,int after);
@@ -46,5 +47,7 @@ public interface ClsjwjbService {
 	int deleteBylikeJgxtlb(Clsjwjb wjb);
 
 	int deleteByBMandJGXTLB(Clsjwjb record);
+
+	List<Clsjwjb> selectOrderbyWJM(Clsjwjb record);
 	
 }

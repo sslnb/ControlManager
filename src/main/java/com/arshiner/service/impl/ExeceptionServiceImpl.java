@@ -63,7 +63,7 @@ public class ExeceptionServiceImpl implements ExeceptionService {
 	public List<Exeception> selectByExample(Exeception record) {
 		// TODO Auto-generated method stub
 		ExeceptionExample example = new ExeceptionExample();
-		example.createCriteria().andJgxtlbEqualTo(record.getJgxtlb());
+		example.createCriteria().andJgxtlbEqualTo(record.getJgxtlb()).andJobnameEqualTo(record.getJobname());
 		return execeptionMapper.selectByExample(example);
 	}
 
@@ -97,5 +97,16 @@ public class ExeceptionServiceImpl implements ExeceptionService {
 	@Override
 	public int haveCountExeception(String sel_1) {
 		return execeptionMapper.haveCountExeception(sel_1);
+	}
+
+	@Override
+	public void saveOrupdate(Exeception record) {
+		// TODO Auto-generated method stub
+		List<Exeception> excelist = selectByExample(record);
+		if (null!=excelist&&!excelist.isEmpty()) {
+			updateByExampleSelective(record);
+		}else{
+			insertSelective(record);
+		}
 	}
 }

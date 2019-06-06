@@ -20,7 +20,7 @@ function tablesAims(){
                 ,{field: 'azdm', title: '安管系统代码' ,width:'15%'}
                 ,{field: 'username', title: '用户名',align:'center',width:'15%'}
                 ,{field: 'password', title: '密码',align:'center',hide:true}
-                ,{field: 'agentype', title: 'Agent个数',align:'center',width:'10%'}
+                ,{field: 'agentype', title: '数据库节点个数',align:'center',width:'10%'}
                 ,{field: 'operate', title: '操作',width:'20%',toolbar:'#barDemo',align:'center'}
             ]]
         });
@@ -156,7 +156,7 @@ layui.use(['form', 'table','element','laydate'], function(){
                 '            </div>\n' +
                 '        </div>\n' +
                 '        <div class="layui-form-item">\n' +
-                '            <label class="layui-form-label">Agent个数:</label>\n' +
+                '            <label class="layui-form-label">数据库节点个数:</label>\n' +
                 '            <div class="layui-input-block">\n' +
                 '                <input type="text" name="agentype" lay-verify="required" placeholder="请输入配置的Agent个数..." autocomplete="off" class="layui-input">\n' +
                 '            </div>\n' +

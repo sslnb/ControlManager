@@ -32,5 +32,5 @@ public interface AsessionMapper {
 	Asession selectAsession(@Param("jgxtlb") String jgxtlb, @Param("sid") String sid, @Param("serial") String serial,
 			@Param("t") String t);
 
-	void deletesession(@Param("jgxtlb") String jgxtlb, @Param("t") String t);
+	void deletesession(@Param("jgxtlb") String jgxtlb);
 }

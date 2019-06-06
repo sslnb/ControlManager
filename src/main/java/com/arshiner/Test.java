@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -17,7 +20,9 @@ import org.dom4j.io.SAXReader;
 import com.arshiner.common.ConfigManager;
 import com.arshiner.common.FilePathName;
 import com.arshiner.common.JDBCUtil;
+import com.arshiner.common.JsonToObject;
 import com.arshiner.common.TestRestSafeOutAccess;
+import com.arshiner.rds_big_jk.Hdsjjk;
 import com.tmri.bigdata.util.abc.AbcUtil;
 
 import srv.Decode;
@@ -118,6 +123,20 @@ public class Test {
 
 	public static void main(String[] args) throws Exception {
 		
+		
+//		get();
+//		Hdsjjk jk = new Hdsjjk();
+//		jk.queryGlobalParams();
+//		jk.querysjtjcl();
+		File  userdir = new   File("C:\\Users\\Administrator\\Desktop\\MDK_0424\\ceshi");
+		File[] files = userdir.listFiles();
+		for (int j = 0; j < files.length; j++) {
+			File file = files[j];
+			 AbcUtil.unZipDesFromBase64File(file.getAbsolutePath(),
+					 file.getAbsolutePath());
+		}
+//		long used = userdir.getUsableSpace()*100/userdir.getTotalSpace();
+//		System.out.println(used<70);0be880f3
 //		JDBCUtil jdbc = new JDBCUtil("admin_test", "admin_test", "10.2.42.114", "1521", "orcl");
 //		
 //		jdbc.getConnection(true);
@@ -148,18 +167,32 @@ public class Test {
 //		// String scn = "60851739";
 //		 System.out.println(TenToHex(new BigDecimal("15900837936490")));
 //		// System.out.println(startEpoch.format(new Date()));
-//		// AbcUtil.unZipDesFromBase64File("D:\\0000011000220190327000031",
-//		// "D:\\0000011000220190327000031");
-//		// AbcUtil.unZipDesFromBase64File("D:\\0000011000220190327000032",
-//		// "D:\\0000011000220190327000032");
-//		// AbcUtil.unZipDesFromBase64File("D:\\test\\0000011000220190329000001",
-//		// "D:\\test\\0000011000220190329000001");
-//		 AbcUtil.unZipDesFromBase64File("D:\\test\\0000011000220190418000051",
-//				 "D:\\test\\0000011000220190418000051");
-//		 AbcUtil.unZipDesFromBase64File("D:\\test\\0000011000220190418000052",
-//				 "D:\\test\\0000011000220190418000052");
-//		 AbcUtil.unZipDesFromBase64File("D:\\test\\6500016000220190425000001",
-//				 "D:\\test\\6500016000220190425000001");
+		 AbcUtil.unZipDesFromBase64File("D:\\test\\0000011000320190605000001",
+		 "D:\\test\\0000011000320190605000001");
+//		 AbcUtil.unZipDesFromBase64File("D:\\test\\6500016000220190521000018",
+//				 "D:\\test\\6500016000220190521000018");
+//		 AbcUtil.unZipDesFromBase64File("D:\\test\\6500016000220190521000019",
+//				 "D:\\test\\6500016000220190521000019");
+//		System.out.println(new String(strn)+""+new String(strn).length());
+//		Map<String, Object> gdStatus = new HashMap<>();
+//		Map<String, Object> gdStatus1 = new HashMap<>();
+//		gdStatus.put("thread1", "2019/05/10 13:10:20");
+//		gdStatus.put("thread2", "2019/05/10 13:10:20");
+//		String num = JsonToObject.MapconsvertToJson(gdStatus).toJSONString();
+//		System.out.println(num);
+//		gdStatus1=JsonToObject.JSONconsvertToMap(JsonToObject.StringconsvertToJSONObject(num));
+//		String sql = "select * from clsjwjb";
+//		List list = jdbc.executeQuery(sql, null);
+//		System.out.println(JsonToObject.ListconsvertToJSON(list));
+//		for (int i = 0; i < 100; i++) {
+//			for (int j = 0; j < 5; j++) {
+//				if (j==4) {
+//					break;
+//				}else{
+//					System.out.println(j);
+//				}
+//			}
+//		}
 //		 get();
 //		 TestRestSafeOutAccess rds = TestRestSafeOutAccess.getInstance();
 //		 TestRestSafeOutAccess.rdsStatus();

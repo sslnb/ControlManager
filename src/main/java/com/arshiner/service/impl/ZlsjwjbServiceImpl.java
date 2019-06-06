@@ -3,6 +3,7 @@ package com.arshiner.service.impl;
 
 
 import com.arshiner.dao.ZlsjwjbMapper;
+import com.arshiner.model.Clsjwjb;
 import com.arshiner.model.Zlsjwjb;
 import com.arshiner.model.ZlsjwjbExample;
 import com.arshiner.service.ZlsjwjbService;
@@ -188,6 +189,13 @@ public class ZlsjwjbServiceImpl implements ZlsjwjbService {
 		example.setOrderByClause("gxsj desc");
 		return zlsjwjbMapper.selectByExample(example);
 	}
+	@Override
+	public List<Zlsjwjb> selectOrderByWjm(Zlsjwjb record) {
+		ZlsjwjbExample example = new  ZlsjwjbExample();
+		example.createCriteria().andWjmLessThanOrEqualTo(record.getWjm());
+		example.setOrderByClause("gxsj desc");
+		return zlsjwjbMapper.selectByExample(example);
+	}
 
 	@Override
 	public List<Zlsjwjb> selectChongchuan(Zlsjwjb record) {
@@ -213,5 +221,22 @@ public class ZlsjwjbServiceImpl implements ZlsjwjbService {
 		example.createCriteria().andJgxtlbEqualTo(jgxtlb).andWjmGreaterThanOrEqualTo(wjm);
 		zlsjwjbMapper.deleteByExample(example);
 		return 0;
+	}
+
+	@Override
+	public List<Zlsjwjb> selectwjzt1(Zlsjwjb record) {
+		ZlsjwjbExample example = new  ZlsjwjbExample();
+		example.createCriteria().andJgxtlbEqualTo(record.getJgxtlb())
+		.andWjztEqualTo(record.getWjzt());
+		example.setOrderByClause("gxsj desc");
+		 return zlsjwjbMapper.selectByExample(example);
+	}
+
+	@Override
+	public int updateByWjzt(Zlsjwjb record) {
+		ZlsjwjbExample example = new  ZlsjwjbExample();
+		example.createCriteria().andJgxtlbEqualTo(record.getJgxtlb())
+		.andWjmLessThanOrEqualTo(record.getWjm());
+		return zlsjwjbMapper.updateByExample(record, example);
 	}
 }

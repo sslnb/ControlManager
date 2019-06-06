@@ -22,7 +22,7 @@ public class TestLogToOraRecord {
     public static void analysisLogFile() {
         int iloop = 0;
         //站点总数，当前scn起始点，日志池路径
-        log2orarec.LogToOraRecord(isite, "0x0000.00000000", "E:/Workstation/190415/ControlManager (1)/ControlManager/log");     //初始化2站点
+        log2orarec.LogToOraRecord(isite, "0x0000.00000000", "C:\\Users\\MSI-PC\\Desktop\\Desktop\\1");     //初始化2站点
         log2orarec.getOraRecord().setType("2");              //增量为2
         log2orarec.getOraRecord().setXtlb("10");             //用参数替代
         log2orarec.getOraRecord().setAzdm("111");            //设置安装代码

@@ -112,9 +112,9 @@
                     success: function (data) {
                         //依据code值判定 0_失败 1.成功;
                         if (data.code == "0") {
-                            layer.msg("执行失败...");
+                        	layer.msg("执行成功...")
                         } else if (data.code == "1") {
-                            layer.closeAll("执行成功...");
+                        	layer.msg("执行失败...")
                         } else {
                             layer.msg("发生某种异常,执行失败...");
                         }
@@ -131,8 +131,6 @@
             url: "/ControlManager/baBhController/queryQJparams",	//访问路径(修改的Controller路径直接接收对象就行,日期在后端修改,添加备案那个方法里有获取日期的)
             dataType: "json",
             success: function (data) {
-                console.log(data.code);
-                alert(data.code);
                 //依据code值判定 0_失败 1.成功;
                 if (data.code == 1) {
                     layer.msg("执行失败...")

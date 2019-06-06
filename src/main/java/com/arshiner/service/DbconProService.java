@@ -18,6 +18,7 @@ public interface DbconProService {
 
     List<Dbconpro> selectByExample(Dbconpro record);
     List<Dbconpro> selectByExample();
+    List<Dbconpro> selectByLikeJgxtlb(String jgxtlb);
 
 
     /*全部*/

@@ -92,7 +92,7 @@ public class RzcjqjcsServiceImpl implements RzcjqjcsService {
 	@Override
 	public List<Rzcjqjcs> selectByCsmc(Rzcjqjcs record) {
 		RzcjqjcsExample example = new RzcjqjcsExample();
-		example.createCriteria().andGjzEqualTo(record.getGjz().trim()).andCsmcEqualTo(record.getCsmc().trim()).andMrzEqualTo(record.getMrz().trim());
+		example.createCriteria().andGjzEqualTo(record.getGjz().trim()).andMrzEqualTo(record.getMrz().trim());
 		return rzcjqjcsMapper.selectByExample(example);
 	}
 

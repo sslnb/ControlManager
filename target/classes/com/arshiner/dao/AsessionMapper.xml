@@ -80,6 +80,7 @@
 	</sql>
 	<select id="selectByExample" resultMap="BaseResultMap"
 		parameterType="com.arshiner.model.AsessionExample">
+		select * from(
 		select
 		distinct
 		<include refid="Base_Column_List" />
@@ -90,6 +91,8 @@
 		<if test="orderByClause != null">
 			order by ${orderByClause}
 		</if>
+		)
+		where rownum=1
 	</select>
 	<delete id="deleteByExample" parameterType="com.arshiner.model.AsessionExample">
 		delete from ADTMGR.ASESSION
@@ -215,6 +218,6 @@
 	</select>
 	<delete id="deletesession" parameterType="java.lang.String">
 		delete from
-		ADTMGR.ASESSION where jgxtlb =#{jgxtlb} and t &lt;#{t}
+		ADTMGR.ASESSION where jgxtlb =#{jgxtlb} and t &lt;to_char(trunc(sysdate)-10,'yyyy/mm/dd hh24:mi:ss')
 	</delete>
 </mapper>

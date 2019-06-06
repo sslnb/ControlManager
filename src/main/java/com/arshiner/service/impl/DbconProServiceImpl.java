@@ -149,5 +149,12 @@ public class DbconProServiceImpl implements DbconProService {
 		example.createCriteria().andJgxtlbEqualTo(dbconpro.getJgxtlb());
         return dbconproMapper.updateByExampleSelective(dbconpro, example);
     }
+
+	@Override
+	public List<Dbconpro> selectByLikeJgxtlb(String jgxtlb) {
+		DbconproExample example = new DbconproExample();
+		example.createCriteria().andJgxtlbLike(jgxtlb+"%");
+		return dbconproMapper.selectByExample(example);
+	}
 	
 }

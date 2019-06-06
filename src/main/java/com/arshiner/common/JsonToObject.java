@@ -103,7 +103,7 @@ public class JsonToObject extends ConvertUtilsBean {
 	 * @return
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String ListconsvertToJSON(List list) {
+	public synchronized static String ListconsvertToJSON(List list) {
 		List maplist = new ArrayList<>();
 		for (Object object : list) {
 			Map<String, String> strlist = (Map<String, String>) objectToMapStr(object);

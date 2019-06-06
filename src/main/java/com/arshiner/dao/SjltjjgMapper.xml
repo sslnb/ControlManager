@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arshiner.dao.SjltjjgMapper" >
+  <resultMap id="BaseResultMap" type="com.arshiner.model.Sjltjjg" >
+    <result column="HDPH" property="hdph" jdbcType="VARCHAR" />
+    <result column="BM" property="bm" jdbcType="VARCHAR" />
+    <result column="JGXTLB" property="jgxtlb" jdbcType="VARCHAR" />
+    <result column="TJRQ" property="tjrq" jdbcType="VARCHAR" />
+    <result column="TJSL" property="tjsl" jdbcType="DECIMAL" />
+    <result column="GXSJ" property="gxsj" jdbcType="TIMESTAMP" />
+    <result column="CSBJ" property="csbj" jdbcType="VARCHAR" />
+    <result column="BJCSBJ" property="bjcsbj" jdbcType="VARCHAR" />
+    <result column="TB_TIME" property="tbTime" jdbcType="TIMESTAMP" />
+    <result column="ZSAZDM" property="zsazdm" jdbcType="VARCHAR" />
+    <result column="SBZT" property="sbzt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    HDPH, BM, JGXTLB, TJRQ, TJSL, GXSJ, CSBJ, BJCSBJ, TB_TIME, ZSAZDM, SBZT
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.arshiner.model.SjltjjgExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ADTMGR.SJLTJJG
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.arshiner.model.SjltjjgExample" >
+    delete from ADTMGR.SJLTJJG
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.arshiner.model.Sjltjjg" >
+    insert into ADTMGR.SJLTJJG (HDPH, BM, JGXTLB, 
+      TJRQ, TJSL, GXSJ, 
+      CSBJ, BJCSBJ, TB_TIME, 
+      ZSAZDM, SBZT)
+    values (#{hdph,jdbcType=VARCHAR}, #{bm,jdbcType=VARCHAR}, #{jgxtlb,jdbcType=VARCHAR}, 
+      #{tjrq,jdbcType=VARCHAR}, #{tjsl,jdbcType=DECIMAL}, #{gxsj,jdbcType=TIMESTAMP}, 
+      #{csbj,jdbcType=VARCHAR}, #{bjcsbj,jdbcType=VARCHAR}, #{tbTime,jdbcType=TIMESTAMP}, 
+      #{zsazdm,jdbcType=VARCHAR}, #{sbzt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.arshiner.model.Sjltjjg" >
+    insert into ADTMGR.SJLTJJG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="hdph != null" >
+        HDPH,
+      </if>
+      <if test="bm != null" >
+        BM,
+      </if>
+      <if test="jgxtlb != null" >
+        JGXTLB,
+      </if>
+      <if test="tjrq != null" >
+        TJRQ,
+      </if>
+      <if test="tjsl != null" >
+        TJSL,
+      </if>
+      <if test="gxsj != null" >
+        GXSJ,
+      </if>
+      <if test="csbj != null" >
+        CSBJ,
+      </if>
+      <if test="bjcsbj != null" >
+        BJCSBJ,
+      </if>
+      <if test="tbTime != null" >
+        TB_TIME,
+      </if>
+      <if test="zsazdm != null" >
+        ZSAZDM,
+      </if>
+      <if test="sbzt != null" >
+        SBZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="hdph != null" >
+        #{hdph,jdbcType=VARCHAR},
+      </if>
+      <if test="bm != null" >
+        #{bm,jdbcType=VARCHAR},
+      </if>
+      <if test="jgxtlb != null" >
+        #{jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="tjrq != null" >
+        #{tjrq,jdbcType=VARCHAR},
+      </if>
+      <if test="tjsl != null" >
+        #{tjsl,jdbcType=DECIMAL},
+      </if>
+      <if test="gxsj != null" >
+        #{gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="csbj != null" >
+        #{csbj,jdbcType=VARCHAR},
+      </if>
+      <if test="bjcsbj != null" >
+        #{bjcsbj,jdbcType=VARCHAR},
+      </if>
+      <if test="tbTime != null" >
+        #{tbTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zsazdm != null" >
+        #{zsazdm,jdbcType=VARCHAR},
+      </if>
+      <if test="sbzt != null" >
+        #{sbzt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.arshiner.model.SjltjjgExample" resultType="java.lang.Integer" >
+    select count(*) from ADTMGR.SJLTJJG
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ADTMGR.SJLTJJG
+    <set >
+      <if test="record.hdph != null" >
+        HDPH = #{record.hdph,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bm != null" >
+        BM = #{record.bm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jgxtlb != null" >
+        JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tjrq != null" >
+        TJRQ = #{record.tjrq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tjsl != null" >
+        TJSL = #{record.tjsl,jdbcType=DECIMAL},
+      </if>
+      <if test="record.gxsj != null" >
+        GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.csbj != null" >
+        CSBJ = #{record.csbj,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bjcsbj != null" >
+        BJCSBJ = #{record.bjcsbj,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tbTime != null" >
+        TB_TIME = #{record.tbTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.zsazdm != null" >
+        ZSAZDM = #{record.zsazdm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sbzt != null" >
+        SBZT = #{record.sbzt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ADTMGR.SJLTJJG
+    set HDPH = #{record.hdph,jdbcType=VARCHAR},
+      BM = #{record.bm,jdbcType=VARCHAR},
+      JGXTLB = #{record.jgxtlb,jdbcType=VARCHAR},
+      TJRQ = #{record.tjrq,jdbcType=VARCHAR},
+      TJSL = #{record.tjsl,jdbcType=DECIMAL},
+      GXSJ = #{record.gxsj,jdbcType=TIMESTAMP},
+      CSBJ = #{record.csbj,jdbcType=VARCHAR},
+      BJCSBJ = #{record.bjcsbj,jdbcType=VARCHAR},
+      TB_TIME = #{record.tbTime,jdbcType=TIMESTAMP},
+      ZSAZDM = #{record.zsazdm,jdbcType=VARCHAR},
+      SBZT = #{record.sbzt,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

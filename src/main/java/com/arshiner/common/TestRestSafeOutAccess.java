@@ -1,10 +1,7 @@
 package com.arshiner.common;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -30,16 +27,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.arshiner.common.RestSafeRequestRds;
 import com.arshiner.model.Clsjwjb;
 import com.arshiner.model.Dbrzcjcs;
+import com.arshiner.model.Exeception;
 import com.arshiner.model.Rzcjqjcs;
 import com.arshiner.model.Zlsjwjb;
+import com.arshiner.quartz.service.ScheduleJobInService;
 import com.arshiner.service.ClsjwjbService;
 import com.arshiner.service.DbrzcjcsService;
+import com.arshiner.service.ExeceptionService;
 import com.arshiner.service.RzcjqjcsService;
 import com.arshiner.service.ZlsjwjbService;
 import com.tmri.bigdata.util.abc.AbcUtil;
 
 public class TestRestSafeOutAccess {
-	private static final Logger logger = Logger.getLogger(TestRestSafeOutAccess.class);
+	protected static final Logger logger = Logger.getLogger(TestRestSafeOutAccess.class);
 	public static String agxtip = "";
 	public static String agxtport = "";
 	public static String jklb = "";
@@ -47,23 +47,24 @@ public class TestRestSafeOutAccess {
 	public static String babh = "";
 	public static String mac = "";
 	public static int statusCode = 0;
-	private static TestRestSafeOutAccess trconfig = new TestRestSafeOutAccess();
+	protected static TestRestSafeOutAccess trconfig = new TestRestSafeOutAccess();
 	static ConfigManager config = new ConfigManager(ConfigManager.babh);
-	private static String user;
-	private static String pwd;
-	private static String url;
-	private static JDBCUtil jdbc;
+	protected static String user;
+	protected static String pwd;
+	protected static String url;
+	protected static JDBCUtil jdbc;
 	/**
 	 * 单表日志采集参数
 	 */
-	private DbrzcjcsService dbrzcjcsService;
+	protected DbrzcjcsService dbrzcjcsService;
+	protected ScheduleJobInService  scheduleJobInService;
 	/**
 	 * 日志采集全局参数
 	 */
-	private RzcjqjcsService rzcjqjcsService;
-	private ClsjwjbService clsjwjbService;
-	private ZlsjwjbService zlsjwjbService;
-
+	protected RzcjqjcsService rzcjqjcsService;
+	protected ClsjwjbService clsjwjbService;
+	protected ZlsjwjbService zlsjwjbService;
+	protected ExeceptionService execeptionService;
 	public static TestRestSafeOutAccess getInstance() {
 		if (trconfig == null) {
 			trconfig = new TestRestSafeOutAccess();
@@ -273,6 +274,9 @@ public class TestRestSafeOutAccess {
 		String jkid = "81Q01";
 		String UTF8Json = "[{}]";
 		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, UTF8Json);
+		if (result.equals("")) {
+			return null;
+		}
 		JSONObject jsonObject = JSON.parseObject(result);
 		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
 		String data = "";
@@ -283,7 +287,7 @@ public class TestRestSafeOutAccess {
 		if (map.get("code").toString().equals("0")) {
 			return null;
 		}
-		if (map.get("code").toString().equals("1") && !data.equals("") && !data.equals("null")) {
+		if (!map.get("code").toString().equals("0") && !data.equals("") && !data.equals("null")) {
 			try {
 				// STR 转 jsonArray
 				JSONArray myJsonArray = JSONArray.parseArray(data);
@@ -332,7 +336,7 @@ public class TestRestSafeOutAccess {
 			data = (String) map.get("data");
 		} catch (Exception e) {
 		}
-		if (map.get("code").toString().equals("1") && !data.equals("") && !data.equals("null")) {
+		if (!map.get("code").toString().equals("0") && !data.equals("") && !data.equals("null")) {
 			try {
 				// STR 转 jsonArray
 				JSONArray myJsonArray = JSONArray.parseArray(data);
@@ -359,6 +363,9 @@ public class TestRestSafeOutAccess {
 			}
 		} 
 	}
+
+
+
 	/**
 	 * 
 	 * @param param
@@ -367,13 +374,14 @@ public class TestRestSafeOutAccess {
 	 */
 	// 3.存量数据日志解析文件状态反馈接口
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void queryOldDataFileStatus1(String param, String oldpath, String filepath) throws Exception {
+	public String queryOldDataFileStatus(String param,String oldpath,String filepath) throws Exception {
 		String jkid = "81Q03";
+		String flag ="-1";
 		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, param);
 		if (!result.equals("")) {
 		} else {
 			logger.info("存量数据日志解析文件状态反馈接口获取参数失败： ");
-			return;
+			return flag;
 		}
 		JSONObject jsonObject = JSON.parseObject(result);
 		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
@@ -384,182 +392,10 @@ public class TestRestSafeOutAccess {
 		} catch (Exception e) {
 		}
 		logger.info("存量数据日志解析文件状态反馈接口参数刷新成功");
-
-		JSONArray myJsonArray = JSONArray.parseArray(data);
-		List<Map<String, Object>> mapListJson = (List) myJsonArray;
-		if (mapListJson == null) {
-			return;
-		}
-		try {
-			jdbc.getConnection(false);
-			for (Map<String, Object> map2 : mapListJson) {
-				for (Iterator<Entry<String, Object>> it = map2.entrySet().iterator(); it.hasNext();) {
-					Entry<String, Object> entry = it.next();
-					if (entry.getKey().equals("list")) {
-						List<Map<String, Object>> listmap = (List<Map<String, Object>>) entry.getValue();
-						if (listmap.isEmpty()) {
-							continue;
-						}
-						for (Map<String, Object> map3 : listmap) {
-							record.setWjm(map3.get("wjm").toString());
-
-							record.setWjzt(map3.get("wjzt").toString());
-							if (record.getWjzt().equals("3")) {
-								record.setScbjsj(getTime());
-								String sql ="update clsjwjb set wjzt=? scbjsj=? where wjm=?  ";
-								List  params = new ArrayList<>();
-								params.add(record.getWjzt());
-								params.add(record.getWjm());
-								params.add(record.getScbjsj());
-								jdbc.executeUpdate(sql, params);
-							}
-							if (record.getWjzt().equals("4")) {
-								record.setRksj(getTime());
-								File file = new File(oldpath + record.getWjm());
-								file.renameTo(new File(filepath + record.getWjm()));
-								String sql ="update clsjwjb set wjzt=? ,rksj=? where wjm<？";
-								List  params = new ArrayList<>();
-								params.add(record.getWjzt());
-								params.add(record.getWjm());
-								params.add(record.getRksj());
-								jdbc.executeUpdate(sql, params);
-							}
-							if (!record.getWjzt().equals("2") && !record.getWjzt().equals("4")) {
-								record.setSbzt("0");
-								String sql ="update clsjwjb set wjzt=? where wjm=?";
-								List  params = new ArrayList<>();
-								params.add(record.getWjzt());
-								params.add(record.getWjm());
-								params.add(record.getScbjsj());
-								jdbc.executeUpdate(sql, params);
-							}
-						}
-					}
-				}
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		jdbc.commit();
-		jdbc.closeDB();
-	}
-
-
-	/**
-	 * // 4.增量数据日志解析文件状态反馈接口 param 格式未知
-	 * 
-	 * @param param
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-	public void queryNewDataFileStatus1(String param, String oldpath, String filepath) throws Exception {
-		String jkid = "81Q04";
-		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, param);
-		if (!result.equals("")) {
-		} else {
-			logger.info("增量数据日志解析文件状态反馈接口获取参数失败： ");
-			return;
-		}
-		JSONObject jsonObject = JSON.parseObject(result);
-		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
-		String data = "";
-		try {
-			data = (String) map.get("data");
-
-		} catch (Exception e) {
-		}
-		if (data == null) {
-			return;
-		}
-		try {
-			JSONArray myJsonArray = JSONArray.parseArray(data);
-			List<Map<String, Object>> mapListJson = (List) myJsonArray;
-			Zlsjwjb record = new Zlsjwjb();
-			jdbc.getConnection(false);
-			for (Map<String, Object> map2 : mapListJson) {
-				for (Iterator<Entry<String, Object>> it = map2.entrySet().iterator(); it.hasNext();) {
-					Entry<String, Object> entry = it.next();
-					if (entry.getKey().equals("list")) {
-						List<Map<String, Object>> listmap = (List<Map<String, Object>>) entry.getValue();
-						for (Map<String, Object> map3 : listmap) {
-							record.setWjm(map3.get("wjm").toString());
-							record.setWjzt(map3.get("wjzt").toString());
-							if (record.getWjzt().equals("3")) {
-								record.setScbjsj(getTime());
-								String sql ="update zlsjwjb set wjzt=? scbjsj=? where wjm=?  ";
-								List  params = new ArrayList<>();
-								params.add(record.getWjzt());
-								params.add(record.getWjm());
-								params.add(record.getScbjsj());
-								jdbc.executeUpdate(sql, params);
-							}
-							if (record.getWjzt().equals("4")) {
-								record.setRksj(getTime());
-								File file = new File(oldpath + record.getWjm());
-								file.renameTo(new File(filepath + record.getWjm()));
-								String sql ="update zlsjwjb set wjzt=? ,rksj=? where wjm=?  ";
-								List  params = new ArrayList<>();
-								params.add(record.getWjzt());
-								params.add(record.getWjm());
-								params.add(record.getRksj());
-								jdbc.executeUpdate(sql, params);
-							}
-							if (!record.getWjzt().equals("2") && !record.getWjzt().equals("4")) {
-								record.setSbzt("0");
-								String sql ="update zlsjwjb set wjzt=? where wjm=?";
-								List  params = new ArrayList<>();
-								params.add(record.getWjzt());
-								params.add(record.getWjm());
-								params.add(record.getScbjsj());
-								jdbc.executeUpdate(sql, params);
-							}
-							String sql ="update zlsjwjb set wjzt=? where wjm=?";
-							List  params = new ArrayList<>();
-							params.add(record.getWjzt());
-							params.add(record.getWjm());
-							jdbc.executeUpdate(sql, params);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			logger.info(e);
-		}
-		jdbc.commit();
-		jdbc.closeDB();
-	}
-
-	/**
-	 * 
-	 * @param param
-	 *            数据格式
-	 * @throws Exception
-	 */
-	// 3.存量数据日志解析文件状态反馈接口
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void queryOldDataFileStatus(String param,String oldpath,String filepath) throws Exception {
-		String jkid = "81Q03";
-		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, param);
-		if (!result.equals("")) {
-		} else {
-			logger.info("存量数据日志解析文件状态反馈接口获取参数失败： ");
-			return;
-		}
-		JSONObject jsonObject = JSON.parseObject(result);
-		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
-		String data = "";
-		Clsjwjb record = new Clsjwjb();
-		try {
-			data = (String) map.get("data");
-		} catch (Exception e) {
-		}
-		logger.info("存量数据日志解析文件状态反馈接口参数刷新成功");
-
 		JSONArray myJsonArray = JSONArray.parseArray(data);
 		List<Map<String, Object>> mapListJson = (List) myJsonArray;
 		if (mapListJson==null) {
-			return ;
+			return flag;
 		}
 		for (Map<String, Object> map2 : mapListJson) {
 			for (Iterator<Entry<String, Object>> it = map2.entrySet().iterator(); it.hasNext();) {
@@ -567,7 +403,7 @@ public class TestRestSafeOutAccess {
 				if (entry.getKey().equals("list")) {
 					List<Map<String, Object>> listmap = (List<Map<String, Object>>) entry.getValue();
 					if (listmap.isEmpty()) {
-						return;
+						return flag;
 					}
 					for (Map<String, Object> map3 : listmap) {
 						record.setWjm(map3.get("wjm").toString());
@@ -579,19 +415,29 @@ public class TestRestSafeOutAccess {
 						}
 						if (record.getWjzt().equals("4")) {
 							record.setRksj(getTime());
-							File file = new File(oldpath+record.getWjm());
-							file.renameTo(new File(filepath+record.getWjm()));
-							clsjwjbService.updateByExample(record);
+							clsjwjbService.updateByWjzt(record);
+							File file = null;
+							List<Clsjwjb> cllist = clsjwjbService.selectOrderbyWJM(record);
+							for (Iterator iterator = cllist.iterator(); iterator.hasNext();) {
+								Clsjwjb clsjwjb = (Clsjwjb) iterator.next();
+								file = new File(FilePathName.ROOT+FilePathName.CLStanbyPath+FilePathName.FileSepeartor+clsjwjb.getWjm());
+								if (file.exists()) {
+									file.renameTo(new File(FilePathName.ROOT+FilePathName.CLDIDPath+FilePathName.FileSepeartor+clsjwjb.getWjm()));
+								}
+							}
+							
 						}
-						if (!record.getWjzt().equals("2")&&!record.getWjzt().equals("4")) {
+						if (!record.getWjzt().equals("2")&&!record.getWjzt().equals("4")
+								&&!record.getWjzt().equals("3")) {
 							record.setSbzt("0");
 							clsjwjbService.updateByExample(record);
+							flag ="0";
 						}
 					}
 				}
 			}
 		}
-
+		return flag;
 	}
 
 	/**
@@ -650,11 +496,18 @@ public class TestRestSafeOutAccess {
 									}
 									if (record.getWjzt().equals("4")) {
 										record.setRksj(getTime());
-										File file = new File(oldpath+record.getWjm());
-										file.renameTo(new File(filepath+record.getWjm()));
-										zlsjwjbService.updateByExampleSelective(record);
+										zlsjwjbService.updateByWjzt(record);
+										File file = null;
+										List<Zlsjwjb> zllist = zlsjwjbService.selectOrderByWjm(record);
+										for (Iterator<Zlsjwjb> iterator = zllist.iterator(); iterator.hasNext();) {
+											Zlsjwjb zlsjwjb = (Zlsjwjb) iterator.next();
+											file = new File(FilePathName.ROOT+FilePathName.ZLStanbyPath+FilePathName.FileSepeartor+zlsjwjb.getWjm());
+											if (file.exists()) {
+												file.renameTo(new File(FilePathName.ROOT+FilePathName.ZLDIDPath+FilePathName.FileSepeartor+zlsjwjb.getWjm()));
+											}
+										}
 									}
-									if (!record.getWjzt().equals("2")&&!record.getWjzt().equals("4")) {
+									if (!record.getWjzt().equals("3")&&!record.getWjzt().equals("2")&&!record.getWjzt().equals("4")) {
 										record.setSbzt("0");
 										zlsjwjbService.updateByExampleSelective(record);
 									}
@@ -714,14 +567,15 @@ public class TestRestSafeOutAccess {
 	 * @param param
 	 * @throws Exception
 	 */
-	public void buildOldDataStatusinfoJson(String param) throws Exception {
+	public String buildOldDataStatusinfoJson(String param) throws Exception {
 		String jkid = "81W03";
 		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, param);
 		if (!result.equals("")) {
 		} else {
 			logger.info("存量数据处理状态写入接口获取参数失败： ");
-			return;
+			return "";
 		}
+		logger.info(result);
 		JSONObject jsonObject = JSON.parseObject(result);
 		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
 		logger.info(map.get("code"));
@@ -733,9 +587,15 @@ public class TestRestSafeOutAccess {
 		if (map.get("code").toString().equals("1")) {
 			logger.info("存量数据处理状态写入接口参数刷新成功");
 		} else {
-			logger.info(map.get("message"));
+			Exeception record = new Exeception();
+			record.setJgxtlb(jkid);
+			record.setJobname("code"+map.get("code").toString()+":"+map.get("message").toString());
+			record.setDesciption(data);
+			execeptionService.saveOrupdate(record);
+			logger.info(result);
 			logger.info("存量数据处理状态写入接口81w03获取参数失败");
 		}
+		return map.get("code").toString();
 	}
 
 	/**
@@ -744,13 +604,13 @@ public class TestRestSafeOutAccess {
 	 * @param param
 	 * @throws Exception
 	 */
-	public boolean buildOldDataBrkinfoJson(String param) throws Exception {
+	public String buildOldDataBrkinfoJson(String param) throws Exception {
 		String jkid = "81W04";
 		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, param);
 		if (!result.equals("")) {
 		} else {
 			logger.info("存量数据块断点写入接口获取参数失败： ");
-			return false;
+			return "";
 		}
 		JSONObject jsonObject = JSON.parseObject(result);
 		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
@@ -762,9 +622,15 @@ public class TestRestSafeOutAccess {
 		if (map.get("code").toString().equals("1")) {
 			logger.info("存量数据块断点写入接口参数刷新成功");
 		} else {
+			logger.info(result);
+			Exeception record = new Exeception();
+			record.setJgxtlb(jkid);
+			record.setJobname("code"+map.get("code").toString()+":"+map.get("message").toString());
+			record.setDesciption(data);
+			execeptionService.saveOrupdate(record);
 			logger.info("存量数据块断点写入接口获取参数失败");
 		}
-		return true;
+		return map.get("code").toString();
 	}
 
 	/**
@@ -773,13 +639,13 @@ public class TestRestSafeOutAccess {
 	 * @param param
 	 * @throws Exception
 	 */
-	public boolean  buildOldFilenameJson(String param) throws Exception {
+	public String  buildOldFilenameJson(String param) throws Exception {
 		String jkid = "81W05";
 		String result = writeObjectRds(jklb, jkxlh, jkid, babh, mac, param);
 		if (!result.equals("")) {
 		} else {
 			logger.info("存量数据文件信息写入接口获取参数失败： ");
-			return false;
+			return "";
 		}
 		JSONObject jsonObject = JSON.parseObject(result);
 		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
@@ -791,9 +657,15 @@ public class TestRestSafeOutAccess {
 		if (map.get("code").toString().equals("1") && null!=data) {
 			logger.info("存量数据文件信息写入接口参数刷新成功");
 		} else {
+			Exeception record = new Exeception();
+			record.setJgxtlb(jkid);
+			record.setJobname("code"+map.get("code").toString()+":"+map.get("message").toString());
+			record.setDesciption(data);
+			execeptionService.saveOrupdate(record);
+			logger.info(result);
 			logger.info("存量数据文件信息写入接口获取参数失败");
 		}
-		return true;
+		return map.get("code").toString();
 	}
 
 	/**
@@ -821,6 +693,12 @@ public class TestRestSafeOutAccess {
 		if (map.get("code").toString().equals("1")) {
 			logger.info("增量数据断点写入接口参数刷新成功");
 		} else {
+			Exeception record = new Exeception();
+			record.setJgxtlb(jkid);
+			record.setJobname("code"+map.get("code").toString()+":"+map.get("message").toString());
+			record.setDesciption(data);
+			execeptionService.saveOrupdate(record);
+			logger.info(result);
 			logger.info("增量数据断点写入接口81W06获取参数失败");
 		}
 	}
@@ -849,6 +727,12 @@ public class TestRestSafeOutAccess {
 		if (map.get("code").toString().equals("1") && !data.equals("null")) {
 			logger.info("增量数据文件信息写入接口参数刷新成功");
 		} else {
+			Exeception record = new Exeception();
+			record.setJgxtlb(jkid);
+			record.setJobname("code"+map.get("code").toString()+":"+map.get("message").toString());
+			record.setDesciption(data);
+			execeptionService.saveOrupdate(record);
+			logger.info(result);
 			logger.info("增量数据文件信息写入接口获取参数失败");
 		}
 	}
@@ -878,42 +762,7 @@ public class TestRestSafeOutAccess {
 		return object;
 	}
 
-	public static String readFromFile(String fileName) throws Exception {
-		BufferedReader buffr = null;
-		FileInputStream fis = null;
-		InputStreamReader inr = null;
-		StringBuffer sb = new StringBuffer();
-		File file = new File(fileName);
-		if (!file.exists()) {
-			return null;
-		} else {
-			try {
-				fis = new FileInputStream(file);
-				inr = new InputStreamReader(fis, "UTF-8");
-				buffr = new BufferedReader(inr);
-				String line = null;
-				while ((line = buffr.readLine()) != null) {
-					sb.append(line);
-				}
-			} catch (Exception e) {
-				throw e;
-			} finally {
-
-				try {
-					if (fis != null)
-						fis.close();
-					if (inr != null)
-						inr.close();
-					if (buffr != null)
-						buffr.close();
-				} catch (IOException e) {
-					throw e;
-				}
-			}
-		}
-		return sb.toString();
-	}
-
+	
 	/**
 	 * 写入方法转成json
 	 * 
@@ -925,27 +774,6 @@ public class TestRestSafeOutAccess {
 		return JsonToObject.ListconsvertToJSON(list);
 	}
 
-
-	public static void main(String[] args) {
-		try {
-			// TestRestSafeOutAccess.queryGlobalParams();
-			// TestRestSafeOutAccess.querySingleParams();
-			// TestRestSafeOutAccess.buildOldDataBrkinfoJson();
-			// TestRestSafeOutAccess.buildOldFilenameJson();
-			// TestRestSafeOutAccess.buildOldDataStatusinfoJson();
-			// TestRestSafeOutAccess.buildNewDataBrkinfoJson();
-			// TestRestSafeOutAccess.buildNewFilenameJson();
-			// TestRestSafeOutAccess.buildDDLDataJson();
-			// TestRestSafeOutAccess.buildGatherStatisticsJson();
-			// TestRestSafeOutAccess.buildTaskStatusJson();
-			// TestRestSafeOutAccess.queryOldDataFileStatus();
-			// TestRestSafeOutAccess.queryNewDataFileStatus();
-			// TestRestSafeOutAccess.parseQueryResult();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	private static String calYwlsh(RestSafeRequestRds restSafeRequest) {
 		StringBuilder sb = new StringBuilder();
@@ -990,6 +818,12 @@ public class TestRestSafeOutAccess {
 
 	public void setClsjwjbService(ClsjwjbService clsjwjbService) {
 		this.clsjwjbService = clsjwjbService;
+	}
+	public ExeceptionService getExeceptionService() {
+		return execeptionService;
+	}
+	public void setExeceptionService(ExeceptionService execeptionService) {
+		this.execeptionService = execeptionService;
 	}
 
 }

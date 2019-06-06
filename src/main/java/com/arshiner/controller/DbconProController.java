@@ -57,7 +57,7 @@ public class DbconProController {
 		for (int i = 0; i < dbconprolist.size(); i++) {
 			Dbconpro dbconpro = dbconprolist.get(i);
 			JDBCUtil jdbc = new JDBCUtil(dbconpro.getUsername(), dbconpro.getPassword(), dbconpro.getIp(),
-					dbconpro.getPort(), dbconpro.getSid());
+					dbconpro.getPort(),dbconpro.getServicename());
 			boolean flag = jdbc.getConnection();
 			if (flag) {
 				dbconpro.setSyljas("连接正常");

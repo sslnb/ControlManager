@@ -171,9 +171,7 @@ public class SiteSCNObj {
 			} else {
 				sfile = getSiteFileList(site);
 			}
-		} else {
-			logger.info(sfile + "----============555555=======------------------------" + curfile);
-		}
+		} 
 		return sfile;
 	}
 
@@ -243,8 +241,9 @@ public class SiteSCNObj {
 		}
 		for (int i = 0; i < j - 3; i++) {
 			if (sitefilelist.get(index).get(i).toString().compareTo(ssite + deletescn + ".log") < 0) {
-				deleteFile(sdir + File.separator + sitefilelist.get(index).get(i).toString());
-				logger.info("删除文件----------delete--------" + sitefilelist.get(index).get(i).toString());
+//				deleteFile(sdir + File.separator + sitefilelist.get(index).get(i).toString());
+				moveFile(sdir + File.separator + sitefilelist.get(index).get(i).toString(), sdir+"_old" + File.separator + sitefilelist.get(index).get(i).toString());
+				logger.info("删除文件----------movefile--------" +  sdir+"_old" + File.separator + sitefilelist.get(index).get(i).toString());
 			} else {
 				break;
 			}
@@ -288,7 +287,7 @@ public class SiteSCNObj {
 		return currentfile; // + nextfile;
 	}
 
-	public static boolean deleteFile(String sPath) {
+	public  boolean deleteFile(String sPath) {
 		boolean flag = false;
 		File file = new File(sPath);
 		// 路径为文件且不为空则进行删除
@@ -298,5 +297,15 @@ public class SiteSCNObj {
 		}
 		return flag;
 	}
-
+	public  boolean moveFile(String oldPath,String newPath) {
+		boolean flag = false;
+		File file = new File(oldPath);
+		// 路径为文件且不为空则进行删除
+		if (file.isFile() && file.exists()) {
+			file.renameTo(new File(newPath));
+			flag = true;
+		}
+		return flag;
+	}
+	
 }

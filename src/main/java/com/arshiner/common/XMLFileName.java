@@ -22,10 +22,13 @@ public class XMLFileName {
 	public static final Integer maxCount = 999999;
 	public static final String zlfileType = "2";
 	public static final String clfileType = "1";
+	public static final String hdfileType = "3";
 	public static ConcurrentHashMap<String, Integer> zlcountMap = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<String, Integer> clcountMap = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, Integer> hdcountMap = new ConcurrentHashMap<>();
 	public static Map<String,List<String>> clNameMap= new HashMap<>();
 	public static Map<String,List<String>> zlNameMap= new HashMap<>();
+	public static Map<String,List<String>> hdNameMap= new HashMap<>();
 	public static XMLFileName single = new XMLFileName();
 	public static int initdaytime = 0;
 	public static final int num = 6;
@@ -85,9 +88,26 @@ public class XMLFileName {
 			jdbc.getConnection();
 			// 今天的增量文件是否有生成如果没有 设置zl计数为0
 			String clsql = "select wjm from "
-					+ "(select * From zlsjwjb  where  jgxtlb='"+jgxtlb+"' and to_char(scsj,'dd')=to_char(sysdate,'dd') and wjm like'%"+jgxtlb+"2"+format.format(new Date())+"%' order by wjm desc) where rownum<10"
+					+ "(select * From zlsjwjb  where  jgxtlb='"+jgxtlb+"' and to_char(scsj,'mm')=to_char(sysdate,'mm') and wjm like'%"+jgxtlb+"2"+format.format(new Date())+"%' order by wjm desc) where rownum<10"
 					+ " order by wjm asc ";
 			zlNameMap.put(jgxtlb, jdbc.executeQueryClec(jgxtlb,clsql,"zl"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		jdbc.closeDB();
+	}
+	public static void reHdfile(String jgxtlb) {
+		/**
+		 * 使用jdbc进行获取，相同jgxtlb和ip的 select ip,zlindex from dbconpro;
+		 */
+		JDBCUtil jdbc = new JDBCUtil(user, pwd, url, port, sid);
+		try {
+			jdbc.getConnection();
+			// 今天的增量文件是否有生成如果没有 设置zl计数为0
+			String clsql = "select wjm from "
+					+ "(select * From hdsjwjxxb  where  jgxtlb='"+jgxtlb+"' and to_char(scsj,'mm')=to_char(sysdate,'mm') and wjm like'%"+jgxtlb+"2"+format.format(new Date())+"%' order by wjm desc) where rownum<10"
+					+ " order by wjm asc ";
+			hdNameMap.put(jgxtlb, jdbc.executeQueryClec(jgxtlb,clsql,"hd"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -102,7 +122,7 @@ public class XMLFileName {
 		try {
 			jdbc.getConnection();
 			String clsql = "select wjm from "
-					+ "(select * From clsjwjb  where  jgxtlb='"+jgxtlb+"' and to_char(scsj,'dd')=to_char(sysdate,'dd')  order by wjm desc) where rownum<10 "
+					+ "(select * From clsjwjb  where  jgxtlb='"+jgxtlb+"' and to_char(scsj,'mm')=to_char(sysdate,'mm')  order by wjm desc) where rownum<10 "
 					+ " order by wjm asc ";
 			clNameMap.put(jgxtlb, jdbc.executeQueryClec(jgxtlb,clsql,"cl"));
 			
@@ -110,7 +130,6 @@ public class XMLFileName {
 			e.printStackTrace();
 		}
 		jdbc.closeDB();
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -166,7 +185,7 @@ public class XMLFileName {
 		return filename.toString();
 	}
 
-	public synchronized String getClycName(String jgxtlb){
+	public static synchronized String getClycName(String jgxtlb){
 		String name = clNameMap.get(jgxtlb).get(0);
 		clNameMap.get(jgxtlb).remove(0);
 		return  name;
@@ -179,47 +198,69 @@ public class XMLFileName {
 	 */
 	public synchronized String getXmlFileName(String model, String jgxtlb) {
 		StringBuffer filename = new StringBuffer();
-		Integer zlxmlCount = 0;
-		Integer clxmlCount = 0;
+		Integer xmlCount = 0;
 		if (model.equals("zl")) {
 			if (zlcountMap.get(jgxtlb) == null || zlcountMap.get(jgxtlb).equals("")) {
-				zlxmlCount = 0;
+				xmlCount = 0;
 			} else {
-				zlxmlCount = zlcountMap.get(jgxtlb);
+				xmlCount = zlcountMap.get(jgxtlb);
 			}
 			filename.append(XMLFileName.zlfileType);
 			filename.append(getCurrentDate());
-			if (zlxmlCount <= maxCount && zlxmlCount != 0) {
-				zlxmlCount++;
-				zlcountMap.put(jgxtlb, zlxmlCount);
-				filename.append(XMLFileName.autoGenericCode(zlxmlCount));
+			if (xmlCount <= maxCount && xmlCount != 0) {
+				xmlCount++;
+				zlcountMap.put(jgxtlb, xmlCount);
+				filename.append(XMLFileName.autoGenericCode(xmlCount));
 			} else {
-				zlxmlCount = 0;
-				zlxmlCount++;
-				zlcountMap.put(jgxtlb, zlxmlCount);
-				filename.append(XMLFileName.autoGenericCode(zlxmlCount));
+				xmlCount = 0;
+				xmlCount++;
+				zlcountMap.put(jgxtlb, xmlCount);
+				filename.append(XMLFileName.autoGenericCode(xmlCount));
 			}
 		}
 		if (model.equals("cl")) {
 			if (clcountMap.get(jgxtlb) == null || clcountMap.get(jgxtlb).equals("")) {
-				clxmlCount = 0;
+				xmlCount = 0;
 			} else {
-				clxmlCount = clcountMap.get(jgxtlb);
+				xmlCount = clcountMap.get(jgxtlb);
 			}
 			filename.append(XMLFileName.clfileType);
 			filename.append(getCurrentDate());
 			if (null!=clNameMap.get(jgxtlb)&&!clNameMap.get(jgxtlb).isEmpty()) {
 				return getClycName(jgxtlb);
 			}else{
-				if (clxmlCount <= maxCount && clxmlCount != 0) {
-					clxmlCount++;
-					filename.append(XMLFileName.autoGenericCode(clxmlCount));
-					clcountMap.put(jgxtlb, clxmlCount);
+				if (xmlCount <= maxCount && xmlCount != 0) {
+					xmlCount++;
+					filename.append(XMLFileName.autoGenericCode(xmlCount));
+					clcountMap.put(jgxtlb, xmlCount);
 				} else {
-					clxmlCount = 0;
-					clxmlCount++;
-					filename.append(XMLFileName.autoGenericCode(clxmlCount));
-					clcountMap.put(jgxtlb, clxmlCount);
+					xmlCount = 0;
+					xmlCount++;
+					filename.append(XMLFileName.autoGenericCode(xmlCount));
+					clcountMap.put(jgxtlb, xmlCount);
+				}
+			}
+		}
+		if (model.equals("hd")) {
+			if (null != hdcountMap.get(jgxtlb) &&! hdcountMap.get(jgxtlb).equals("")) {
+				xmlCount = hdcountMap.get(jgxtlb);
+			} else {
+				xmlCount = 0;
+			}
+			filename.append(XMLFileName.hdfileType);
+			filename.append(getCurrentDate());
+			if (null!=hdNameMap.get(jgxtlb)&&!hdNameMap.get(jgxtlb).isEmpty()) {
+				return getClycName(jgxtlb);
+			}else{
+				if (xmlCount <= maxCount && xmlCount != 0) {
+					xmlCount++;
+					filename.append(XMLFileName.autoGenericCode(xmlCount));
+					hdcountMap.put(jgxtlb, xmlCount);
+				} else {
+					xmlCount = 0;
+					xmlCount++;
+					filename.append(XMLFileName.autoGenericCode(xmlCount));
+					hdcountMap.put(jgxtlb, xmlCount);
 				}
 			}
 		}

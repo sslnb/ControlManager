@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.jna.platform.win32.Netapi32Util.User;
+
 /**
  * JDBC工具类
  * 
@@ -508,6 +510,20 @@ public class JDBCUtil {
 		}
 		return size;
 	}
+	public int getCount(String sql) {
+		int size = 0;
+		try {
+			resultSet = getResultSet(sql);
+			while (resultSet.next()) {
+				size = resultSet.getInt("c");
+			}
+		} catch (SQLException e) {
+			System.out.println("执行sql：" + sql + " 失败！");
+		} finally {
+			resultSet = null;
+		}
+		return size;
+	}
 
 	public void setPreAndSux2() {
 		int size = end - pre;
@@ -825,6 +841,28 @@ public class JDBCUtil {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			flag =getConnection1();
+		}
+		return flag;
+	}
+	/**
+	 * 驱动注册和连接
+	 * 
+	 * @throws SQLException
+	 */
+	public boolean getConnection1(){
+		// 注册驱动
+		boolean flag =true;
+		registeredDriver();
+		String URL = "jdbc:oracle:thin:@" + ip + ":" + port + ":" + SID;
+		try {
+			
+			DriverManager.setLoginTimeout(1);
+			con = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+			con.setAutoCommit(true);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			flag =false;
 		}
 		return flag;
@@ -888,7 +926,7 @@ public class JDBCUtil {
 						sql =db.getSql(1);
 						System.out.println(sql);
 						resultSet = db.getResultSet(sql);
-						sax.createXMLDatalist1(resultSet, taskID,db.getPre(), db.getTimeFied(),db);
+						sax.createXMLDatalist1(resultSet, db.getTimeFied());
 						resultSet = null;
 						db.stmt.close();
 						db.resultSet.close();
@@ -1186,6 +1224,8 @@ public class JDBCUtil {
 				if (resultSet.getObject(i) != null) {
 					if (rsMeta.getColumnTypeName(i).equals("DATE")) {
 						value = dd.format(resultSet.getTimestamp(i));
+					} else if (rsMeta.getColumnTypeName(i).equals("TIMESTAMP")) {
+						value = dd.format(resultSet.getTimestamp(i));
 					} else {
 						value = resultSet.getString(i);
 					}
@@ -1253,24 +1293,26 @@ public class JDBCUtil {
 		List<String> list = new ArrayList<>();
 		pstmt = con.prepareStatement(sql);
 		resultSet = pstmt.executeQuery();
-		int loop=1;
+		int loop=-1;
 		int num=0;
 		while (resultSet.next()) {
 			num= Integer.valueOf(resultSet.getString("WJM").substring(resultSet.getString("WJM").length()-6, resultSet.getString("WJM").length()));
-			if (1==loop) {
+			if (-1==loop) {
 				loop= Integer.valueOf(resultSet.getString("WJM").substring(resultSet.getString("WJM").length()-6, resultSet.getString("WJM").length()));
 			}else{
 				loop++;
 			}
 			for (int i = loop; i <num; i++) {
-				 list.add(resultSet.getString("WJM").substring(0, 18)+String.format("%06d", loop));
+				 list.add(resultSet.getString("WJM").substring(0, 19)+String.format("%06d", loop));
 				 loop++;
 			}
 		}
 		if (model.equals("cl")) {
 			XMLFileName.clcountMap.put(jgxtlb, num);
-		}else{
+		}else if(model.equals("zl")){
 			XMLFileName.zlcountMap.put(jgxtlb, num);
+		}else {
+			XMLFileName.hdcountMap.put(jgxtlb, num);
 		}
 		return list;
 		
@@ -1361,21 +1403,20 @@ public class JDBCUtil {
 
 	public void setTimeFied(String timeFied) {
 		this.timeFied = timeFied;
-		if (timeFied.equals("*")||timeFied.equals("")||timeFied==null) {
+		if (timeFied.equals("*")||timeFied.equals("")||null==timeFied) {
 			this.timeFied="rowid";
 		}
-		String sql = "select " + timeFied + " from " + schema + "." + tb_name;
+		String sql = "select " + timeFied + " from " + schema + "." + tb_name+" where rownum=1";
 		try {
 			stmt = con.prepareStatement(sql);
 			System.out.println(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			ResultSetMetaData dataset = rs.getMetaData();
-			rs.close();
-			stmt = null;
 			for (int i = 1; i <= dataset.getColumnCount(); i++) {
 				this.timeFiedType = dataset.getColumnTypeName(i).toUpperCase();
-
 			}
+			rs.close();
+			stmt = null;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -78,29 +78,29 @@ public class SAXCreate {
 	private ClsjkddbService clsjkddbService;
 	private DbrzcjcsService dbrzcjcsService;
 	private static final Logger logger = Logger.getLogger(SAXCreate.class);
-	private Dbconpro dbConpro;
-	private DbconProService dbconProService;
-	private Integer rownum = 1;
-	private Clsjwjb clsjwj;
-	private Clsjkddb clsjkdd;
-	private XMLFileName xmlfilename = XMLFileName.getInstance();
-	private final SAXTransformerFactory tff = (SAXTransformerFactory) SAXTransformerFactory.newInstance();// 1.创建一个TransformerFactory类的对象
-	private String sjk = ""; // 当前数据块文件名
-	private TransformerHandler handler;// 创建sax解析的处理类
-	private Transformer tr;//
-	private AttributesImpl attr;// 属性接口
-	private boolean documentStatus = false;// 文档状态
-	private File f = null;// 写入的文件
-	private FileOutputStream fis;
-	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
-	private SimpleDateFormat t = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	public Dbconpro dbConpro;
+	public DbconProService dbconProService;
+	public Integer rownum = 1;
+	public Clsjwjb clsjwj;
+	public Clsjkddb clsjkdd;
+	public XMLFileName xmlfilename = XMLFileName.getInstance();
+	public final SAXTransformerFactory tff = (SAXTransformerFactory) SAXTransformerFactory.newInstance();// 1.创建一个TransformerFactory类的对象
+	public String sjk = ""; // 当前数据块文件名
+	public TransformerHandler handler;// 创建sax解析的处理类
+	public Transformer tr;//
+	public AttributesImpl attr;// 属性接口
+	public boolean documentStatus = false;// 文档状态
+	public File f = null;// 写入的文件
+	public FileOutputStream fis;
+	public SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
+	public SimpleDateFormat t = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private TreeMap<String, Object> tree;
 	private int filecount = 0;
 	private int wjq = 0;
 	private int sjl = 0;
 	private String wjsjcq = "";
-	private String sjcz = "";
+	public String sjcz = "";
 	private ZlsjwjbService zlsjwjbService;
 	private ZlsjddbService zlsjddbService;
 	private AsessionService asessionService;
@@ -147,7 +147,7 @@ public class SAXCreate {
 	 * @param url
 	 * @param com.arshiner.quartz.model
 	 */
-	public void createXMLHead(String url, boolean model) {
+	public void createXMLHead(String url) {
 		try {
 			handler = tff.newTransformerHandler();
 			tr = handler.getTransformer();
@@ -160,6 +160,7 @@ public class SAXCreate {
 			if (!f.exists()) {
 				f.createNewFile();
 			}
+			sjk=url;
 			fis = new FileOutputStream(f, false);
 			Result result = new StreamResult(fis);
 			handler.setResult(result);
@@ -205,7 +206,7 @@ public class SAXCreate {
 	 * @param serial
 	 * @throws SAXException
 	 */
-	public void createXMLTitle(TreeMap<String, Object> rootchild, boolean model) throws SAXException {
+	public void createXMLTitle(TreeMap<String, Object> rootchild) throws SAXException {
 		if (documentStatus == true) {
 			attr.clear();
 			handler.startElement("", "", "root", attr);
@@ -263,14 +264,14 @@ public class SAXCreate {
 	 * 
 	 * @throws ParseException
 	 */
-	public String yestday(String t2) throws ParseException {
-		Date time = t.parse(t2);
-		Date t1 = new Date(time.getTime() - (84600000L * 30));
-		return t.format(t1);
-	}
 
 	int indmlnum = 0;
-
+	int ninsertCount = 0;
+	int nupdateCount = 0;
+	int ndeleteCount = 0;
+	Asession session =null;
+	String machine ="";
+	String program ="";
 	public boolean createXMLTransactionList(LogToOraRecord log2orarec, int wjzdz, OraRecord oraLogObject) {
 		try {
 			ArrayList<OraTransObject> translist = oraLogObject.translist;
@@ -292,28 +293,26 @@ public class SAXCreate {
 				trannum = translist.size();
 				return false;
 			}
-			String t1 = "";
+			String t2 = "";
 			Date time = null;
 			try {
 				time = d.parse(oraTransInfo.ora_time);
-				t1 = t.format(time);
+				t2 = t.format(time);
+				oraTransInfo.ora_time=format.format(time);
 			} catch (Exception e) {
 			}
 			// 已经转好了从10进制转成16
-			if (t1 == null) {
-				t1 = "";
+			Asession session = asessionService.selsession1(dbConpro.getJgxtlb(), oraTransInfo.sid, oraTransInfo.serial,
+					t2);
+			if (null==session) {
+				oraTransInfo.setOra_client(machine);
+				oraTransInfo.setOra_program(program);
+			}else{
+				oraTransInfo.setOra_client(session.getMachine());
+				machine =session.getMachine();
+				program = session.getProgram();
+				oraTransInfo.setOra_program(session.getProgram());
 			}
-			Asession session = asessionService.selsession(dbConpro.getJgxtlb(), oraTransInfo.sid, oraTransInfo.serial,
-					t1);
-			if (session == null) {
-				session = new Asession();
-				session.setSid("NOT FOUND");
-				session.setSerial("NOT FOUND");
-				session.setMachine("NOT FOUND");
-				session.setProgram("NOT FOUND");
-			}
-			oraTransInfo.setOra_client(session.getMachine());
-			oraTransInfo.setOra_program(session.getProgram());
 			String lx = "";
 			String dblx = "";
 			String[] split;
@@ -324,32 +323,22 @@ public class SAXCreate {
 				dbrzcs = dbmap.get(oraDMLInfo.getTab_name().toUpperCase());
 				if (null == dbrzcs) {
 					iterator.remove();
+					logger.info("单表参数为空"+log2orarec.getCurrentSCN()+oraDMLInfo.getTab_name().toUpperCase()+"此dml删除");
 					continue;
 				}
 				lx = session.getProgram().toUpperCase();
-				if (lx.equals("NOT FOUND")) {
+				if (lx.equals("")) {
+					//把没有刷到session的地方过滤掉
 					iterator.remove();
-					if (oraDMLInfo.getTab_action().equals("delete")) {
-						oraLogObject.deleteCount--;
-					} else if (oraDMLInfo.getTab_action().equals("update")) {
-						oraLogObject.updateCount--;
-					} else if (oraDMLInfo.getTab_action().equals("insert")) {
-						oraLogObject.insertCount--;
-					}
+					logger.info("删除，NO"+log2orarec.getCurrentSCN()+oraDMLInfo.getTab_name().toUpperCase()+"此dml删除");
 					continue;
 				}
-				if (dbrzcs.getZlkhdgllx() == null) {
+				if (dbrzcs.getZlkhdgllx() == null) {//客户端过滤类型
 				} else if (!dbrzcs.getZlkhdgllx().toUpperCase().contains("#")) {
 					dblx = dbrzcs.getZlkhdgllx().toUpperCase();
 					if (lx.startsWith(dblx)) {
-						if (oraDMLInfo.getTab_action().equals("delete")) {
-							oraLogObject.deleteCount--;
-						} else if (oraDMLInfo.getTab_action().equals("update")) {
-							oraLogObject.updateCount--;
-						} else if (oraDMLInfo.getTab_action().equals("insert")) {
-							oraLogObject.insertCount--;
-						}
 						iterator.remove();
+						logger.info("客户端过滤删除----"+log2orarec.getCurrentSCN()+oraDMLInfo.getTab_name().toUpperCase()+"此dml删除");
 						continue;
 					}
 				} else {
@@ -357,51 +346,35 @@ public class SAXCreate {
 					split = dblx.split("#");
 					for (String khd : split) {
 						if (lx.startsWith(khd)) {
-							if (oraDMLInfo.getTab_action().equals("delete")) {
-								oraLogObject.deleteCount--;
-							} else if (oraDMLInfo.getTab_action().equals("update")) {
-								oraLogObject.updateCount--;
-							} else if (oraDMLInfo.getTab_action().equals("insert")) {
-								oraLogObject.insertCount--;
-							}
 							iterator.remove();
+							logger.info("客户端过滤删除----"+log2orarec.getCurrentSCN()+oraDMLInfo.getTab_name().toUpperCase()+"此dml删除");
 							continue;
 						}
 					}
 				}
 				clzt = ztmap.get(dbrzcs.getBm());
-				if (clzt.getCjzt().equals("1")) {
-					if (oraDMLInfo.getTab_action().equals("delete")) {
-						deleteCount++;
-						oraLogObject.deleteCount--;
-					} else if (oraDMLInfo.getTab_action().equals("update")) {
-						updateCount++;
-						oraLogObject.updateCount--;
-					} else if (oraDMLInfo.getTab_action().equals("insert")) {
-						insertCount++;
-						oraLogObject.insertCount--;
+				if (!dbrzcs.getClcjbj().equals("0")) {//存量是否采集，
+					if (null==clzt||!clzt.getCjzt().equals("2")) {//是否采集完成存量
+						if (dmlhc.containsKey(dbrzcs.getBm())) {
+							dmlhc.get(dbrzcs.getBm()).add(oraDMLInfo);
+							iterator.remove();
+						} else {
+							List<OraDMLObject> list = new ArrayList<>();
+							list.add(oraDMLInfo);
+							iterator.remove();
+							dmlhcmap.put(dbrzcs.getBm(), list);
+							dmlhc.putAll(dmlhcmap);
+							list = null;
+							dmlhcmap = null;
+						}
+						continue;
 					}
-					if (dmlhc.containsKey(dbrzcs.getBm())) {
-						dmlhc.get(dbrzcs.getBm()).add(oraDMLInfo);
-						iterator.remove();
-					} else {
-						List<OraDMLObject> list = new ArrayList<>();
-						list.add(oraDMLInfo);
-						iterator.remove();
-						dmlhcmap.put(dbrzcs.getBm(), list);
-						dmlhc.putAll(dmlhcmap);
-						list = null;
-						dmlhcmap = null;
-					}
-					continue;
 				}
 			}
 			if (!dmlhc.isEmpty()) {
 				for (Entry<String, List<OraDMLObject>> entry : dmlhc.entrySet()) {
-					System.out.println("此事务中缓存的"+entry.getValue().size());
 					if (RedisHct.bmhc.containsKey(entry.getKey())) {
 						RedisHct.bmhc.get(entry.getKey()).put(oraTransInfo, entry.getValue());
-						System.out.println("RedisHct.bmhc-1111111--几个事务-1111111------1"+RedisHct.bmhc.get(entry.getKey()).size());
 					} else {
 						LinkedHashMap<OraTransObject, List<OraDMLObject>> tranhc = new LinkedHashMap<>();
 						tranhc.put(oraTransInfo, entry.getValue());
@@ -424,8 +397,8 @@ public class SAXCreate {
 			if (!documentStatus) {
 				// 文件头
 				sjk = getZLXMLName();// 自己设置文件名作为属性
-				logger.info("增量  ---------新建文件名");
-				createXMLHead(sjk, false);
+				logger.info("增量  -------"+log2orarec.getCurrentLogfile()+"--新建文件名"+sjk);
+				createXMLHead(sjk);
 				createZLHead();
 			}
 			attr.clear();
@@ -440,7 +413,7 @@ public class SAXCreate {
 			handler.characters(session.getMachine().toCharArray(), 0, session.getMachine().toString().length());
 			handler.endElement("", "", "ora_client");
 			handler.startElement("", "", "ora_time", attr);
-			handler.characters(format.format(time).toCharArray(), 0, format.format(time).length());
+			handler.characters(oraTransInfo.ora_time.toCharArray(), 0, oraTransInfo.ora_time.length());
 			handler.endElement("", "", "ora_time");
 			handler.startElement("", "", "ora_program", attr);
 			handler.characters(session.getProgram().toCharArray(), 0, session.getProgram().length());
@@ -468,6 +441,13 @@ public class SAXCreate {
 				handler.startElement("", "", "tab_action", attr);
 				handler.characters(oraDMLInfo1.getTab_action().toCharArray(), 0, oraDMLInfo1.getTab_action().length());
 				handler.endElement("", "", "tab_action");
+				if (oraDMLInfo1.getTab_action().equals("update")) {
+					nupdateCount++;
+				}else if (oraDMLInfo1.getTab_action().equals("insert")) {
+					ninsertCount++;
+				}else  if (oraDMLInfo1.getTab_action().equals("delete")) {
+					ndeleteCount++;
+				}
 				// where_value old_value data_value 都需要判断是否为空
 				HashMap<String, String> where_value = oraDMLInfo1.getWhere_value();
 				HashMap<String, String> old_value = oraDMLInfo1.getOld_value();
@@ -522,7 +502,6 @@ public class SAXCreate {
 			// 关闭
 			fis.flush();
 			session = null;
-			t1 = null;
 			time = null;
 			if (f.length() >= wjzdz) {
 				createZLXMLEnd(oraLogObject);
@@ -585,9 +564,9 @@ public class SAXCreate {
 			fis.close();
 			fis = null;
 			zlsjwjb.setWjdx(new BigDecimal(f.length() / 1024));
-			zlsjwjb.setSjlinsert(new BigDecimal(oraLogObject.insertCount));
-			zlsjwjb.setSjlupdate(new BigDecimal(oraLogObject.updateCount));
-			zlsjwjb.setSjldelete(new BigDecimal(oraLogObject.deleteCount));
+			zlsjwjb.setSjlinsert(new BigDecimal(ninsertCount));
+			zlsjwjb.setSjlupdate(new BigDecimal(nupdateCount));
+			zlsjwjb.setSjldelete(new BigDecimal(ndeleteCount));
 			if (!oraLogObject.startSCN.equals("")) {
 				zlsjwjb.setScnq(new BigDecimal(HexToTen(oraLogObject.startSCN)));
 			}
@@ -622,6 +601,9 @@ public class SAXCreate {
 			zlsjddbService.saveOrupdate(zlsjddb);
 			zlsjddb = null;
 			zlsjwjb = null;
+			ninsertCount = 0;
+			nupdateCount = 0;
+			ndeleteCount = 0;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			int num = XMLFileName.zlcountMap.get(dbConpro.getJgxtlb()) - 1;
@@ -657,7 +639,7 @@ public class SAXCreate {
 					long b = new Date().getTime();
 					sjk = FilePathName.ROOT + dbConpro.getJgxtlb() + FilePathName.FileSepeartor
 							+ FilePathName.ZLStanbyPath + FilePathName.FileSepeartor + bm1 + b;// 自己设置文件名作为属性
-					createXMLHead(sjk, false);
+					createXMLHead(sjk);
 					createZLHead();
 				}
 				OraTransObject oraTransInfo = entry.getKey();
@@ -675,7 +657,7 @@ public class SAXCreate {
 						oraTransInfo.ora_client.toString().length());
 				handler.endElement("", "", "ora_client");
 				handler.startElement("", "", "ora_time", attr);
-				handler.characters(oraTransInfo.getOra_time().toCharArray(), 0, oraTransInfo.getOra_time().length());
+				handler.characters(oraTransInfo.ora_time.toCharArray(), 0, oraTransInfo.ora_time.length());
 				handler.endElement("", "", "ora_time");
 				handler.startElement("", "", "ora_program", attr);
 				handler.characters(oraTransInfo.ora_program.toString().toCharArray(), 0,
@@ -708,6 +690,13 @@ public class SAXCreate {
 					HashMap<String, String> old_value = oraDMLInfo1.getOld_value();
 					HashMap<String, String> data_value = oraDMLInfo1.getData_value();
 					attr.clear();
+					if (oraDMLInfo1.getTab_action().equals("update")) {
+						updateCount++;
+					}else if (oraDMLInfo1.getTab_action().equals("insert")) {
+						insertCount++;
+					}else  if (oraDMLInfo1.getTab_action().equals("delete")) {
+						deleteCount++;
+					}
 					String value = "";
 					if (!where_value.isEmpty()) {
 						handler.startElement("", "", "where_value", attr);
@@ -758,9 +747,6 @@ public class SAXCreate {
 				fis.flush();
 				if (f.length() >= wjzdz) {
 					createYCZLXMLEnd(bm, oraLogObject);
-					insertCount = 0;
-					updateCount = 0;
-					deleteCount = 0;
 				}
 			}
 		} catch (SAXException e) {
@@ -833,6 +819,9 @@ public class SAXCreate {
 			zlsjddbService.saveOrupdate(zlsjddb);
 			zlsjddb = null;
 			zlsjwjb = null;
+			insertCount = 0;
+			updateCount = 0;
+			deleteCount = 0;
 		} catch (NullPointerException e) {
 			logger.error(e);
 			logger.info("增量生成成功文件写入断点写入失败");
@@ -849,7 +838,7 @@ public class SAXCreate {
 	 * @param datalist
 	 * @throws Exception
 	 */
-	public void createXMLDatalist(ResultSet rs, int wjzdz, String wjm, int start, String timeFied, JDBCUtil jdbc)
+	public void createXMLDatalist(ResultSet rs, int wjzdz, String wjm,  String timeFied, JDBCUtil jdbc)
 			throws Exception {
 		rs.beforeFirst();
 		if (timeFied.equals("")) {
@@ -872,8 +861,8 @@ public class SAXCreate {
 				} else {
 					sjk = getXMLName();// 自己设置文件名作为属性
 				}
-				createXMLHead(sjk, true);
-				createXMLTitle(tree, true);
+				createXMLHead(sjk);
+				createXMLTitle(tree);
 				filecount++;
 				wjq = 0;
 				sjl = 0;
@@ -887,7 +876,9 @@ public class SAXCreate {
 				if (rs.getObject(i) != null) {
 					if (rsMeta.getColumnTypeName(i).equals("DATE")) {
 						value = format.format(rs.getTimestamp(i));
-					} else {
+					} else if (rsMeta.getColumnTypeName(i).equals("TIMESTAMP")) {
+						value = format.format(rs.getTimestamp(i));
+					}else{
 						value = rs.getString(i);
 					}
 				}
@@ -1053,39 +1044,23 @@ public class SAXCreate {
 	}
 
 	/**
-	 * 有断点续采的功能 存量数据集合 多线程模式 备份
+	 * 核对数据采集
 	 * 
 	 * @param datalist
-	 * @throws SQLException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParseException
+	 * @throws Exception 
 	 */
-	public Map<String, Object> createXMLDatalist1(ResultSet rs, int taskid, int start, String timeFied, JDBCUtil jdbc)
-			throws SQLException, SAXException, IOException, ParseException {
-		String sjcq = "";
-		String sjcz = "";
-		Integer rowcount = start;
+	public  int createXMLDatalist1(ResultSet rs,String timeFied)
+			throws Exception {
+		Integer rowcount = 0;
 		rs.beforeFirst();
-		if (timeFied.equals("")) {
-			timeFied = "rowid";
-		}
 		String key = "";
 		String value = "";
 		int columnCount = 0;
 		ResultSetMetaData rsMeta = rs.getMetaData();
 		columnCount = rsMeta.getColumnCount();
-		String field = timeFied.toLowerCase();
-		String filename = "";
 		while (rs.next()) {
-			if (!documentStatus) {
-				filename = "D:\\TEST" + taskid + rowcount + ".xml";
-				f = new File(filename);
-				createXMLHead(filename, true);
-				createXMLTitle(tree, true);
-			}
-			int time = 0;
-			attr.addAttribute("", "", "recnum", "", String.valueOf(rowcount + 1));
+			rowcount++;
+			attr.addAttribute("", "", "recnum", "", String.valueOf(rowcount));
 			handler.startElement("", "", "tab_record", attr);
 			for (int i = 1; i <= columnCount; i++) {
 				key = rsMeta.getColumnLabel(i).toLowerCase();
@@ -1093,19 +1068,10 @@ public class SAXCreate {
 				if (rs.getObject(i) != null) {
 					if (rsMeta.getColumnTypeName(i).equals("DATE")) {
 						value = format.format(rs.getTimestamp(i));
-					} else {
+					} else if (rsMeta.getColumnTypeName(i).equals("TIMESTAMP")) {
+						value = format.format(rs.getTimestamp(i));
+					}else{
 						value = rs.getString(i);
-					}
-				}
-				if (time == 0) {
-					if (key.equals(field)) {
-						if (rowcount == start) {
-							sjcq = value;
-						}
-						time++;
-						rowcount++;
-						sjcz = value;
-						continue;
 					}
 				}
 				attr.clear();
@@ -1115,16 +1081,10 @@ public class SAXCreate {
 			}
 			handler.endElement("", "", "tab_record");
 			fis.flush();
-			if (f.length() >= 20971520) {
-				this.createXMLEnd(true);
-			}
 		}
-		Map<String, Object> param = new HashMap<>();
-		param.put("dqsjc", sjcz);
-		param.put("sjcq", sjcq);
-		param.put("sjcz", sjcz);
-		param.put("rowcount", rowcount);
-		return param;
+		this.createXMLEnd(true);
+		AbcUtil.ZipEncToBase64File(f.getAbsolutePath(), f.getAbsolutePath());
+		return rowcount;
 	}
 
 	/**
@@ -1134,14 +1094,18 @@ public class SAXCreate {
 	 */
 	public String getXMLName() {
 		if (dbConpro.getJgxtlb() != null && !dbConpro.getJgxtlb().equals("")) {
-
+			
 			StringBuffer str = new StringBuffer(FilePathName.ROOT);
 			// 文件路径
 			str.append(dbConpro.getJgxtlb()).append(FilePathName.FileSepeartor).append(FilePathName.CLStanbyPath)
+			.append(FilePathName.FileSepeartor);
 					// 文件名
-					.append(FilePathName.FileSepeartor).append(dbConpro.getAzdm()).append(dbConpro.getJgxtlb())
-					.append(xmlfilename.getXmlFileName("cl", dbConpro.getJgxtlb()))
-					;
+			if (!XMLFileName.clNameMap.get(dbConpro.getJgxtlb()).isEmpty()) {
+				str.append(xmlfilename.getXmlFileName("cl", dbConpro.getJgxtlb()));
+			}else{
+				str.append(FilePathName.FileSepeartor).append(dbConpro.getAzdm()).append(dbConpro.getJgxtlb())
+				.append(xmlfilename.getXmlFileName("cl", dbConpro.getJgxtlb()));
+			}
 			dbConpro.setClnum(new BigDecimal(XMLFileName.clcountMap.get(dbConpro.getJgxtlb())));
 			dbconProService.updateByExampleSelective(dbConpro);
 			return str.toString();

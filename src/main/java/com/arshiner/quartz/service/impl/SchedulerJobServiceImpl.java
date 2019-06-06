@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.arshiner.dao.ScheduleJobMapper;
 import com.arshiner.model.ScheduleJob;
+import com.arshiner.quartz.job.CLTask;
 import com.arshiner.quartz.job.ZLTask;
 import com.arshiner.quartz.service.ScheduleJobInService;
 import com.arshiner.quartz.service.SchedulerJobService;
@@ -169,8 +170,10 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
 		JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
 		ScheduleJob scheduleJob = scheduleJobInService.selectByJobNameAngJobGroup(jobName, jobGroup);
 		scheduler.pauseJob(jobKey);
-		if (scheduleJob.getJobStatus().equals("START")) {
+		if (scheduleJob.getJobStatus().equals("START")&&scheduleJob.getJobGroup().equals("ZLTASK")) {
 			ZLTask.isRun.set(false);
+		}else if (scheduleJob.getJobStatus().equals("START")&&scheduleJob.getJobGroup().equals("CLTASK")) {
+			CLTask.isRun.set(false);
 		}
 		scheduleJob.setJobStatus("PAUSED");
 		scheduleJobInService.updateByExample(scheduleJob);
@@ -180,6 +183,11 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
 		JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
 		ScheduleJob scheduleJob = scheduleJobInService.selectByJobNameAngJobGroup(jobName, jobGroup);
 		scheduler.pauseJob(jobKey);
+		if (scheduleJob.getJobStatus().equals("START")&&scheduleJob.getJobGroup().equals("ZLTASK")) {
+			ZLTask.isRun.set(false);
+		}else if (scheduleJob.getJobStatus().equals("START")&&scheduleJob.getJobGroup().equals("CLTASK")) {
+			CLTask.isRun.set(false);
+		}
 		scheduleJob.setJobStatus("COMPLETE");
 		scheduleJobInService.updateByExample(scheduleJob);
 	}
@@ -247,9 +255,10 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
 		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(scheduleJob.getJobName(), scheduleJob.getJobGroup())
 				.build();
 		jobDetail.getJobDataMap().put("scheduleJob", scheduleJob);
-		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(scheduleJob.getCronExpression());
+		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(scheduleJob.getCronExpression()).withMisfireHandlingInstructionFireAndProceed();
 		CronTrigger cronTrigger = TriggerBuilder.newTrigger()
-				.withIdentity(scheduleJob.getJobName(), scheduleJob.getJobGroup()).withSchedule(cronScheduleBuilder)
+				.withIdentity(scheduleJob.getJobName(), scheduleJob.getJobGroup())
+				.withSchedule(cronScheduleBuilder)
 				.build();
 		scheduler.scheduleJob(jobDetail, cronTrigger);
 		scheduleJobInService.insertSelective(scheduleJob);
@@ -268,8 +277,7 @@ public class SchedulerJobServiceImpl implements SchedulerJobService {
 		jobDetail.getJobDataMap().put("scheduleJob", scheduleJob);
 		TriggerKey triggerKey = TriggerKey.triggerKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
 		CronTrigger cronTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(scheduleJob.getCronExpression());
-		// 按照新的Trigger重新设置job并执行1111111111
+		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(scheduleJob.getCronExpression()).withMisfireHandlingInstructionFireAndProceed();
 		cronTrigger = cronTrigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(cronScheduleBuilder)
 				.build();
 		scheduler.rescheduleJob(triggerKey, cronTrigger);

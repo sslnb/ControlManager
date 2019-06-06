@@ -17,6 +17,7 @@ public class FilePathName {
 	public static final String FileSepeartor = System.getProperty("file.separator");// 根文件路径
 	public static final String RZJXWJPath =  "RZJXWJPath";
 	public static final String CLStanbyPath = "CLStanbyPath";
+	public static final String HDML = "HDML";
 	public static final String CLDIDPath =  "CLDIDPath";
 	public static final String ZLStanbyPath =  "ZLStanbyPath";
 	public static final String ZLDIDPath =  "ZLDIDPath";

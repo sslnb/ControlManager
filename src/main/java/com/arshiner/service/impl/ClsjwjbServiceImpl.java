@@ -58,6 +58,12 @@ public class ClsjwjbServiceImpl implements ClsjwjbService {
     	example.createCriteria().andBmEqualTo(record.getBm()).andJgxtlbEqualTo(record.getJgxtlb());
         return clsjwjbMapper.selectByExample(example);
     }
+    @Override
+    public List<Clsjwjb> selectOrderbyWJM(Clsjwjb record) {
+    	ClsjwjbExample example = new ClsjwjbExample();
+    	example.createCriteria().andWjmLessThanOrEqualTo(record.getWjm());
+    	return clsjwjbMapper.selectByExample(example);
+    }
 
     /**
      * 通过文件名，交管系统类别修改
@@ -165,6 +171,13 @@ public class ClsjwjbServiceImpl implements ClsjwjbService {
 		ClsjwjbExample example = new ClsjwjbExample();
     	example.createCriteria().andBmEqualTo(record.getBm()).andJgxtlbLike(record.getJgxtlb()+"%");
         return clsjwjbMapper.deleteByExample(example);
+	}
+
+	@Override
+	public int updateByWjzt(Clsjwjb record) {
+		ClsjwjbExample example = new ClsjwjbExample();
+    	example.createCriteria().andWjmLessThanOrEqualTo(record.getWjm()).andJgxtlbEqualTo(record.getJgxtlb());
+        return clsjwjbMapper.updateByExampleSelective(record, example);
 	}
 
 }

@@ -36,5 +36,7 @@ public interface ExeceptionService {
     List<Exeception> haveSelExeception(int before,int after,String sel_1);
 
     int haveCountExeception(String sel_1);
+    
+    void saveOrupdate(Exeception record);
 
 }

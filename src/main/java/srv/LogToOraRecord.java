@@ -59,7 +59,7 @@ public class LogToOraRecord {
 	public void LogToOraRecord(int sitecnt, String scn, String logpool) {
 		// 每个站点的最新scn对象SiteSCNObj
 		for (int i = 0; i < sitecnt; i++) {
-			sitescnobj.add(i, new SiteSCNObj(i,scn, logpool));
+			sitescnobj.add(i, new SiteSCNObj(i, scn, logpool));
 		}
 		isitecnt = sitecnt;
 		curscn = scn; // 设置断点
@@ -153,14 +153,15 @@ public class LogToOraRecord {
 				//
 				if (!"".equals(updateDmlCache.schema)) {
 					// 用户不同，或者操作不同，或者不是同一个记录的操作，都生成插入操作
-//					if ((!logdata.schema.equals(updateDmlCache.schema)) || (!"2".equals(logdata.act))
-//							|| (!logdata.rowid.equals(updateDmlCache.rowid))) {
-						orarec.insertCount++;
-						orarec.addDMLObj(updateDmlCache.schema, updateDmlCache.tab, logdata.getDMLType(updateDmlCache.act),
-								updateDmlCache.session, updateDmlCache.wherevalue, updateDmlCache.newvalue,
-								updateDmlCache.oldvalue);
-						orarec.translist.add(orarec.translist.get(orarec.translist.size()-1));
-//					}
+					// if ((!logdata.schema.equals(updateDmlCache.schema)) ||
+					// (!"2".equals(logdata.act))
+					// || (!logdata.rowid.equals(updateDmlCache.rowid))) {
+					orarec.insertCount++;
+					orarec.addDMLObj(updateDmlCache.schema, updateDmlCache.tab, logdata.getDMLType(updateDmlCache.act),
+							updateDmlCache.session, updateDmlCache.wherevalue, updateDmlCache.newvalue,
+							updateDmlCache.oldvalue);
+					orarec.translist.add(orarec.translist.get(orarec.translist.size() - 1));
+					// }
 					// 如果还是针对这个表的同一记录做操作，则此insert无需记录
 					updateDmlCache.resetDmlCache();
 				}
@@ -193,13 +194,13 @@ public class LogToOraRecord {
 				oraobj.addDMLObj(updateDmlCache.schema, updateDmlCache.tab, dtrecord.getDMLType(updateDmlCache.act),
 						updateDmlCache.session, updateDmlCache.wherevalue, updateDmlCache.newvalue,
 						updateDmlCache.oldvalue);
-				oraobj.translist.add(oraobj.translist.get(oraobj.translist.size()-1));
+				oraobj.translist.add(oraobj.translist.get(oraobj.translist.size() - 1));
 			}
 			// 如果还是针对这个表的同一记录做操作，则此insert无需记录
 			updateDmlCache.resetDmlCache();
 		}
 		if (checkIsNeed(dtrecord.tab, dtrecord.getDMLType(dtrecord.act))
-				||dtrecord.getDMLType(dtrecord.act).equals("ddl")) {
+				|| dtrecord.getDMLType(dtrecord.act).equals("ddl")) {
 			if (0 == oraobj.translist.size()) {
 				if (dtrecord.session == null || dtrecord.session.equals("")) {
 					oraobj.addTransObj(dtrecord.tx, dtrecord.type, "", "", dtrecord.schema, "", dtrecord.time, "");
@@ -209,8 +210,8 @@ public class LogToOraRecord {
 					} else {
 						oraobj.addTransObj(dtrecord.tx, dtrecord.type,
 								String.valueOf(Integer.valueOf(dtrecord.session.substring(0, 4), 16)),
-								String.valueOf(Integer.valueOf(dtrecord.session.substring(4, 8), 16)), dtrecord.schema, "",
-								dtrecord.time, "");
+								String.valueOf(Integer.valueOf(dtrecord.session.substring(4, 8), 16)), dtrecord.schema,
+								"", dtrecord.time, "");
 					}
 					// 起始scn和tid
 				}
@@ -236,7 +237,7 @@ public class LogToOraRecord {
 			if (dtrecord.getDMLType(dtrecord.act).equals("insert")) {
 				if (checkIsPriKey(dtrecord.tab, dtrecord.data)) {
 					dtrecord.setHashValue(dtrecord.data, new_value);
-					where_value=setHashValue(dtrecord.tab,dtrecord.data);
+					where_value = setHashValue(dtrecord.tab, dtrecord.data);
 				} else {
 					dtrecord.setHashValue(dtrecord.data, where_value);
 					dtrecord.setHashValue(dtrecord.data, new_value);
@@ -249,7 +250,7 @@ public class LogToOraRecord {
 					dtrecord.act = "1"; // delete
 					dtrecord.setHashValue(dtrecord.where, where_value);
 					if (checkIsPriKey(dtrecord.tab, dtrecord.where)) {
-						where_value=setHashValue(dtrecord.tab,dtrecord.where);
+						where_value = setHashValue(dtrecord.tab, dtrecord.where);
 					}
 					oraobj.deleteCount++;
 					oraobj.addDMLObj(dtrecord.schema, dtrecord.tab, dtrecord.getDMLType(dtrecord.act), dtrecord.session,
@@ -259,14 +260,14 @@ public class LogToOraRecord {
 					// 此处用update的where值来代替插入的值，存在的问题是主键列的值是老的，需要用data的值更
 					dtrecord.setHashValue(dtrecord.where, new_value);
 					if (checkIsPriKey(dtrecord.tab, dtrecord.where)) {
-						where_value=setHashValue(dtrecord.tab,dtrecord.where);
+						where_value = setHashValue(dtrecord.tab, dtrecord.where);
 					}
 					// 将主键新值替换旧
 					replaceOldValue(dtrecord.data, new_value);
 					// 为了满足需求2，n个update时，n-1个delete， 一个insert
 					updateDmlCache = updateDmlCache.setDmlCache(dtrecord.schema, dtrecord.tab, dtrecord.act,
 							dtrecord.session, dtrecord.rowid, where_value, new_value, old_value);
-					
+
 					// oraobj.insertCount++;
 					// oraobj.addDMLObj(dtrecord.schema, dtrecord.tab,
 					// dtrecord.getDMLType(dtrecord.act), dtrecord.session,
@@ -276,14 +277,14 @@ public class LogToOraRecord {
 				} else {
 					dtrecord.setUpdateValue(dtrecord.data, dtrecord.where, old_value, new_value, where_value);
 					if (checkIsPriKey(dtrecord.tab, dtrecord.where)) {
-						where_value=setHashValue(dtrecord.tab,dtrecord.where);
+						where_value = setHashValue(dtrecord.tab, dtrecord.where);
 					}
 					oraobj.updateCount++;
 				}
 			} else if (dtrecord.getDMLType(dtrecord.act).equals("delete")) {
 				if (checkIsPriKey(dtrecord.tab, dtrecord.where)) {
 					dtrecord.setHashValue(dtrecord.where, where_value);
-					where_value=setHashValue(dtrecord.tab,dtrecord.where);
+					where_value = setHashValue(dtrecord.tab, dtrecord.where);
 				} else {
 					dtrecord.setHashValue(dtrecord.where, where_value);
 				}
@@ -299,20 +300,24 @@ public class LogToOraRecord {
 				ddl.setSeq(Long.parseLong(dtrecord.tx.substring(2).replace(".", ""), 16));
 				ddl.setOrauser(dtrecord.schema);
 				ddl.setOraschema(dtrecord.schema);
-				ddl.setCzlx(dtrecord.getDDLCZLX(dtrecord.data));
-				ddl.setDxlx(dtrecord.getDDLDXLX(dtrecord.data));
 				ddl.setDxm(dtrecord.tab);
-				if (dtrecord.data.getBytes().length>1024) {
-					byte[] strb = dtrecord.data.getBytes();
-					byte[] strn = new byte[1024];
-					strn=strb;
-					ddl.setNr(strn.toString());
-				}else{
-					ddl.setNr(dtrecord.data);
-				}
-				String sql = "select to_char(scn_to_timestamp(" + ddl.getScn() + "),'yyyy-mm-dd hh24:mi:ss') scn from dual";
-				Map<String, Object> scn = null;
 				try {
+					String data = Decode.decode(dtrecord.data);
+					ddl.setCzlx(dtrecord.getDDLCZLX(data));
+					ddl.setDxlx(dtrecord.getDDLDXLX(data));
+					if (data.getBytes().length > 1024) {
+						byte[] strb = data.getBytes();
+						byte[] strn = new byte[1024];
+						for (int i = 0; i < strn.length; i++) {
+							strn[i] = strb[i];
+						}
+						ddl.setNr(new String(strn));
+					} else {
+						ddl.setNr(data);
+					}
+					String sql = "select to_char(scn_to_timestamp(" + ddl.getScn()
+							+ "),'yyyy-mm-dd hh24:mi:ss') scn from dual";
+					Map<String, Object> scn = null;
 					scn = jdbc.executeQuery(sql, null).get(0);
 					ddl.setCzsj(new Timestamp(format.parse(scn.get("scn").toString()).getTime()));
 					List<Ddlsjsjb> ddllist = new ArrayList<>();
@@ -330,8 +335,8 @@ public class LogToOraRecord {
 				oraobj.addDMLObj(dtrecord.schema, dtrecord.tab, dtrecord.getDMLType(dtrecord.act), dtrecord.session,
 						where_value, new_value, old_value);
 			}
-		}else{
-			System.out.println("过滤------- "+dtrecord.tab+"  操作："+dtrecord.getDMLType(dtrecord.act));
+		} else {
+			System.out.println("过滤------- " + dtrecord.tab + "  操作：" + dtrecord.getDMLType(dtrecord.act));
 		}
 		return true;
 	}
@@ -346,7 +351,7 @@ public class LogToOraRecord {
 	}
 
 	public void setPklist() {
-		jdbc = new JDBCUtil(db.getUsername(), db.getPassword(), db.getIp(), db.getPort(), db.getSid());
+		jdbc = new JDBCUtil(db.getUsername(), db.getPassword(), db.getIp(), db.getPort(), db.getServicename());
 		jdbc.getConnection();
 		// 获取表名
 		String bm = "";
@@ -367,11 +372,10 @@ public class LogToOraRecord {
 			if (dbrzcjcslist.get(i).getZlupdate().equals("1")) {
 				actlist.add(new String(dbrzcjcslist.get(i).getBm() + ".update").toLowerCase());
 			}
-			System.out.println("actlist------------"+actlist.toString());
 		}
 		String sql = "select distinct Cu.TABLE_NAME,Cu.COLUMN_NAME from all_cons_columns cu,all_constraints au "
-				+ "where cu.CONSTRAINT_NAME=au.CONSTRAINT_NAME and au.CONSTRAINT_type='P' "
-				+" AND cu.OWNER='" + db.getSchema().toUpperCase()+ "'"+ " and au.TABLE_NAME in(" + bm.toUpperCase() + ")"; 
+				+ "where cu.CONSTRAINT_NAME=au.CONSTRAINT_NAME and au.CONSTRAINT_type='P' " + " AND cu.OWNER='"
+				+ db.getSchema().toUpperCase() + "'" + " and au.TABLE_NAME in(" + bm.toUpperCase() + ")";
 		try {
 			pklist = jdbc.executeQuery1(sql);
 		} catch (SQLException e) {
@@ -382,7 +386,7 @@ public class LogToOraRecord {
 	}
 
 	// insert where_value 如果没有主键 就是全部字段 如果有主键就是主键字段
-	public HashMap<String, String> setHashValue(String stab,  String old) {
+	public HashMap<String, String> setHashValue(String stab, String old) {
 		// 校验传入数据
 		String sin = old;
 		if (!sin.contains("=")) {

@@ -14,16 +14,15 @@ import java.util.HashMap;
  */
 public class DmlCache {
 
-    public String schema = "";         //用户
-    public String tab = "";            //表名
-    public String act = "";            //操作
-    public String session = "";        //会话信息
-    public String rowid = "";           //rowid
+    public String schema = "";         
+    public String tab = "";           
+    public String act = "";            
+    public String session = "";        
+    public String rowid = "";           
     public HashMap<String, String> wherevalue;
     public HashMap<String, String> newvalue;
     public HashMap<String, String> oldvalue;
     
-    //临时存放dml对象
     public DmlCache DmlCache() {
         this.schema = "";
         this.tab = "";
@@ -37,7 +36,6 @@ public class DmlCache {
         return this;
     }
 
-    //临时存放dml对象
     public DmlCache setDmlCache(String sschema, String stab, String sact, String ssession, String srowid, HashMap<String, String> wvalue, HashMap<String, String> nvalue, HashMap<String, String> ovalue) {
         this.schema = sschema;
         this.tab = stab;
@@ -50,7 +48,6 @@ public class DmlCache {
         return this;
     }
    
-    //重置对象，清空
     public void resetDmlCache() {
         schema = "";
         tab = "";

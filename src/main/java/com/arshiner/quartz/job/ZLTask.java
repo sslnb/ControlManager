@@ -181,7 +181,7 @@ public class ZLTask implements Job{
 			buffer.append(dbConpro.getJgxtlb());// ip
 			buffer.append(FilePathName.FileSepeartor);// ip/
 			runCapture();
-			flasholdFileInfo(buffer.toString() + FilePathName.RZJXWJPath + FilePathName.FileSepeartor);
+			flasholdFileInfo(buffer.toString() + FilePathName.RZJXWJPath);
 			/**
 			 * 文件重传
 			 */
@@ -422,9 +422,7 @@ public class ZLTask implements Job{
 		String stopScn = "";
 		boolean flag = false;
 		// 如果新增一张表之后 事务中全是 这张表的记录操作，万一内存爆了怎么办
-		logger.info("11111111111111111111111111111111111111111111111111111111111111");
 		while (log2orarec.getNextOraRecord()) {
-			logger.info("222222222222222222222222222222222222222222222222");
 			if (log2orarec.getCurrentSCN().equals(stopScn)) {
 				break;
 			}
@@ -548,7 +546,7 @@ public class ZLTask implements Job{
 					out.configGetAndSet("Last_write_SCN", "", jd + "capture.out");
 					//查询此scn的时间
 					JDBCUtil jdbc = new JDBCUtil(dbConpro.getUsername(), dbConpro.getPassword(),
-							dbConpro.getIp(), dbConpro.getPort(), dbConpro.getSid());
+							dbConpro.getIp(), dbConpro.getPort(), dbConpro.getServicename());
 					
 					String sql = "select to_char(scn_to_timestamp(" + scn + "),'yyyy-mm-dd hh24:mi:ss') scn from dual";
 					Map<String, Object> scn1 = null;

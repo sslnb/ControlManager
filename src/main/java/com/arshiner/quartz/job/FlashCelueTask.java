@@ -194,6 +194,7 @@ public class FlashCelueTask {
 		xt.setGxsj(getTime());
 		List<Cjrjxt> xtlist = new ArrayList<>();
 		xtlist.add(xt);
+		rsoa.setExeceptionService(execeptionService);
 		// 5.采集软件心跳状态上报接口
 		// 1. 每次运行时获取策略信息
 		try {
@@ -303,7 +304,7 @@ public class FlashCelueTask {
 				job1.setJgxtlb(dbconpro2.getJgxtlb());
 				record.setGjz("ZLCJZQ");
 				rzcjqjcs = rzcjqjcsService.selectByGjz(record).get(0);
-				job1.setCronExpression("* */" + rzcjqjcs.getMrz() + " * * * ? ");
+				job1.setCronExpression("0 */" + rzcjqjcs.getMrz() + " * * * ? ");
 				schedulerJobService.saveOrUpdate(job1);
 			} catch (Exception e) {
 				logger.error("策略刷新时添加增量任务出错" + "======ZLTASK FlashCelueTask" + e);
@@ -401,6 +402,11 @@ public class FlashCelueTask {
 				rzjx.mkdirs();
 				logger.info("FlashCelueTask ----创建目录" + buffer.toString() + FilePathName.RZJXWJPath);
 			}
+			File rzjx_old = new File(buffer.toString() + FilePathName.RZJXWJPath+"_old");
+			if (!rzjx_old.exists()) {
+				rzjx_old.mkdirs();
+				logger.info("FlashCelueTask ----创建目录" + buffer.toString() + FilePathName.RZJXWJPath+"_old");
+			}
 			File cldir = new File(buffer.toString() + FilePathName.CLStanbyPath);
 			if (!cldir.exists()) {
 				cldir.mkdirs();
@@ -410,6 +416,11 @@ public class FlashCelueTask {
 			if (!zldir.exists()) {
 				zldir.mkdirs();
 				logger.info("FlashCelueTask ----创建目录" + buffer.toString() + FilePathName.ZLStanbyPath);
+			}
+			File hdml = new File(buffer.toString() + FilePathName.HDML);
+			if (!hdml.exists()) {
+				hdml.mkdirs();
+				logger.info("FlashCelueTask ----创建目录" + buffer.toString() + FilePathName.HDML);
 			}
 			File zldid = new File(buffer.toString() + FilePathName.ZLDIDPath);
 			if (!zldid.exists()) {
@@ -438,7 +449,7 @@ public class FlashCelueTask {
 				String jd = buffer.toString() + "thread"+j+ FilePathName.FileSepeartor;
 				// 4,拷贝alivedb.conf,capture.out和capture到节点目录中
 				// 5,创建目录
-				local = local + j;
+				local = j;
 				try {
 					File capturedir = new File(jd + "capture");
 					if (!capturedir.exists()) {
@@ -482,21 +493,19 @@ public class FlashCelueTask {
 						ConfigFile.setIniValue(jd + "Alivedb.conf", "Option", "Apply_delay", "1");
 						ConfigFile.setIniValue(jd + "Alivedb.conf", "Option", "Capture_mode", "0");
 						// 进行判断
-						for (int i = 1; i <= num; i++) {
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "Oracle_instance",
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "Oracle_instance",
 									record.getSid());
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "Oracle_account",
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "Oracle_account",
 									record.getUsername());
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "Oracle_password",
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "Oracle_password",
 									record.getPassword());
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "Oracle_port", record.getPort());
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "Log_pool",
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "Oracle_port", record.getPort());
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "Log_pool",
 									buffer.toString().replace(FilePathName.FileSepeartor,
 											FilePathName.FileSepeartor + FilePathName.FileSepeartor)
 											+ FilePathName.RZJXWJPath);
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "File_flag", str[i - 1]);
-							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + i, "Sql_type", "1");
-						}
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "File_flag", str[j - 1]);
+							ConfigFile.setIniValue(jd + "Alivedb.conf", "Server" + j, "Sql_type", "1");
 
 						ConfigFile.setIniValue(jd + "Alivedb.conf", "User1", "Name", record.getSchema().toUpperCase());
 						ConfigFile.setIniValue(jd + "Alivedb.conf", "User1", "Type", "include");
@@ -589,9 +598,9 @@ public class FlashCelueTask {
 		String result = TestRestSafeOutAccess.writeObjectRds(TestRestSafeOutAccess.jklb, TestRestSafeOutAccess.jkxlh,
 				jkid, TestRestSafeOutAccess.babh, TestRestSafeOutAccess.mac, UTF8Json);
 		if (result.equals("")) {
+			logger.info("获取参数失败： ");
 			return;
 		} else {
-			logger.info("获取参数失败： ");
 		}
 		JSONObject jsonObject = JSON.parseObject(result);
 		Map<String, Object> map = JsonToObject.JSONconsvertToMap(jsonObject);
@@ -630,15 +639,6 @@ public class FlashCelueTask {
 		}
 	}
 
-	/**
-	 * 清楚已经采集的归档
-	 * 
-	 * @param filepath
-	 *            归档路径
-	 */
-	public void qcgd(String filepath) {
-
-	}
 
 	/**
 	 * 刷新备案编号
@@ -671,7 +671,7 @@ public class FlashCelueTask {
 		return null;
 	}
 
-	public FtpUtils getFtp(Dbconpro record) {
+	public FtpUtils getFtp() {
 		FtpUtils ftp = new FtpUtils();
 		Rzcjqjcs record1 = new Rzcjqjcs();
 		record1.setGjz("FSIP");
@@ -679,7 +679,7 @@ public class FlashCelueTask {
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
 			exeception.setCreatetime(getTime());
-			exeception.setJgxtlb(record.getJgxtlb());
+			exeception.setJgxtlb("FTP");
 			exeception.setJobname(job.getJobName());
 			exeception.setDesciption("FTPTASK:" + "连接参数刷新失败  原因：此任务FTP IP 为空");
 			execeptionService.insertSelective(exeception);
@@ -693,7 +693,7 @@ public class FlashCelueTask {
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
 			exeception.setCreatetime(getTime());
-			exeception.setJgxtlb(record.getJgxtlb());
+			exeception.setJgxtlb("FTP");
 			exeception.setJobname(job.getJobName());
 			exeception.setDesciption("FTPTASK:" + "连接参数刷新失败  原因：此任务FTP USER为空");
 			execeptionService.insertSelective(exeception);
@@ -708,7 +708,7 @@ public class FlashCelueTask {
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
 			exeception.setCreatetime(getTime());
-			exeception.setJgxtlb(record.getJgxtlb());
+			exeception.setJgxtlb("FTP");
 			exeception.setJobname(job.getJobName());
 			exeception.setDesciption("FTPTASK:" + "连接参数刷新失败  原因：此任务FTP 密码为空");
 			execeptionService.insertSelective(exeception);
@@ -723,13 +723,29 @@ public class FlashCelueTask {
 		if (rzcjqjcs.getMrz() == null) {
 			Exeception exeception = new Exeception();
 			exeception.setCreatetime(getTime());
-			exeception.setJgxtlb(record.getJgxtlb());
+			exeception.setJgxtlb("FTP");
 			exeception.setJobname(job.getJobName());
 			exeception.setDesciption("FTPTASK:" + "连接参数刷新失败  原因：此任务FTP 端口为空");
 			execeptionService.insertSelective(exeception);
 			return null;
 		} else {
 			ftp.setPort(new Integer(rzcjqjcs.getMrz()));
+		}
+		record1.setGjz("HDSCML");
+		List<Rzcjqjcs> rzcjqjcslist = rzcjqjcsService.selectByGjz(record1);
+		if (null!=rzcjqjcslist&&!rzcjqjcslist.isEmpty()) {
+			rzcjqjcs = rzcjqjcslist.get(0);
+			if (rzcjqjcs.getMrz() == null) {
+				Exeception exeception = new Exeception();
+				exeception.setCreatetime(getTime());
+				exeception.setJgxtlb("FTP");
+				exeception.setJobname(job.getJobName());
+				exeception.setDesciption("FTPTASK:" + "连接参数刷新失败  原因：此任务FTP HDSCML为空");
+				execeptionService.insertSelective(exeception);
+				return null;
+			} else {
+				ftp.setFtpDir(rzcjqjcs.getMrz());
+			}
 		}
 		return ftp;
 	}
@@ -849,6 +865,7 @@ public class FlashCelueTask {
 	 * @throws SocketException
 	 */
 	public void sb(String jgxtlb, String bm, Dbconpro dbconpro2) throws SocketException, IOException {
+		
 		Clsjclzt record = new Clsjclzt();
 		record.setJgxtlb(jgxtlb);
 		record.setBm(bm);
@@ -866,6 +883,7 @@ public class FlashCelueTask {
 		StringBuffer buffer = new StringBuffer(FilePathName.ROOT);// 项目上级目录
 		buffer.append(record.getJgxtlb());// 节点目录 /ip
 		buffer.append(FilePathName.FileSepeartor);// /ip/
+		String sbzt ="";
 		// 判断此表的存量是否完成，如果完成，上报存量并上报增量
 		for (Iterator<Clsjclzt> iterator = cllist.iterator(); iterator.hasNext();) {
 			Clsjclzt clsjclzt = (Clsjclzt) iterator.next();
@@ -891,10 +909,10 @@ public class FlashCelueTask {
 			rsoa.setZlsjwjbService(zlsjwjbService);
 			try {
 				// 存量文件反馈接口
-				rsoa.queryOldDataFileStatus(JsonToObject.ListconsvertToJSON(clwjl), oldpath, absolutpath);
 				if (clwjlist == null || clwjlist.isEmpty()) {
 				} else {
-					rsoa.buildOldFilenameJson(JsonToObject.ListconsvertToJSON(clwjlist));
+					sbzt =rsoa.buildOldFilenameJson(JsonToObject.ListconsvertToJSON(clwjlist));
+					logger.info("sbzt存量文件"+sbzt);
 					for (Clsjwjb clsjwjb : clwjlist) {
 						clsjwjb.setSbzt("2");
 						clsjwjbService.updateByExampleSelective(clsjwjb);
@@ -904,7 +922,8 @@ public class FlashCelueTask {
 				List<Clsjkddb> clddlist1 = clsjkddbService.selectBysbzt(clsjkddb);
 				if (clddlist1 == null || clddlist1.isEmpty()) {
 				} else {
-					rsoa.buildOldDataBrkinfoJson(JsonToObject.ListconsvertToJSON(clddlist1));
+					sbzt =rsoa.buildOldDataBrkinfoJson(JsonToObject.ListconsvertToJSON(clddlist1));
+					logger.info("sbzt存量文件"+sbzt);
 					for (Clsjkddb clsjkddb2 : clddlist1) {
 						clsjkddb2.setSbzt("2");
 						clsjkddbService.updateByExample(clsjkddb2);
@@ -917,26 +936,40 @@ public class FlashCelueTask {
 					if (clcjclztlist == null || clcjclztlist.isEmpty()) {
 					} else {
 						// 上报存量状态
-						logger.info("上报此存量数据处理状态");
-						rsoa.buildOldDataStatusinfoJson(JsonToObject.ListconsvertToJSON(clcjclztlist));
-						for (Clsjclzt clsjclzt2 : clcjclztlist) {
-							if (clsjclzt2.getCjzt().equals("1")) {
-								clsjclzt2.setSbzt("0");
-							} else {
-								clsjclzt2.setSbzt(clsjclzt2.getCjzt());
+							rsoa.buildOldDataStatusinfoJson(JsonToObject.ListconsvertToJSON(clcjclztlist));
+							for (Clsjclzt clsjclzt2 : clcjclztlist) {
+								if (clsjclzt2.getCjzt().equals("1")) {
+									clsjclzt2.setSbzt("0");
+								} else {
+									clsjclzt2.setSbzt(clsjclzt2.getCjzt());
+								}
+								clsjclztService.updateByExample(clsjclzt2);
 							}
-							clsjclztService.updateByExample(clsjclzt2);
-						}
 					}
 					clcjclztlist = null;
 				}
 				clddlist1 = null;
+				//如果反馈结果有5和6的文件
+				//部局查询
+				if (rsoa.queryOldDataFileStatus(JsonToObject.ListconsvertToJSON(clwjl), oldpath, absolutpath).equals("0")) {
+					if (!CLTask.isRun.get()) {
+						schedulerJobService.runOneJob(clsjclzt.getJgxtlb()+clsjclzt.getBm()+"CLTASK", "CLTASK");
+					}
+				}
+				//入库查询
+//				clwjrecord.setWjzt("3");
+//				List<Clsjwjb> rklist = clsjwjbService.selectByrkzt(clwjrecord);
+//				if (rsoa.queryOldDataFileStatus(JsonToObject.ListconsvertToJSON(rklist), oldpath, absolutpath).equals("0")) {
+//					if (!CLTask.isRun.get()) {
+//						schedulerJobService.runOneJob(clsjclzt.getJgxtlb()+clsjclzt.getBm()+"CLTASK", "CLTASK");
+//					}
+//				}
 				// 上报数据采集软件运行状态
 				Cjrjyxzt cjrjyxzt = new Cjrjyxzt();
 				cjrjyxzt.setBabh(config.properties.getProperty("babh"));
 				cjrjyxzt.setJgxtlb(jgxtlb);
 				// ftp连接状态
-				FtpUtils ftp = getFtp(dbconpro2);
+				FtpUtils ftp = getFtp();
 				if (ftp.initFtpClient()) {
 					cjrjyxzt.setFwqljzt("1");
 					cjrjyxzt.setFwqcwms("");
@@ -946,7 +979,7 @@ public class FlashCelueTask {
 				}
 				// 目标数据库连接状态
 				JDBCUtil db = new JDBCUtil(dbconpro2.getUsername(), dbconpro2.getPassword(), dbconpro2.getIp(),
-						dbconpro2.getPort(), dbconpro2.getSid());
+						dbconpro2.getPort(), dbconpro2.getServicename());
 				boolean flag = db.getConnection();
 				if (flag) {
 					cjrjyxzt.setSjkljzt("1");
@@ -1150,7 +1183,10 @@ public class FlashCelueTask {
 					zlsjwjbService.updateByExampleSelective(zlsjwjb);
 				}
 			}
-
+			zlsjwj.setWjzt("3");
+			//部局查询
+//			List<Zlsjwjb> rklist =zlsjwjbService.selectwjzt1(zlsjwj);
+//			rsoa.queryNewDataFileStatus(JsonToObject.ListconsvertToJSON(rklist), oldpath, absolutpath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

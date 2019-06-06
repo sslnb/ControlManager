@@ -112,7 +112,7 @@ public class CLTask implements Job{
 	@Autowired
 	CjrjyxztService cjrjyxztService;
 
-	static AtomicBoolean isRun = new AtomicBoolean(false);
+	public static AtomicBoolean isRun = new AtomicBoolean(false);
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -187,7 +187,7 @@ public class CLTask implements Job{
 					bm = dbrzcjcs2.getBm();
 					// 无断点
 					JDBCUtil db = new JDBCUtil(dbConpro.getUsername(), dbConpro.getPassword(), dbConpro.getIp(),
-							dbConpro.getPort(), dbConpro.getSid());
+							dbConpro.getPort(), dbConpro.getServicename());
 					db.getConnection();
 					db.setSchema(dbConpro.getSchema());
 					db.setTb_name(bm);
@@ -298,13 +298,13 @@ public class CLTask implements Job{
 					threadPool.closePool(); // 关闭线程池
 				}
 			}
+			//此任务跑完了
+			schedulerJobService.pauseJobByComplete(job.getJobName(), job.getJobGroup());;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		job.setJobStatus("NORMAL");
-		schedulerJobService.updateJob(job);
 		isRun.set(false);
 	}
 
@@ -347,7 +347,7 @@ public class CLTask implements Job{
 				Map<String, String> startmap = null;
 				Map<String, String> endmap = null;
 				JDBCUtil db = new JDBCUtil(dbConpro.getUsername(), dbConpro.getPassword(), dbConpro.getIp(),
-						dbConpro.getPort(), dbConpro.getSid());
+						dbConpro.getPort(), dbConpro.getServicename());
 				SAXCreate sax = new SAXCreate();
 				rzcjqjcs = null;
 				Rzcjqjcs record = new Rzcjqjcs();
@@ -399,7 +399,6 @@ public class CLTask implements Job{
 					if (!model.equals("cc")) {
 						clsjkddb.setSjkstart(new BigDecimal(start));
 						clsjkddb.setSjkend(new BigDecimal(end));
-						System.out.println("断点记录");
 						startmap = db.executedd(db.getSql(2));
 						clsjkddb.setSjcq(startmap.get(db.getTimeFied().toLowerCase()));
 						db.setRownum(end);
@@ -421,7 +420,7 @@ public class CLTask implements Job{
 					while (db.getSux() < db.getEnd()) {
 						db.setPreAndSux1();
 						resultSet = db.getResultSet(db.getSql(1));
-						sax.createXMLDatalist(resultSet, zdwjdx, wjm, db.getPre(), db.getTimeFied(), db);
+						sax.createXMLDatalist(resultSet, zdwjdx, wjm, db.getTimeFied(), db);
 						resultSet = null;
 						db.getResultSet().close();
 						db.getStmt().close();

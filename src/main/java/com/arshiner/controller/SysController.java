@@ -107,9 +107,10 @@ public class SysController {
              Exeception exception = new Exeception();
              exception.setDesciption(memInfo);
              exception.setJobname("error");
+             exception.setJgxtlb("内存");
              //当前系统时间,Timestamp类型
              exception.setCreatetime(new Timestamp(System.currentTimeMillis()));
-             execeptionService.insertSelective(exception);
+             execeptionService.saveOrupdate(exception);
              writMan.put("code",1);
              writMan.put("msg",memInfo);
          }
@@ -117,10 +118,11 @@ public class SysController {
              String devInfo = "磁盘使用率超过90%";
              Exeception exception = new Exeception();
              exception.setDesciption(devInfo);
+             exception.setJgxtlb("磁盘");
              exception.setJobname("error");
              //当前系统时间,Timestamp类型
              exception.setCreatetime(new Timestamp(System.currentTimeMillis()));
-             execeptionService.insertSelective(exception);
+             execeptionService.saveOrupdate(exception);
              writMan.put("code",1);
              writMan.put("msg",devInfo);
          }
@@ -128,10 +130,11 @@ public class SysController {
              String couInfo = "cpu使用率超过90%";
              Exeception exception = new Exeception();
              exception.setDesciption(couInfo);
+             exception.setJgxtlb("cpu");
              exception.setJobname("error");
              //当前系统时间,Timestamp类型
              exception.setCreatetime(new Timestamp(System.currentTimeMillis()));
-             execeptionService.insertSelective(exception);
+             execeptionService.saveOrupdate(exception);
              writMan.put("code",1);
              writMan.put("msg",couInfo);
          }
